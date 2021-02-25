@@ -131,6 +131,15 @@ class MyApp extends StatelessWidget {
 }
 ```
 
+## Supported languages
+
+|                           English                            |                            Korean                            |
+| :----------------------------------------------------------: | :----------------------------------------------------------: |
+| ![](https://github.com/jja08111/time_chart/blob/main/assets/images/time_chart/weekly_time_chart.gif?raw=true) | ![](https://github.com/jja08111/time_chart/blob/main/assets/images/time_chart/weekly_time_chart_ko.gif?raw=true) |
+
+You can also use korean language by [Internationalizing Flutter apps](https://flutter.dev/docs/development/accessibility-and-localization/internationalization).
+
 ## Waiting PR...
+
 I'm using [Touchable plugin](https://github.com/nateshmbhat/touchable), and waiting
 [this PR](https://github.com/nateshmbhat/touchable/pull/17).
