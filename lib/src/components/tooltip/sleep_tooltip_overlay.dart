@@ -1,0 +1,282 @@
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+
+import 'tooltip_shape_border.dart';
+import 'tooltip_size.dart';
+import '../translations/translations.dart';
+import '../../time_chart.dart';
+
+const double kTooltipArrowWidth = 8.0;
+const double kTooltipArrowHeight = 16.0;
+
+enum Direction{left, right}
+
+@immutable
+class SleepTooltipOverlay extends StatelessWidget {
+  const SleepTooltipOverlay({
+    Key key,
+    @required this.chartType,
+    this.timeRange,
+    this.bottomHour,
+    this.amountHour,
+    this.amountDate,
+    @required this.direction,
+    this.backgroundColor,
+    @required this.start,
+    @required this.end,
+  }) : assert(chartType != null),
+        assert((amountHour != null && amountDate !=null) ||
+            (timeRange != null && bottomHour != null)),
+        assert(direction != null),
+        assert(start != null),
+        assert(end != null),
+        super(key: key);
+
+  final ChartType chartType;
+  final int bottomHour;
+  final DateTimeRange timeRange;
+  final double amountHour;
+  final DateTime amountDate;
+  final Direction direction;
+  final Color backgroundColor;
+  final String start;
+  final String end;
+
+  /// [DateTimeRange.end]를 기준으로 [bottomHour]에 의해 다음날로 수정되었을 수 있다.
+  ///
+  /// 만약 수정된 시간이면 하루 이전으로 변경해야 한다.
+  DateTimeRange _getActualDateTime(DateTimeRange timeRange) {
+    final oneBeforeDay = const Duration(days: -1);
+    final wakeUp = timeRange.end;
+
+    return (wakeUp.hour == bottomHour && wakeUp.minute > 0)
+        || bottomHour < wakeUp.hour
+        ? DateTimeRange(start: timeRange.start.add(oneBeforeDay), end: wakeUp.add(oneBeforeDay))
+        : timeRange;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+    Widget child;
+    switch(chartType) {
+      case ChartType.time:
+        child = _TimeTooltipOverlay(
+          timeRange: _getActualDateTime(timeRange),
+          bottomHour: bottomHour,
+          start: start,
+          end: end,
+        );
+        break;
+      case ChartType.amount:
+        child = _AmountTooltipOverlay(
+          durationHour: amountHour,
+          durationDate: amountDate,
+        );
+    }
+
+    final themeData = Theme.of(context);
+
+    return Material(
+      color: const Color(0x00ffffff),
+      child: Container(
+        decoration: ShapeDecoration(
+          color: backgroundColor ?? themeData.dialogBackgroundColor,
+          shape: TooltipShapeBorder(direction: direction),
+          shadows: [
+            const BoxShadow(
+              color: Colors.black45,
+              blurRadius: 4.0,
+              offset: const Offset(2, 2),
+            ),
+          ],
+        ),
+        child: child,
+      ),
+    );
+  }
+}
+
+@immutable
+class _TimeTooltipOverlay extends StatelessWidget {
+  const _TimeTooltipOverlay({
+    Key key,
+    this.timeRange,
+    this.bottomHour,
+    this.start,
+    this.end,
+  }) : assert(timeRange != null),
+        assert(bottomHour != null),
+        assert(start != null),
+        assert(end != null),
+        super(key: key);
+
+  final DateTimeRange timeRange;
+  final int bottomHour;
+  final String start;
+  final String end;
+
+  DateTime get _sleepTime => timeRange.start;
+  DateTime get _wakeUp => timeRange.end;
+
+  Widget _timeTile(BuildContext context, DateTime dateTime) {
+    final translations = Translations(context);
+    final textTheme = Theme.of(context).textTheme;
+    final subtitle1 = textTheme.subtitle1;
+    return translations.formatTimeOfDayWidget(
+      a: Text(
+        translations.dateFormat('a', dateTime),
+        style: subtitle1.copyWith(color: subtitle1.color.withOpacity(0.5)),
+      ),
+      hMM: Text(
+        translations.dateFormat('h:mm', dateTime),
+        style: textTheme.headline4.copyWith(height: 1.1),
+      ),
+    );
+  }
+
+  Widget _buildContent(BuildContext context) {
+    final translations = Translations(context);
+    final textTheme = Theme.of(context).textTheme;
+    final bodyText2 = textTheme.bodyText2;
+    final bodyTextStyle = bodyText2.copyWith(
+        height: 1.4, color: bodyText2.color.withOpacity(0.7));
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(start, style: bodyTextStyle),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.baseline,
+          children: [
+            _timeTile(context, _sleepTime),
+          ],
+        ),
+        Expanded(child: const Divider()),
+        Text(end, style: bodyTextStyle),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.baseline,
+          children: [
+            _timeTile(context, _wakeUp),
+          ],
+        ),
+        Text(
+          translations.compactDateTimeRange(
+              DateTimeRange(start: _sleepTime, end: _wakeUp)),
+          style: bodyTextStyle,
+        ),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final size = getTimeTooltipSize(context);
+    return SizedBox(
+      width: size.width,
+      height: size.height,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: _buildContent(context),
+      ),
+    );
+  }
+}
+
+@immutable
+class _AmountTooltipOverlay extends StatelessWidget {
+  const _AmountTooltipOverlay({
+    Key key,
+    @required this.durationHour,
+    @required this.durationDate,
+  }) : assert(durationHour != null),
+        assert(durationDate != null),
+        super(key: key);
+
+  final double durationHour;
+  final DateTime durationDate;
+
+  int _ceilMinutes() {
+    double decimal = durationHour - durationHour.toInt();
+    return  (decimal*60 + 0.01).toInt() == 60 ? 1 : 0;
+  }
+
+  String _getMinute() {
+    double decimal = durationHour - durationHour.toInt();
+    // 3.99와 같은 무한소수를 고려한다.
+    int minutes = (decimal*60 + 0.01).toInt() % 60;
+    return  minutes>0 ? '$minutes' : '';
+  }
+
+  String _getHour() {
+    final hour = durationHour.toInt() + _ceilMinutes();
+    return hour > 0 ? '$hour' : '';
+  }
+
+  Widget _buildContent(BuildContext context) {
+    final localizations = MaterialLocalizations.of(context);
+    final translations = Translations(context);
+    final textTheme = Theme.of(context).textTheme;
+    final body2 = textTheme.bodyText2;
+    final bodyTextStyle = body2.copyWith(color: body2.color.withOpacity(0.5));
+    final sub1 = textTheme.subtitle1;
+    final subTitleStyle = sub1.copyWith(color: sub1.color.withOpacity(0.5));
+    final headerStyle = textTheme.headline4;
+
+    final hourString = _getHour();
+    final minuteString = _getMinute();
+
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.baseline,
+            children: [
+              if(hourString.isNotEmpty) Text(
+                _getHour(),
+                style: headerStyle,
+              ),
+              if(hourString.isNotEmpty) Text(
+                '${translations.shortHour} ',
+                style: subTitleStyle,
+              ),
+              if(minuteString.isNotEmpty) Text(
+                _getMinute(),
+                style: headerStyle,
+              ),
+              if(minuteString.isNotEmpty) Text(
+                translations.shortMinute,
+                style: subTitleStyle,
+              ),
+            ],
+          ),
+          Text(
+            localizations.formatShortMonthDay(durationDate),
+            style: bodyTextStyle,
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final size = getAmountTooltipSize(context);
+    return SizedBox(
+      width: size.width,
+      height: size.height,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: _buildContent(context),
+      ),
+    );
+  }
+}
