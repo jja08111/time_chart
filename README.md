@@ -127,3 +127,7 @@ class MyApp extends StatelessWidget {
   }
 }
 ```
+
+## Waiting PR...
+I'm using [Touchable plugin](https://github.com/nateshmbhat/touchable), and waiting
+[this PR](https://github.com/nateshmbhat/touchable/pull/17).

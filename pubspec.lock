@@ -161,15 +161,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.19-nullsafety.2"
-  touchable:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "71e79d400c351d8c4cae59da13dcd2dea3c29a54"
-      url: "https://github.com/jja08111/touchable"
-    source: git
-    version: "0.2.0"
   typed_data:
     dependency: transitive
     description:

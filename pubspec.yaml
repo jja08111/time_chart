@@ -11,9 +11,10 @@ dependencies:
   flutter:
     sdk: flutter
   linked_scroll_controller: ^0.1.2
-  touchable:
-    git:
-      url: https://github.com/jja08111/touchable
+  # Waiting for this PR: https://github.com/nateshmbhat/touchable/pull/17
+  #touchable:
+  #  git:
+  #    url: https://github.com/jja08111/touchable
   path_drawing: ^0.4.1+1
   intl: ^0.16.1
   flutter_localizations:

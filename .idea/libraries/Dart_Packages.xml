@@ -177,13 +177,6 @@
             </list>
           </value>
         </entry>
-        <entry key="touchable">
-          <value>
-            <list>
-              <option value="C:/flutter/.pub-cache/git/touchable-71e79d400c351d8c4cae59da13dcd2dea3c29a54/lib" />
-            </list>
-          </value>
-        </entry>
         <entry key="typed_data">
           <value>
             <list>
@@ -201,7 +194,6 @@
       </option>
     </properties>
     <CLASSES>
-      <root url="file://C:/flutter/.pub-cache/git/touchable-71e79d400c351d8c4cae59da13dcd2dea3c29a54/lib" />
       <root url="file://C:/flutter/.pub-cache/hosted/pub.dartlang.org/async-2.5.0-nullsafety.1/lib" />
       <root url="file://C:/flutter/.pub-cache/hosted/pub.dartlang.org/boolean_selector-2.1.0-nullsafety.1/lib" />
       <root url="file://C:/flutter/.pub-cache/hosted/pub.dartlang.org/characters-1.1.0-nullsafety.3/lib" />

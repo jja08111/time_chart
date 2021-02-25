@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:touchable/touchable.dart';
+import '../../cand_touchable/touchable.dart';
+//import 'package:touchable/touchable.dart';
 import '../../utils/time_assistant.dart' as TimeAssistant;
 import '../chart_engine.dart';
 import '../../view_mode.dart';
