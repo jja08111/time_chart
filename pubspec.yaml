@@ -1,10 +1,10 @@
 name: time_chart
-description: A scrollable time chart.
+description: A scrollable time chart in Flutter. Currently supporting en, ko languages.
 version: 0.0.1
 homepage: https://github.com/jja08111/time_chart
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.5.2 <3.0.0"
   flutter: ">=1.20.0 <2.0.0"
 
 dependencies:
