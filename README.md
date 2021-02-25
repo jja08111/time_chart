@@ -4,12 +4,10 @@ An amazing time chart in Flutter.
 
 ### Chart Types
 
-| TimeChart | AmountChart |
-| --------- | ----------- |
-|[![](https://github.com/jja08111/time_chart/raw/master/assets/images/time_chart/weekly_time_chart.gif)]|
-[![](https://github.com/jja08111/time_chart/raw/master/assets/images/time_chart/weekly_amount_chart.gif)]|
-|[![](https://github.com/jja08111/time_chart/raw/master/assets/images/time_chart/monthly_time_chart.gif)]|
-[![](https://github.com/jja08111/time_chart/raw/master/assets/images/time_chart/monthly_amount_chart.gif)]|
+|                          TimeChart                           |                         AmountChart                          |
+| :----------------------------------------------------------: | :----------------------------------------------------------: |
+| ![](https://github.com/jja08111/time_chart/blob/main/assets/images/time_chart/weekly_time_chart.gif?raw=true) | ![](https://github.com/jja08111/time_chart/blob/main/assets/images/amount_chart/weekly_amount_chart.gif?raw=true) |
+| ![](https://github.com/jja08111/time_chart/blob/main/assets/images/time_chart/monthly_time_chart.gif?raw=true) | ![](https://github.com/jja08111/time_chart/blob/main/assets/images/amount_chart/monthly_amount_chart.gif?raw=true) |
 
 
 
