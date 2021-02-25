@@ -1,5 +1,8 @@
 # time_chart
 
+
+[![pub package](https://img.shields.io/pub/v/time_chart.svg)](https://pub.dev/packages/time_chart)
+
 An amazing time chart in Flutter.
 
 ### Chart Types
