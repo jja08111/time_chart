@@ -141,7 +141,8 @@ abstract class TimeDataProcessor {
       final double sleepTimeDouble = TimeAssistant.dateTimeToDouble(sleepTime);
       final double wakeUpTimeDouble = TimeAssistant.dateTimeToDouble(wakeUpTime);
 
-      if (_isNextDayTime(sleepTimeDouble) && _isNextDayTime(wakeUpTimeDouble)) {
+      if (sleepTimeDouble < wakeUpTimeDouble && _isNextDayTime(sleepTimeDouble)
+          && _isNextDayTime(wakeUpTimeDouble)) {
         _processedSleepData.removeAt(i);
         _processedSleepData.insert(i,
           DateTimeRange(
