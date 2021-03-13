@@ -1,3 +1,6 @@
+## 0.0.4
+* [Typo] Fixed pub score
+
 ## 0.0.3
 * [Bug] Fixed invalid range reference.
 
