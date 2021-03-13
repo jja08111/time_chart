@@ -33,7 +33,7 @@ class AmountXLabelPainter extends ChartEngine {
   }
 
   @override
-  List generateCoordinates(Size size) => List();
+  List generateCoordinates(Size size) => [];
 
   @override
   void drawYLabels(Canvas canvas, Size size) {}

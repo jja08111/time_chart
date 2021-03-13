@@ -71,6 +71,7 @@ class Translations {
     final _isAHMM = isAHMM;
     return  Row(
       crossAxisAlignment: CrossAxisAlignment.baseline,
+      textBaseline: TextBaseline.alphabetic,
       mainAxisAlignment: mainAxisAlignment,
       children: [
         if(_isAHMM) ...<Widget>[

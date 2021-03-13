@@ -47,7 +47,7 @@ class AmountYLabelPainter extends ChartEngine {
   void drawBar(Canvas canvas, Size size, List coordinates) {}
 
   @override
-  List generateCoordinates(Size size) => List();
+  List generateCoordinates(Size size) => [];
 
   @override
   bool shouldRepaint(covariant AmountYLabelPainter oldDelegate) {

@@ -430,7 +430,7 @@ class _TimeChartState extends State<TimeChart>
             curve: Curves.easeOutCirc,
             padding: EdgeInsets.only(top: _visible ? 0.0 : 16.0),
             child: Stack(
-              overflow: _overflowVisible ? Overflow.visible : Overflow.clip,
+              clipBehavior: _overflowVisible ? Clip.hardEdge : Clip.none,
               alignment: Alignment.topLeft,
               children: [
                 // # #
@@ -454,7 +454,7 @@ class _TimeChartState extends State<TimeChart>
                 Positioned(
                   top: _topPadding,
                   child: Stack(
-                    overflow: Overflow.visible,
+                    clipBehavior: Clip.hardEdge,
                     children: [
                       SizedBox(
                         width: width - yLabelWidth,

@@ -152,6 +152,7 @@ class _TimeTooltipOverlay extends StatelessWidget {
         Row(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.baseline,
+          textBaseline: TextBaseline.alphabetic,
           children: [
             _timeTile(context, _sleepTime),
           ],
@@ -161,6 +162,7 @@ class _TimeTooltipOverlay extends StatelessWidget {
         Row(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.baseline,
+          textBaseline: TextBaseline.alphabetic,
           children: [
             _timeTile(context, _wakeUp),
           ],
@@ -239,6 +241,7 @@ class _AmountTooltipOverlay extends StatelessWidget {
           Row(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.baseline,
+            textBaseline: TextBaseline.alphabetic,
             children: [
               if(hourString.isNotEmpty) Text(
                 _getHour(),

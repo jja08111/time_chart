@@ -48,10 +48,10 @@ abstract class TimeDataProcessor {
   static const Duration _onePostDayDuration = const Duration(days: 1);
   static const Duration _oneBeforeDayDuration = const Duration(days: -1);
 
-  List<DateTimeRange> _processedSleepData = List<DateTimeRange>();
+  List<DateTimeRange> _processedSleepData = [];
   List<DateTimeRange> get processedSleepData => _processedSleepData;
 
-  List<DateTimeRange> _pivotList = List<DateTimeRange>();
+  List<DateTimeRange> _pivotList = [];
 
   int _topHour;
   int get topHour => _topHour;
@@ -242,7 +242,7 @@ abstract class TimeDataProcessor {
   /// 이 값들은 오름차순으로 정렬되어 있다.
   List<_SleepPair> _getSortedRangeListFrom(List<DateTimeRange> sleepData) {
 
-    List<_SleepPair> rangeList = List<_SleepPair>();
+    List<_SleepPair> rangeList = [];
 
     for (int i = 0; i < sleepData.length; ++i) {
       final curSleepPair = _SleepPair(
