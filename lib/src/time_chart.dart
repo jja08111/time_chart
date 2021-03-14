@@ -62,7 +62,7 @@ class TimeChart extends StatefulWidget {
 
   /// Total chart height
   ///
-  /// Default is `280.0`.
+  /// Default is `280.0`. Actual height is [height] + 4.0([_TimeChartState._topPadding]).
   final double height;
 
   /// The color of the bar in the chart.
@@ -108,7 +108,7 @@ class TimeChart extends StatefulWidget {
 
 class _TimeChartState extends State<TimeChart>
     with TickerProviderStateMixin, TimeDataProcessor {
-  static const Duration _sizeAnimationDuration = Duration(milliseconds: 300);
+  static const Duration _sizeAnimationDuration = Duration(milliseconds: 500);
   static const Duration _fadeInDuration = Duration(milliseconds: 200);
   static const Duration _tooltipFadeInDuration = Duration(milliseconds: 150);
   static const Duration _tooltipFadeOutDuration = Duration(milliseconds: 75);
@@ -266,8 +266,8 @@ class _TimeChartState extends State<TimeChart>
     final pivotOffset = ContextUtils.getOffsetFromContext(context);
     // amount 가 null 이면 ChartType.time 이고, 아니면 ChartType.amount 이다.
     final Size tooltipSize = chartType == ChartType.time
-        ? getTimeTooltipSize(context)
-        : getAmountTooltipSize(context);
+        ? kTimeTooltipSize
+        : kAmountTooltipSize;
 
     final minTop = kToolbarHeight + _kStatusBarHeight - (tooltipSize.height) / 2;
 
@@ -430,7 +430,6 @@ class _TimeChartState extends State<TimeChart>
             curve: Curves.easeOutCirc,
             padding: EdgeInsets.only(top: _visible ? 0.0 : 16.0),
             child: Stack(
-              clipBehavior: _overflowVisible ? Clip.hardEdge : Clip.none,
               alignment: Alignment.topLeft,
               children: [
                 // # #
@@ -442,10 +441,10 @@ class _TimeChartState extends State<TimeChart>
                 _buildAnimatedBox(
                   topPadding: _topPadding,
                   width: width,
-                  child: CustomPaint(
+                  builder: (context, topPosition) => CustomPaint(
                     key: key,
                     size: Size(width, double.infinity),
-                    painter: _buildYLabelPainter(context),
+                    painter: _buildYLabelPainter(context, topPosition),
                   ),
                 ),
                 //-----
@@ -454,7 +453,7 @@ class _TimeChartState extends State<TimeChart>
                 Positioned(
                   top: _topPadding,
                   child: Stack(
-                    clipBehavior: Clip.hardEdge,
+                    clipBehavior: Clip.none,
                     children: [
                       SizedBox(
                         width: width - yLabelWidth,
@@ -543,12 +542,14 @@ class _TimeChartState extends State<TimeChart>
   }
 
   Widget _buildAnimatedBox({
-    @required Widget child,
+    Widget child,
     @required double width,
     double topPadding = 0.0,
     double bottomPadding = 0.0,
+    Function(BuildContext, double) builder,
   }) {
-    assert(child != null);
+    assert((child != null && builder == null)
+        || child == null && builder != null);
     assert(width != null);
 
     final _heightAnimation = Tween<double>(
@@ -562,22 +563,27 @@ class _TimeChartState extends State<TimeChart>
 
     return AnimatedBuilder(
       animation: _sizeAnimation,
-      builder: (context, child) => Positioned(
-        right: 0,
-        top: (widget.height - _heightAnimation.value) / 2
-            + _heightForAlignTopAnimation.value + topPadding,
-        child: Container(
-          height: _heightAnimation.value - bottomPadding,
-          width: width,
-          alignment: Alignment.center,
-          child: child,
-        ),
-      ),
+      builder: (context, child) {
+        final topPosition = (widget.height - _heightAnimation.value) / 2
+            + _heightForAlignTopAnimation.value + topPadding;
+        return Positioned(
+          right: 0,
+          top: topPosition,
+          child: Container(
+            height: _heightAnimation.value - bottomPadding,
+            width: width,
+            alignment: Alignment.center,
+            child: child != null
+                ? child
+                : builder(context, topPosition - _topPadding),
+          ),
+        );
+      },
       child: child,
     );
   }
 
-  CustomPainter _buildYLabelPainter(BuildContext context) {
+  CustomPainter _buildYLabelPainter(BuildContext context, double topPosition) {
     switch(widget.chartType) {
       case ChartType.time:
         return TimeYLabelPainter(
@@ -585,6 +591,8 @@ class _TimeChartState extends State<TimeChart>
           viewMode: widget.viewMode,
           topHour: topHour,
           bottomHour: bottomHour,
+          chartHeight: widget.height,
+          topPosition: topPosition,
         );
       case ChartType.amount:
         return AmountYLabelPainter(

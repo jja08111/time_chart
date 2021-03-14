@@ -128,10 +128,12 @@ class _TimeTooltipOverlay extends StatelessWidget {
       a: Text(
         translations.dateFormat('a', dateTime),
         style: subtitle1.copyWith(color: subtitle1.color.withOpacity(0.5)),
+        textScaleFactor: 1.0,
       ),
       hMM: Text(
         translations.dateFormat('h:mm', dateTime),
         style: textTheme.headline4.copyWith(height: 1.1),
+        textScaleFactor: 1.0,
       ),
     );
   }
@@ -148,7 +150,7 @@ class _TimeTooltipOverlay extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(start, style: bodyTextStyle),
+        Text(start, style: bodyTextStyle, textScaleFactor: 1.0),
         Row(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.baseline,
@@ -158,7 +160,7 @@ class _TimeTooltipOverlay extends StatelessWidget {
           ],
         ),
         Expanded(child: const Divider()),
-        Text(end, style: bodyTextStyle),
+        Text(end, style: bodyTextStyle, textScaleFactor: 1.0),
         Row(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.baseline,
@@ -171,6 +173,7 @@ class _TimeTooltipOverlay extends StatelessWidget {
           translations.compactDateTimeRange(
               DateTimeRange(start: _sleepTime, end: _wakeUp)),
           style: bodyTextStyle,
+          textScaleFactor: 1.0,
         ),
       ],
     );
@@ -178,7 +181,7 @@ class _TimeTooltipOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = getTimeTooltipSize(context);
+    final size = kTimeTooltipSize;
     return SizedBox(
       width: size.width,
       height: size.height,
@@ -246,24 +249,29 @@ class _AmountTooltipOverlay extends StatelessWidget {
               if(hourString.isNotEmpty) Text(
                 _getHour(),
                 style: headerStyle,
+                textScaleFactor: 1.0,
               ),
               if(hourString.isNotEmpty) Text(
                 '${translations.shortHour} ',
                 style: subTitleStyle,
+                textScaleFactor: 1.0,
               ),
               if(minuteString.isNotEmpty) Text(
                 _getMinute(),
                 style: headerStyle,
+                textScaleFactor: 1.0,
               ),
               if(minuteString.isNotEmpty) Text(
                 translations.shortMinute,
                 style: subTitleStyle,
+                textScaleFactor: 1.0,
               ),
             ],
           ),
           Text(
             localizations.formatShortMonthDay(durationDate),
             style: bodyTextStyle,
+            textScaleFactor: 1.0,
           ),
         ],
       ),
@@ -272,7 +280,7 @@ class _AmountTooltipOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = getAmountTooltipSize(context);
+    final size = kAmountTooltipSize;
     return SizedBox(
       width: size.width,
       height: size.height,
