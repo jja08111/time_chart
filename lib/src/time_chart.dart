@@ -41,6 +41,7 @@ class TimeChart extends StatefulWidget {
     this.height = 280.0,
     this.barColor,
     @required this.data,
+    this.timeChartSizeAnimationDuration = const Duration(milliseconds: 300),
     this.tooltipDuration = const Duration(seconds: 7),
     this.tooltipBackgroundColor,
     this.tooltipStart = "START",
@@ -76,6 +77,11 @@ class TimeChart extends StatefulWidget {
   /// because of correctly painting the chart. This value must not be null.
   final List<DateTimeRange> data;
 
+  /// The size animation duration of time chart when is changed pivot hours.
+  ///
+  /// Default value is `Duration(milliseconds: 300)`.
+  final Duration timeChartSizeAnimationDuration;
+
   /// The Tooltip duration.
   ///
   /// Default is `Duration(seconds: 7)`.
@@ -108,7 +114,6 @@ class TimeChart extends StatefulWidget {
 
 class _TimeChartState extends State<TimeChart>
     with TickerProviderStateMixin, TimeDataProcessor {
-  static const Duration _sizeAnimationDuration = Duration(milliseconds: 500);
   static const Duration _fadeInDuration = Duration(milliseconds: 200);
   static const Duration _tooltipFadeInDuration = Duration(milliseconds: 150);
   static const Duration _tooltipFadeOutDuration = Duration(milliseconds: 75);
@@ -157,7 +162,7 @@ class _TimeChartState extends State<TimeChart>
     _xLabelController = _scrollControllers.addAndGet();
 
     _sizeController = AnimationController(
-      duration: _sizeAnimationDuration,
+      duration: widget.timeChartSizeAnimationDuration,
       vsync: this,
     );
     _tooltipController = AnimationController(

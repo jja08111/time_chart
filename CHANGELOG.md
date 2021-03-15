@@ -1,6 +1,11 @@
+## 0.0.7
+* [Update] Added timeChartSizeAnimationDuration property.
+
+
 ## 0.0.6
 * [Update] Updated size animation.
 * [Bug] Fixed tooltip so that it doesn't change the size by textScaleFactor.
+
 
 ## 0.0.5
 * [Update] Migrated Flutter version.
