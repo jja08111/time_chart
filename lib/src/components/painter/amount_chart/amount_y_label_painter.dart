@@ -1,4 +1,3 @@
-
 import 'dart:ui';
 import 'package:flutter/material.dart';
 
@@ -10,11 +9,11 @@ class AmountYLabelPainter extends ChartEngine {
     @required BuildContext context,
     @required ViewMode viewMode,
     @required this.topHour,
-    @required this.bottomHour
+    @required this.bottomHour,
   }) : super(
-    context: context,
-    viewMode: viewMode,
-  );
+          context: context,
+          viewMode: viewMode,
+        );
 
   final int topHour;
   final int bottomHour;
@@ -29,14 +28,14 @@ class AmountYLabelPainter extends ChartEngine {
   @override
   void drawYLabels(Canvas canvas, Size size) {
     final hourSuffix = translations.shortHour;
-    final double interval = (size.height - kXLabelHeight)/(topHour - bottomHour);
+    final double interval =
+        (size.height - kXLabelHeight) / (topHour - bottomHour);
     double posY = 0;
 
-    for(int time = topHour; time >= bottomHour; --time) {
-      drawYText(canvas, size, time == bottomHour
-          ? '0 $hourSuffix'
-          : '$time $hourSuffix', posY);
-      if(topHour > time && time > bottomHour)
+    for (int time = topHour; time >= bottomHour; --time) {
+      drawYText(canvas, size,
+          time == bottomHour ? '0 $hourSuffix' : '$time $hourSuffix', posY);
+      if (topHour > time && time > bottomHour)
         drawHorizontalLine(canvas, size, posY);
 
       posY += interval;
@@ -51,7 +50,7 @@ class AmountYLabelPainter extends ChartEngine {
 
   @override
   bool shouldRepaint(covariant AmountYLabelPainter oldDelegate) {
-    return oldDelegate.topHour != this.topHour
-        || oldDelegate.bottomHour != this.bottomHour;
+    return oldDelegate.topHour != this.topHour ||
+        oldDelegate.bottomHour != this.bottomHour;
   }
 }

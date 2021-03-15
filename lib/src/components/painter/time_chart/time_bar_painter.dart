@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import '../../cand_touchable/touchable.dart';
+
 //import 'package:touchable/touchable.dart';
 import '../../utils/time_assistant.dart' as TimeAssistant;
 import '../chart_engine.dart';
 import '../../view_mode.dart';
 
 class TimeBarPainter extends ChartEngine {
-
   TimeBarPainter({
     ScrollController scrollController,
     @required this.tooltipCallback,
@@ -19,19 +19,19 @@ class TimeBarPainter extends ChartEngine {
     @required bool isFirstDataChanged,
     @required this.inFadeAnimating,
     this.barColor,
-  }) :  assert(tooltipCallback != null),
+  })  : assert(tooltipCallback != null),
         assert(context != null),
         assert(sleepData != null),
         assert(topHour != null),
         assert(bottomHour != null),
         super(
-        scrollController: scrollController,
-        dayCount: dayCount,
-        viewMode: viewMode,
-        firstValueDateTime: sleepData.first.end,
-        isLastDataChanged: isFirstDataChanged,
-        context: context,
-      );
+          scrollController: scrollController,
+          dayCount: dayCount,
+          viewMode: viewMode,
+          firstValueDateTime: sleepData.first.end,
+          isLastDataChanged: isFirstDataChanged,
+          context: context,
+        );
 
   final TooltipCallback tooltipCallback;
   final BuildContext context;
@@ -41,26 +41,23 @@ class TimeBarPainter extends ChartEngine {
   final int bottomHour;
   final bool inFadeAnimating;
 
-  void _drawRRect(
-      TouchyCanvas canvas,
-      Paint paint,
-      DateTimeRange data,
-      Rect rect,
-      Radius topRadius,
+  void _drawRRect(TouchyCanvas canvas, Paint paint, DateTimeRange data,
+      Rect rect, Radius topRadius,
       [Radius bottomRadius = Radius.zero]) {
-
     final callback = (_) => tooltipCallback(
-      range: data,
-      position: scrollController.position,
-      rect: rect,
-      barWidth: barWidth,
-    );
+          range: data,
+          position: scrollController.position,
+          rect: rect,
+          barWidth: barWidth,
+        );
 
     canvas.drawRRect(
       RRect.fromRectAndCorners(
         rect,
-        topLeft: topRadius, topRight: topRadius,
-        bottomLeft: bottomRadius, bottomRight: bottomRadius,
+        topLeft: topRadius,
+        topRight: topRadius,
+        bottomLeft: bottomRadius,
+        bottomRight: bottomRadius,
       ),
       paint,
       onTapUp: callback,
@@ -69,20 +66,15 @@ class TimeBarPainter extends ChartEngine {
     );
   }
 
-  void _drawOutRangedBar(
-      TouchyCanvas canvas, Paint paint, Size size, Rect rect, DateTimeRange data) {
-    if(topHour != bottomHour && (bottomHour - topHour).abs() != 24)
-      return;
+  void _drawOutRangedBar(TouchyCanvas canvas, Paint paint, Size size, Rect rect,
+      DateTimeRange data) {
+    if (topHour != bottomHour && (bottomHour - topHour).abs() != 24) return;
 
     final height = size.height;
     bool topOverflow = rect.top < 0.0;
 
-    final top = topOverflow
-        ? height + rect.top
-        : 0.0;
-    final bottom = topOverflow
-        ? height
-        : rect.bottom - height;
+    final top = topOverflow ? height + rect.top : 0.0;
+    final bottom = topOverflow ? height : rect.bottom - height;
     final horizontal = topOverflow ? -blockWidth : blockWidth;
     final newRect = Rect.fromLTRB(
       rect.left + horizontal,
@@ -91,7 +83,7 @@ class TimeBarPainter extends ChartEngine {
       bottom,
     );
 
-    if(topOverflow)
+    if (topOverflow)
       _drawRRect(canvas, paint, data, newRect, barRadius);
     else
       _drawRRect(canvas, paint, data, newRect, Radius.zero, barRadius);
@@ -99,8 +91,7 @@ class TimeBarPainter extends ChartEngine {
 
   @override
   void drawBar(Canvas canvas, Size size, List<dynamic> coordinates) {
-    final touchyCanvas = TouchyCanvas(
-        context, canvas,
+    final touchyCanvas = TouchyCanvas(context, canvas,
         scrollController: scrollController,
         scrollDirection: AxisDirection.left);
     final paint = Paint()
@@ -121,26 +112,19 @@ class TimeBarPainter extends ChartEngine {
       Radius bottomRadius = barRadius;
 
       if (top < 0.0) {
-        _drawOutRangedBar(
-            touchyCanvas, paint, size,
+        _drawOutRangedBar(touchyCanvas, paint, size,
             Rect.fromLTRB(left, top, right, bottom), offsetRange.data);
         top = 0.0;
         topRadius = Radius.zero;
       } else if (bottom > maxBottom) {
-        _drawOutRangedBar(
-            touchyCanvas, paint, size,
+        _drawOutRangedBar(touchyCanvas, paint, size,
             Rect.fromLTRB(left, top, right, bottom), offsetRange.data);
         bottom = maxBottom;
         bottomRadius = Radius.zero;
       }
 
-      _drawRRect(
-          touchyCanvas,
-          paint,
-          offsetRange.data,
-          Rect.fromLTRB(left, top, right, bottom),
-          topRadius,
-          bottomRadius);
+      _drawRRect(touchyCanvas, paint, offsetRange.data,
+          Rect.fromLTRB(left, top, right, bottom), topRadius, bottomRadius);
     }
   }
 
@@ -156,26 +140,26 @@ class TimeBarPainter extends ChartEngine {
   }
 
   bool _outRangedPivotHour(double sleepTime, double wakeUp) {
-    if(sleepTime < 0.0)
-      sleepTime += 24.0;
+    if (sleepTime < 0.0) sleepTime += 24.0;
 
     // 수면 시간 내에 두 기준 hour 가 속한지 확인한다.
     var top = _convertUsing(sleepTime, topHour);
     var bottom = _convertUsing(sleepTime, bottomHour);
     var candidateWakeUp = _convertUsing(sleepTime, wakeUp);
-    if(sleepTime <= top && bottom <= candidateWakeUp)
-      return false;
+    if (sleepTime <= top && bottom <= candidateWakeUp) return false;
 
     // 속하지는 않지만 겹치는 경우를 확인한다.
     top = topHour;
     bottom = bottomHour;
-    if(top < bottom) {
+    if (top < bottom) {
       sleepTime = _convertUsing(topHour, sleepTime);
       wakeUp = _convertUsing(topHour, wakeUp);
       top += 24;
     }
-    if((bottom < sleepTime && sleepTime < top && bottom < wakeUp && wakeUp < top))
-      return true;
+    if ((bottom < sleepTime &&
+        sleepTime < top &&
+        bottom < wakeUp &&
+        wakeUp < top)) return true;
 
     return false;
   }
@@ -187,43 +171,44 @@ class TimeBarPainter extends ChartEngine {
     final intervalOfBars = size.width / dayCount;
     // 제일 아래에 붙은 바가 정각이 아닌 경우 올려 바를 그린다.
     final int pivotBottom = _convertUsing(topHour, bottomHour);
-    final int pivotHeight = pivotBottom > topHour
-        ? pivotBottom - topHour
-        : 24;
+    final int pivotHeight = pivotBottom > topHour ? pivotBottom - topHour : 24;
     final int length = sleepData.length;
     final double height = size.height;
     final limitDay = getViewModeLimitDay(viewMode);
     int xIndexCounter = 1;
 
     for (var index = 0; index < length; index++) {
-      final wakeUpTimeDouble = TimeAssistant.dateTimeToDouble(sleepData[index].end);
+      final wakeUpTimeDouble =
+          TimeAssistant.dateTimeToDouble(sleepData[index].end);
       final sleepAmountDouble = TimeAssistant.durationHour(sleepData[index]);
 
       // 좌측 라벨이 아래로 갈수록 시간이 흐르는 것을 표현하기 위해
       // 큰 시간 값과 현재 시간의 차를 구한다.
-      double normalizedBottom = (pivotBottom -
-          _convertUsing(topHour, wakeUpTimeDouble)) / pivotHeight;
+      double normalizedBottom =
+          (pivotBottom - _convertUsing(topHour, wakeUpTimeDouble)) /
+              pivotHeight;
       // [normalizedBottom] 에서 [gap]칸 만큼 위로 올린다.
       double normalizedTop = normalizedBottom + sleepAmountDouble / pivotHeight;
 
-      if(normalizedTop < 0.0 && normalizedBottom < 0.0) {
+      if (normalizedTop < 0.0 && normalizedBottom < 0.0) {
         normalizedTop += 1.0;
         normalizedBottom += 1.0;
       }
 
       final double bottom = height - normalizedBottom * height;
       final double top = height - normalizedTop * height;
-      final double right = size.width - intervalOfBars*xIndexCounter;
+      final double right = size.width - intervalOfBars * xIndexCounter;
 
       // [weekdays]가 달라야 왼쪽으로 한 칸 이동한다.
-      if(index+1 < length && sleepData[index].end.day != sleepData[index + 1].end.day) {
+      if (index + 1 < length &&
+          sleepData[index].end.day != sleepData[index + 1].end.day) {
         if (limitDay < ++xIndexCounter - 1 && inFadeAnimating) break;
       }
 
       // 그릴 필요가 없는 경우 넘어간다
-      if(top == bottom ||
-          _outRangedPivotHour(wakeUpTimeDouble - sleepAmountDouble, wakeUpTimeDouble))
-        continue;
+      if (top == bottom ||
+          _outRangedPivotHour(
+              wakeUpTimeDouble - sleepAmountDouble, wakeUpTimeDouble)) continue;
 
       coordinates.add(OffsetRange(right, top, bottom, sleepData[index]));
     }

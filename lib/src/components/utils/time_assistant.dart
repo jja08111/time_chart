@@ -1,4 +1,3 @@
-
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -22,12 +21,11 @@ int getLastMonthFrom(int month) {
 /// a가 나중에 발생한 시간이다.
 bool hasEmptyDayBetween(DateTime a, DateTime b) {
   DateTime after = a, before = b;
-  if(a.isBefore(b)) {
+  if (a.isBefore(b)) {
     after = b;
     before = a;
   }
-  if(after.day == before.add(const Duration(days: 2)).day)
-    return true;
+  if (after.day == before.add(const Duration(days: 2)).day) return true;
   return false;
 }
 
@@ -48,26 +46,26 @@ int diffBetween(int a, int b) {
 ///
 /// 위쪽이면 true, 아래쪽이면 false 를 반환한다.
 bool isDirUpward(int beforeTop, int beforeBottom, int top, int bottom) {
-  if(beforeBottom <= beforeTop) beforeBottom += 24;
-  if(bottom <= top) bottom += 24;
+  if (beforeBottom <= beforeTop) beforeBottom += 24;
+  if (bottom <= top) bottom += 24;
 
   void goFront() {
     top += 24;
     bottom += 24;
   }
+
   void goBack() {
     top -= 24;
     bottom -= 24;
   }
 
   // 뒤에서부터 앞으로 이동하며 많이 겹치는 구간을 찾기 위해 가장 뒤로 이동한다.
-  while(bottom > beforeTop)
-    goBack();
+  while (bottom > beforeTop) goBack();
   goFront();
 
   int upward = 0, downward = 0;
-  while(beforeBottom > top) {
-    if(beforeTop < top) {
+  while (beforeBottom > top) {
+    if (beforeTop < top) {
       upward = max(upward, min(bottom - top, beforeBottom - top));
     } else {
       downward = max(downward, min(bottom - top, bottom - beforeTop));

@@ -1,3 +1,7 @@
+## 0.0.8
+* [Update] Code was formatted.
+
+
 ## 0.0.7
 * [Update] Added timeChartSizeAnimationDuration property.
 

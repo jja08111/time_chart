@@ -29,7 +29,8 @@ class ShapeHandler {
   ///| 1 |        |   |
   ///|_0_|        |_3_|
   ///
-  /// Looking at above diagram , given the stack position 3 , this function returns all ClipShapes that are pushed before 3 into the clip stack.
+  /// Looking at above diagram , given the stack position 3 , this function returns
+  /// all ClipShapes that are pushed before 3 into the clip stack.
   List<ClipShape> _getClipShapesBelowPosition(int position) {
     return clipItems
         .where((element) => element.position <= position)
@@ -44,17 +45,16 @@ class ShapeHandler {
     }
     return true;
   }
-  
+
   Offset _getActualOffsetFromScrollController(
       Offset touchPoint, ScrollController controller, AxisDirection direction) {
-    if (controller == null)
-      return touchPoint;
+    if (controller == null) return touchPoint;
 
     final scrollPosition = controller.position;
-    final actualScrollPixels = direction == AxisDirection.left
-        || direction == AxisDirection.up
-        ? scrollPosition.maxScrollExtent - scrollPosition.pixels
-        : scrollPosition.pixels;
+    final actualScrollPixels =
+        direction == AxisDirection.left || direction == AxisDirection.up
+            ? scrollPosition.maxScrollExtent - scrollPosition.pixels
+            : scrollPosition.pixels;
 
     if (direction == AxisDirection.left || direction == AxisDirection.right) {
       return Offset(touchPoint.dx + actualScrollPixels, touchPoint.dy);
@@ -87,7 +87,8 @@ class ShapeHandler {
     return selectedShapes;
   }
 
-  Future<void> handleGestureEvent(Gesture gesture, {
+  Future<void> handleGestureEvent(
+    Gesture gesture, {
     ScrollController scrollController,
     AxisDirection direction,
   }) async {

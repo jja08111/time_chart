@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 class ContextUtils {
   // Takes a key, and in 1 frame, returns the size of the context attached to the key
-  static void getFutureSizeFromGlobalKey(GlobalKey key, Function(Size size) callback) {
+  static void getFutureSizeFromGlobalKey(
+      GlobalKey key, Function(Size size) callback) {
     Future.microtask(() {
       Size size = getSizeFromContext(key.currentContext);
       if (size != null) {

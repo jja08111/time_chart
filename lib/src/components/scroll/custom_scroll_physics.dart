@@ -7,13 +7,12 @@ import '../view_mode.dart';
 const double _kPivotVelocity = 240.0;
 
 class CustomScrollPhysics extends ScrollPhysics {
-
   CustomScrollPhysics({
     @required this.itemDimension,
     @required this.viewMode,
     @required this.chartType,
-    ScrollPhysics parent
-  }) : assert(itemDimension != null),
+    ScrollPhysics parent,
+  })  : assert(itemDimension != null),
         assert(viewMode != null),
         assert(chartType != null),
         super(parent: parent);
@@ -26,7 +25,7 @@ class CustomScrollPhysics extends ScrollPhysics {
   static double _amountChartPanDownPixel;
 
   static void setPanDownPixels(ChartType chartType, double pixels) {
-    switch(chartType) {
+    switch (chartType) {
       case ChartType.time:
         _timeChartPanDownPixel = pixels;
         break;
@@ -36,7 +35,7 @@ class CustomScrollPhysics extends ScrollPhysics {
   }
 
   static void addPanDownPixels(ChartType chartType, double add) {
-    switch(chartType) {
+    switch (chartType) {
       case ChartType.time:
         _timeChartPanDownPixel += add;
         break;
@@ -46,7 +45,7 @@ class CustomScrollPhysics extends ScrollPhysics {
   }
 
   static double _getPanDownPixels(ChartType chartType) {
-    switch(chartType) {
+    switch (chartType) {
       case ChartType.time:
         return _timeChartPanDownPixel;
       case ChartType.amount:

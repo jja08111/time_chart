@@ -1,4 +1,3 @@
-
 import 'dart:ui';
 import 'package:flutter/material.dart';
 
@@ -13,11 +12,11 @@ class AmountXLabelPainter extends ChartEngine {
     @required int dayCount,
     @required this.inFadeAnimating,
   }) : super(
-    context: context,
-    viewMode: viewMode,
-    firstValueDateTime: firstValueDateTime,
-    dayCount: dayCount,
-  );
+          context: context,
+          viewMode: viewMode,
+          firstValueDateTime: firstValueDateTime,
+          dayCount: dayCount,
+        );
 
   final bool inFadeAnimating;
 

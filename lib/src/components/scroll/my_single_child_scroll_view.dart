@@ -20,8 +20,8 @@ class MySingleChildScrollView extends StatelessWidget {
   })  : assert(scrollDirection != null),
         assert(dragStartBehavior != null),
         assert(
-        !(controller != null && primary == true),
-        'Primary ScrollViews obtain their ScrollController via inheritance from a PrimaryScrollController widget. '
+            !(controller != null && primary == true),
+            'Primary ScrollViews obtain their ScrollController via inheritance from a PrimaryScrollController widget. '
             'You cannot both set primary to true and pass an explicit controller.'),
         primary = primary ??
             controller == null && identical(scrollDirection, Axis.vertical),
@@ -100,7 +100,7 @@ class MySingleChildScrollView extends StatelessWidget {
     Widget contents = child;
     if (padding != null) contents = Padding(padding: padding, child: contents);
     final ScrollController scrollController =
-    primary ? PrimaryScrollController.of(context) : controller;
+        primary ? PrimaryScrollController.of(context) : controller;
     final Scrollable scrollable = Scrollable(
       dragStartBehavior: dragStartBehavior,
       axisDirection: axisDirection,
@@ -169,6 +169,7 @@ class _RenderSingleChildViewport extends RenderBox
 
   AxisDirection get axisDirection => _axisDirection;
   AxisDirection _axisDirection;
+
   set axisDirection(AxisDirection value) {
     assert(value != null);
     if (value == _axisDirection) return;
@@ -180,6 +181,7 @@ class _RenderSingleChildViewport extends RenderBox
 
   ViewportOffset get offset => _offset;
   ViewportOffset _offset;
+
   set offset(ViewportOffset value) {
     assert(value != null);
     if (value == _offset) return;
@@ -192,6 +194,7 @@ class _RenderSingleChildViewport extends RenderBox
   /// {@macro flutter.rendering.viewport.cacheExtent}
   double get cacheExtent => _cacheExtent;
   double _cacheExtent;
+
   set cacheExtent(double value) {
     assert(value != null);
     if (value == _cacheExtent) return;
@@ -340,7 +343,7 @@ class _RenderSingleChildViewport extends RenderBox
 
       if (_shouldClipAtPaintOffset(paintOffset)) {
         final Rect clipRect =
-        Rect.fromLTWH(0.0, -size.height / 2, size.width, size.height * 1.5);
+            Rect.fromLTWH(0.0, -size.height / 2, size.width, size.height * 1.5);
         context.pushClipRect(needsCompositing, offset, clipRect, paintContents);
       } else {
         paintContents(context, offset);

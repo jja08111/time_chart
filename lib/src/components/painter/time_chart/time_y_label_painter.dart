@@ -1,4 +1,3 @@
-
 import 'dart:ui';
 import 'package:flutter/material.dart';
 
@@ -14,9 +13,9 @@ class TimeYLabelPainter extends ChartEngine {
     @required this.chartHeight,
     @required this.topPosition,
   }) : super(
-    context: context,
-    viewMode: viewMode,
-  );
+          context: context,
+          viewMode: viewMode,
+        );
 
   final int topHour;
   final int bottomHour;
@@ -39,13 +38,13 @@ class TimeYLabelPainter extends ChartEngine {
   bool visible(double posY, {bool onTolerance = false}) {
     final actualPosY = posY + topPosition;
     final tolerance = onTolerance ? _tolerance : 0;
-    return -tolerance <= actualPosY
-        && actualPosY <= chartHeight - kXLabelHeight + tolerance;
+    return -tolerance <= actualPosY &&
+        actualPosY <= chartHeight - kXLabelHeight + tolerance;
   }
 
   void _drawLabelAndLine(Canvas canvas, Size size, double posY, int time) {
-    if(visible(posY)) drawHorizontalLine(canvas, size, posY);
-    if(visible(posY, onTolerance: true))
+    if (visible(posY)) drawHorizontalLine(canvas, size, posY);
+    if (visible(posY, onTolerance: true))
       drawYText(canvas, size, translations.formatHourOnly(time), posY);
   }
 
@@ -61,9 +60,8 @@ class TimeYLabelPainter extends ChartEngine {
     double posY = 0.0;
 
     // 애니메이션시 상단 부분 레이블과 라인이 비지 않도록 그려준다.
-    while(-topPosition <= posY) {
-      if((time -= 2) < 0)
-        time += 24;
+    while (-topPosition <= posY) {
+      if ((time -= 2) < 0) time += 24;
       posY -= gabY;
       _drawLabelAndLine(canvas, size, posY, time);
     }
@@ -71,12 +69,12 @@ class TimeYLabelPainter extends ChartEngine {
     posY = 0.0;
 
     // 2칸 간격으로 좌측 레이블 표시
-    while(true) {
+    while (true) {
       _drawLabelAndLine(canvas, size, posY, time);
 
       // 맨 아래에 도달한 경우
-      if(time == bottomHour % 24) {
-        if(sameTopBottomHour)
+      if (time == bottomHour % 24) {
+        if (sameTopBottomHour)
           sameTopBottomHour = false;
         else
           break;
@@ -87,7 +85,7 @@ class TimeYLabelPainter extends ChartEngine {
     }
 
     // 애니메이션시 하단 부분 레이블과 라인이 비지 않도록 그려준다.
-    while(posY <= -topPosition + chartHeight) {
+    while (posY <= -topPosition + chartHeight) {
       time = (time + 2) % 24;
       posY += gabY;
       _drawLabelAndLine(canvas, size, posY, time);
@@ -102,7 +100,7 @@ class TimeYLabelPainter extends ChartEngine {
 
   @override
   bool shouldRepaint(covariant TimeYLabelPainter oldDelegate) {
-    return oldDelegate.topHour != this.topHour
-        || oldDelegate.bottomHour != this.bottomHour;
+    return oldDelegate.topHour != this.topHour ||
+        oldDelegate.bottomHour != this.bottomHour;
   }
 }

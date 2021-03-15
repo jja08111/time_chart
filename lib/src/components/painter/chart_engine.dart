@@ -37,6 +37,7 @@ class OffsetRange {
   double topY;
   double bottomY;
   DateTimeRange data;
+
   OffsetRange(this.dx, this.topY, this.bottomY, this.data);
 }
 
@@ -45,6 +46,7 @@ class OffsetWithAmountDate {
   double dy;
   double amount;
   DateTime dateTime;
+
   OffsetWithAmountDate(this.dx, this.dy, this.amount, this.dateTime);
 }
 
@@ -56,11 +58,8 @@ abstract class ChartEngine extends CustomPainter {
     @required this.viewMode,
     this.firstValueDateTime,
     @required this.context,
-  }) : dayCount = math.max(
-      dayCount ?? getViewModeLimitDay(viewMode),
-      viewMode == ViewMode.weekly
-          ? kWeeklyDayCount
-          : kMonthlyDayCount),
+  })  : dayCount = math.max(dayCount ?? getViewModeLimitDay(viewMode),
+            viewMode == ViewMode.weekly ? kWeeklyDayCount : kMonthlyDayCount),
         assert(viewMode != null),
         assert(context != null) {
     _translations = Translations(context);
@@ -82,10 +81,13 @@ abstract class ChartEngine extends CustomPainter {
 
   /// 전체 그래프의 오른쪽 레이블이 들어갈 간격의 크기이다.
   double get rightMargin => _rightMargin;
+
   /// 바 너비의 크기이다.
   double get barWidth => _barWidth;
+
   /// 바를 적절하게 정렬하기 위한 값이다.
   double get paddingForAlignedBar => _paddingForAlignedBar;
+
   /// (바와 바 사이의 여백의 너비 + 바의 너비) => 블럭 너비의 크기이다.
   double get blockWidth => _blockWidth;
 
@@ -122,7 +124,7 @@ abstract class ChartEngine extends CustomPainter {
       canvas,
       Offset(
         size.width - _rightMargin + kYLabelMargin,
-        y - textTheme.bodyText2.fontSize/2,
+        y - textTheme.bodyText2.fontSize / 2,
       ),
     );
   }
@@ -171,22 +173,20 @@ abstract class ChartEngine extends CustomPainter {
       if (limitDay < i && inFadeAnimating) break;
       String text;
       bool isDashed = true;
-      switch(viewMode) {
+      switch (viewMode) {
         case ViewMode.weekly:
           text = weekday[currentDate.weekday % 7];
-          if(currentDate.weekday == DateTime.sunday)
-            isDashed = false;
+          if (currentDate.weekday == DateTime.sunday) isDashed = false;
           turnOneBeforeDay();
           break;
         case ViewMode.monthly:
           text = currentDate.day.toString();
           turnOneBeforeDay();
           // 월간 보기 모드는 7일에 한 번씩 label 을 표시한다.
-          if(i % 7 != (firstDataHasChanged ? 0 : 6))
-            continue;
+          if (i % 7 != (firstDataHasChanged ? 0 : 6)) continue;
       }
 
-      final dx = size.width - (i+1) * blockWidth;
+      final dx = size.width - (i + 1) * blockWidth;
       _drawXText(canvas, size, text, dx);
       _drawVerticalDivideLine(canvas, size, dx, isDashed);
     }
@@ -214,11 +214,16 @@ abstract class ChartEngine extends CustomPainter {
       ..strokeCap = StrokeCap.round
       ..strokeWidth = kLineStrokeWidth;
 
-    canvas.drawLine(Offset(0,dy), Offset(size.width - rightMargin, dy), paint);
+    canvas.drawLine(Offset(0, dy), Offset(size.width - rightMargin, dy), paint);
   }
 
   /// 분할하는 세로선을 그려준다.
-  void _drawVerticalDivideLine(Canvas canvas, Size size, double dx, bool isDashed) {
+  void _drawVerticalDivideLine(
+    Canvas canvas,
+    Size size,
+    double dx,
+    bool isDashed,
+  ) {
     Paint paint = Paint()
       ..color = kLineColor3
       ..strokeCap = StrokeCap.round
@@ -230,15 +235,17 @@ abstract class ChartEngine extends CustomPainter {
     path.lineTo(dx, size.height);
 
     canvas.drawPath(
-        isDashed
-            ? dashPath(path, dashArray: CircularIntervalList<double>(<double>[2, 2]))
-            : path,
-        paint);
+      isDashed
+          ? dashPath(path,
+              dashArray: CircularIntervalList<double>(<double>[2, 2]))
+          : path,
+      paint,
+    );
   }
 
   // pivot 에서 duration 만큼 이전으로 시간이 흐르면 나오는 시간
   dynamic getClockDiff(var pivot, var duration) {
-    var ret = pivot-duration;
-    return ret + (ret<=0 ? 24 : 0);
+    var ret = pivot - duration;
+    return ret + (ret <= 0 ? 24 : 0);
   }
 }

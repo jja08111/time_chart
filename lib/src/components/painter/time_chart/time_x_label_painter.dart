@@ -1,4 +1,3 @@
-
 import 'dart:ui';
 import 'package:flutter/material.dart';
 
@@ -14,11 +13,11 @@ class TimeXLabelPainter extends ChartEngine {
     @required this.firstDataHasChanged,
     @required this.inFadeAnimating,
   }) : super(
-    context: context,
-    viewMode: viewMode,
-    firstValueDateTime: firstValueDateTime,
-    dayCount: dayCount,
-  );
+          context: context,
+          viewMode: viewMode,
+          firstValueDateTime: firstValueDateTime,
+          dayCount: dayCount,
+        );
 
   final bool firstDataHasChanged;
   final bool inFadeAnimating;

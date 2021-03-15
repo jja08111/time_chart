@@ -10,7 +10,7 @@ import '../../time_chart.dart';
 const double kTooltipArrowWidth = 8.0;
 const double kTooltipArrowHeight = 16.0;
 
-enum Direction{left, right}
+enum Direction { left, right }
 
 @immutable
 class SleepTooltipOverlay extends StatelessWidget {
@@ -25,8 +25,8 @@ class SleepTooltipOverlay extends StatelessWidget {
     this.backgroundColor,
     @required this.start,
     @required this.end,
-  }) : assert(chartType != null),
-        assert((amountHour != null && amountDate !=null) ||
+  })  : assert(chartType != null),
+        assert((amountHour != null && amountDate != null) ||
             (timeRange != null && bottomHour != null)),
         assert(direction != null),
         assert(start != null),
@@ -50,17 +50,18 @@ class SleepTooltipOverlay extends StatelessWidget {
     final oneBeforeDay = const Duration(days: -1);
     final wakeUp = timeRange.end;
 
-    return (wakeUp.hour == bottomHour && wakeUp.minute > 0)
-        || bottomHour < wakeUp.hour
-        ? DateTimeRange(start: timeRange.start.add(oneBeforeDay), end: wakeUp.add(oneBeforeDay))
+    return (wakeUp.hour == bottomHour && wakeUp.minute > 0) ||
+            bottomHour < wakeUp.hour
+        ? DateTimeRange(
+            start: timeRange.start.add(oneBeforeDay),
+            end: wakeUp.add(oneBeforeDay))
         : timeRange;
   }
 
   @override
   Widget build(BuildContext context) {
-
     Widget child;
-    switch(chartType) {
+    switch (chartType) {
       case ChartType.time:
         child = _TimeTooltipOverlay(
           timeRange: _getActualDateTime(timeRange),
@@ -106,7 +107,7 @@ class _TimeTooltipOverlay extends StatelessWidget {
     this.bottomHour,
     this.start,
     this.end,
-  }) : assert(timeRange != null),
+  })  : assert(timeRange != null),
         assert(bottomHour != null),
         assert(start != null),
         assert(end != null),
@@ -118,6 +119,7 @@ class _TimeTooltipOverlay extends StatelessWidget {
   final String end;
 
   DateTime get _sleepTime => timeRange.start;
+
   DateTime get _wakeUp => timeRange.end;
 
   Widget _timeTile(BuildContext context, DateTime dateTime) {
@@ -199,7 +201,7 @@ class _AmountTooltipOverlay extends StatelessWidget {
     Key key,
     @required this.durationHour,
     @required this.durationDate,
-  }) : assert(durationHour != null),
+  })  : assert(durationHour != null),
         assert(durationDate != null),
         super(key: key);
 
@@ -208,14 +210,14 @@ class _AmountTooltipOverlay extends StatelessWidget {
 
   int _ceilMinutes() {
     double decimal = durationHour - durationHour.toInt();
-    return  (decimal*60 + 0.01).toInt() == 60 ? 1 : 0;
+    return (decimal * 60 + 0.01).toInt() == 60 ? 1 : 0;
   }
 
   String _getMinute() {
     double decimal = durationHour - durationHour.toInt();
     // 3.99와 같은 무한소수를 고려한다.
-    int minutes = (decimal*60 + 0.01).toInt() % 60;
-    return  minutes>0 ? '$minutes' : '';
+    int minutes = (decimal * 60 + 0.01).toInt() % 60;
+    return minutes > 0 ? '$minutes' : '';
   }
 
   String _getHour() {
@@ -246,26 +248,30 @@ class _AmountTooltipOverlay extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.baseline,
             textBaseline: TextBaseline.alphabetic,
             children: [
-              if(hourString.isNotEmpty) Text(
-                _getHour(),
-                style: headerStyle,
-                textScaleFactor: 1.0,
-              ),
-              if(hourString.isNotEmpty) Text(
-                '${translations.shortHour} ',
-                style: subTitleStyle,
-                textScaleFactor: 1.0,
-              ),
-              if(minuteString.isNotEmpty) Text(
-                _getMinute(),
-                style: headerStyle,
-                textScaleFactor: 1.0,
-              ),
-              if(minuteString.isNotEmpty) Text(
-                translations.shortMinute,
-                style: subTitleStyle,
-                textScaleFactor: 1.0,
-              ),
+              if (hourString.isNotEmpty)
+                Text(
+                  _getHour(),
+                  style: headerStyle,
+                  textScaleFactor: 1.0,
+                ),
+              if (hourString.isNotEmpty)
+                Text(
+                  '${translations.shortHour} ',
+                  style: subTitleStyle,
+                  textScaleFactor: 1.0,
+                ),
+              if (minuteString.isNotEmpty)
+                Text(
+                  _getMinute(),
+                  style: headerStyle,
+                  textScaleFactor: 1.0,
+                ),
+              if (minuteString.isNotEmpty)
+                Text(
+                  translations.shortMinute,
+                  style: subTitleStyle,
+                  textScaleFactor: 1.0,
+                ),
             ],
           ),
           Text(
