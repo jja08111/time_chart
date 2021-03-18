@@ -1,4 +1,4 @@
-## 0.1.0
+## 0.1.0-nullsafety.0
 * [Update] Null safe migration.
 
 ## 0.0.8
