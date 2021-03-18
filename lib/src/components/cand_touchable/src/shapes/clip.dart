@@ -3,12 +3,15 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'shape.dart';
 
-abstract class ClipShape extends Shape {}
+abstract class ClipShape extends Shape {
+  ClipShape() : super(paint: null, gestureCallbackMap: null);
+}
 
 class ClipRectShape extends ClipShape {
   final Rect rect;
   final ClipOp clipOp;
-  ClipRectShape(this.rect, {this.clipOp = ClipOp.intersect, bool doAntiAlias});
+
+  ClipRectShape(this.rect, {this.clipOp = ClipOp.intersect, bool? doAntiAlias});
 
   @override
   bool isInside(Offset p) {
@@ -23,7 +26,9 @@ class ClipRectShape extends ClipShape {
 
 class ClipRRectShape extends ClipShape {
   final RRect rrect;
-  ClipRRectShape(this.rrect, {bool doAntiAlias});
+
+  ClipRRectShape(this.rrect, {bool? doAntiAlias});
+
   @override
   bool isInside(Offset p) {
     return rrect.contains(p);
@@ -32,7 +37,8 @@ class ClipRRectShape extends ClipShape {
 
 class ClipPathShape extends ClipShape {
   final Path path;
-  ClipPathShape(this.path, {bool doAntiAlias});
+
+  ClipPathShape(this.path, {bool? doAntiAlias});
 
   @override
   bool isInside(Offset p) {

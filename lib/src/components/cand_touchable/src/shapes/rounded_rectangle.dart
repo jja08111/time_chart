@@ -8,10 +8,10 @@ class RoundedRectangle extends Shape {
   final RRect rRect;
 
   RoundedRectangle(this.rRect,
-      {Paint paint,
-      Map<GestureType, Function> gestureMap,
-      HitTestBehavior hitTestBehavior,
-      PaintingStyle paintStyleForTouch})
+      {Paint? paint,
+      Map<GestureType, Function>? gestureMap,
+      HitTestBehavior? hitTestBehavior,
+      PaintingStyle? paintStyleForTouch})
       : super(
             hitTestBehavior: hitTestBehavior,
             paint: paint,
@@ -19,10 +19,10 @@ class RoundedRectangle extends Shape {
 
   @override
   bool isInside(Offset p) {
-    if (paint.style == PaintingStyle.fill) {
+    if (paint!.style == PaintingStyle.fill) {
       return rRect.contains(p);
     } else {
-      var extraWidth = paint.strokeWidth / 2;
+      var extraWidth = paint!.strokeWidth / 2;
       bool insideOuterRect = RRect.fromLTRBAndCorners(
         rRect.left - extraWidth,
         rRect.top - extraWidth,

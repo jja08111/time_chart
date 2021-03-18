@@ -6,23 +6,23 @@ import 'constant.dart';
 import '../../touchable.dart';
 
 abstract class Shape {
-  Paint paint;
-  Map<GestureType, Function> gestureCallbackMap;
-  HitTestBehavior hitTestBehavior;
+  Paint? paint;
+  Map<GestureType, Function>? gestureCallbackMap;
+  HitTestBehavior? hitTestBehavior;
 
   Set<GestureType> get registeredGestures =>
-      gestureCallbackMap?.keys?.toSet() ?? Set();
+      gestureCallbackMap?.keys.toSet() ?? Set();
 
   Shape({
-    @required this.paint,
-    @required this.gestureCallbackMap,
+    required this.paint,
+    required this.gestureCallbackMap,
     this.hitTestBehavior,
   }) {
     paint ??= Paint()
       ..strokeWidth = ShapeConstant.floatPrecision
       ..style = PaintingStyle.fill;
-    if (paint.strokeWidth == 0) {
-      paint.strokeWidth = ShapeConstant.floatPrecision;
+    if (paint!.strokeWidth == 0) {
+      paint!.strokeWidth = ShapeConstant.floatPrecision;
     }
     hitTestBehavior ??= HitTestBehavior.opaque;
     gestureCallbackMap ??= Map();
@@ -31,9 +31,9 @@ abstract class Shape {
   bool isInside(Offset p);
 
   Function getCallbackFromGesture(Gesture gesture) {
-    if (gestureCallbackMap.containsKey(gesture.gestureType)) {
+    if (gestureCallbackMap!.containsKey(gesture.gestureType)) {
       return () =>
-          gestureCallbackMap[gesture.gestureType](gesture.gestureDetail);
+          gestureCallbackMap![gesture.gestureType]!(gesture.gestureDetail);
     } else {
       return () {};
     }

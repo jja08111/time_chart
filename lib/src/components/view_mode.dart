@@ -10,6 +10,4 @@ int getViewModeLimitDay(ViewMode viewMode) {
     case ViewMode.monthly:
       return 31;
   }
-  assert(false, 'wrong type of viewMode');
-  return null;
 }

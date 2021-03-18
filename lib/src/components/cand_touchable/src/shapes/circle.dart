@@ -11,11 +11,11 @@ class Circle extends Shape {
   final double radius;
 
   Circle(
-      {@required this.center,
-      @required this.radius,
-      HitTestBehavior hitTestBehavior,
-      Map<GestureType, Function> gestureMap,
-      Paint paint})
+      {required this.center,
+      required this.radius,
+      HitTestBehavior? hitTestBehavior,
+      Map<GestureType, Function>? gestureMap,
+      Paint? paint})
       : super(
             paint: paint,
             gestureCallbackMap: gestureMap,
@@ -24,10 +24,10 @@ class Circle extends Shape {
 //   (x-a)^2 + (y-b)^2 = r^2
   @override
   bool isInside(Offset p) {
-    if (paint.style == PaintingStyle.fill) {
+    if (paint!.style == PaintingStyle.fill) {
       return _isInsideRadius(p, radius);
     } else {
-      double extraWidth = paint.strokeWidth / 2;
+      double extraWidth = paint!.strokeWidth / 2;
       bool insideOuterCircle = _isInsideRadius(p, radius + extraWidth);
       bool outsideInnerCircle = !_isInsideRadius(p, radius - extraWidth);
       return insideOuterCircle && outsideInnerCircle;

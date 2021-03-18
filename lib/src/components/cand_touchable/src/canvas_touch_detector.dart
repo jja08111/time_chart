@@ -8,9 +8,9 @@ import 'types/types.dart';
 /// Wrap your [CustomPaint] widget with [CanvasTouchDetector]
 /// The [builder] function passes the [BuildContext] and expects a [CustomPaint] object as its return value.
 class CanvasTouchDetector extends StatefulWidget {
-  final CustomTouchPaintBuilder builder;
+  final CustomTouchPaintBuilder? builder;
 
-  const CanvasTouchDetector({Key key, this.builder}) : super(key: key);
+  const CanvasTouchDetector({Key? key, this.builder}) : super(key: key);
 
   @override
   _CanvasTouchDetectorState createState() => _CanvasTouchDetectorState();
@@ -19,7 +19,7 @@ class CanvasTouchDetector extends StatefulWidget {
 class _CanvasTouchDetectorState extends State<CanvasTouchDetector> {
   final StreamController<Gesture> touchController =
       StreamController.broadcast();
-  StreamSubscription streamSubscription;
+  StreamSubscription? streamSubscription;
 
   Future<void> addStreamListener(Function(Gesture) callBack) async {
     await streamSubscription?.cancel();
@@ -33,7 +33,7 @@ class _CanvasTouchDetectorState extends State<CanvasTouchDetector> {
           behavior: HitTestBehavior.translucent,
           child: Builder(
             builder: (context) {
-              return widget.builder(context);
+              return widget.builder!(context);
             },
           ),
           onTapDown: (tapDetail) {
@@ -129,10 +129,10 @@ class TouchDetectionController extends InheritedWidget {
   StreamController<Gesture> get controller => _controller;
 
   const TouchDetectionController(this._controller, this.addListener,
-      {@required Widget child})
+      {required Widget child})
       : super(child: child);
 
-  static TouchDetectionController of(BuildContext context) =>
+  static TouchDetectionController? of(BuildContext context) =>
       context.dependOnInheritedWidgetOfExactType<TouchDetectionController>();
 
   @override

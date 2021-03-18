@@ -6,12 +6,12 @@ import '../view_mode.dart';
 import '../translations/translations.dart';
 
 typedef TooltipCallback = void Function({
-  DateTimeRange range,
-  double amount,
-  DateTime amountDate,
-  @required ScrollPosition position,
-  @required Rect rect,
-  @required double barWidth,
+  DateTimeRange? range,
+  double? amount,
+  DateTime? amountDate,
+  required ScrollPosition position,
+  required Rect rect,
+  required double barWidth,
 });
 
 const int kWeeklyDayCount = 7;
@@ -53,19 +53,17 @@ class OffsetWithAmountDate {
 abstract class ChartEngine extends CustomPainter {
   ChartEngine({
     this.scrollController,
-    int dayCount,
+    int? dayCount,
     bool isLastDataChanged = false,
-    @required this.viewMode,
+    required this.viewMode,
     this.firstValueDateTime,
-    @required this.context,
-  })  : dayCount = math.max(dayCount ?? getViewModeLimitDay(viewMode),
-            viewMode == ViewMode.weekly ? kWeeklyDayCount : kMonthlyDayCount),
-        assert(viewMode != null),
-        assert(context != null) {
+    required this.context,
+  }) : dayCount = math.max(dayCount ?? getViewModeLimitDay(viewMode),
+            viewMode == ViewMode.weekly ? kWeeklyDayCount : kMonthlyDayCount) {
     _translations = Translations(context);
   }
 
-  final ScrollController scrollController;
+  final ScrollController? scrollController;
 
   /// 요일의 갯수가 [kWeeklyDayCount]이상인 경우만 해당 값이며 나머지 경우는
   /// [kWeeklyDayCount]이다.
@@ -73,7 +71,7 @@ abstract class ChartEngine extends CustomPainter {
 
   final ViewMode viewMode;
 
-  final DateTime firstValueDateTime;
+  final DateTime? firstValueDateTime;
 
   final BuildContext context;
 
@@ -89,17 +87,17 @@ abstract class ChartEngine extends CustomPainter {
   double get paddingForAlignedBar => _paddingForAlignedBar;
 
   /// (바와 바 사이의 여백의 너비 + 바의 너비) => 블럭 너비의 크기이다.
-  double get blockWidth => _blockWidth;
+  double? get blockWidth => _blockWidth;
 
-  Translations get translations => _translations;
+  Translations? get translations => _translations;
 
   TextTheme get textTheme => Theme.of(context).textTheme;
 
   double _rightMargin = 0.0;
   double _barWidth = 0.0;
   double _paddingForAlignedBar = 0.0;
-  double _blockWidth;
-  Translations _translations;
+  double? _blockWidth;
+  Translations? _translations;
 
   /// 각 바의 위치와 크기를 생성하는 함수이다.
   List<dynamic> generateCoordinates(Size size);
@@ -114,7 +112,7 @@ abstract class ChartEngine extends CustomPainter {
   void drawYText(Canvas canvas, Size size, String text, double y) {
     TextSpan span = TextSpan(
       text: text,
-      style: textTheme.bodyText2.copyWith(color: kTextColor),
+      style: textTheme.bodyText2!.copyWith(color: kTextColor),
     );
 
     TextPainter tp = TextPainter(text: span, textDirection: TextDirection.ltr);
@@ -124,7 +122,7 @@ abstract class ChartEngine extends CustomPainter {
       canvas,
       Offset(
         size.width - _rightMargin + kYLabelMargin,
-        y - textTheme.bodyText2.fontSize / 2,
+        y - textTheme.bodyText2!.fontSize! / 2,
       ),
     );
   }
@@ -142,8 +140,8 @@ abstract class ChartEngine extends CustomPainter {
   void setRightMargin() {
     final TextPainter tp = TextPainter(
       text: TextSpan(
-        text: translations.formatHourOnly(_kPivotYLabelHour),
-        style: textTheme.bodyText2.copyWith(color: kTextColor),
+        text: translations!.formatHourOnly(_kPivotYLabelHour),
+        style: textTheme.bodyText2!.copyWith(color: kTextColor),
       ),
       textDirection: TextDirection.ltr,
     );
@@ -154,49 +152,49 @@ abstract class ChartEngine extends CustomPainter {
   void setDefaultValue(Size size) {
     setRightMargin();
     _blockWidth = size.width / dayCount;
-    _barWidth = blockWidth * kBarWidthRatio;
+    _barWidth = blockWidth! * kBarWidthRatio;
     // 바의 위치를 가운데로 정렬하기 위한 [padding]
-    _paddingForAlignedBar = blockWidth * kBarPaddingWidthRatio;
+    _paddingForAlignedBar = blockWidth! * kBarPaddingWidthRatio;
   }
 
   void drawXLabels(Canvas canvas, Size size,
       {bool inFadeAnimating = false, bool firstDataHasChanged = false}) {
     final limitDay = getViewModeLimitDay(viewMode);
     final weekday = getShortWeekdayList(context);
-    DateTime currentDate = firstValueDateTime;
+    DateTime? currentDate = firstValueDateTime;
 
     void turnOneBeforeDay() {
-      currentDate = currentDate.add(const Duration(days: -1));
+      currentDate = currentDate!.add(const Duration(days: -1));
     }
 
     for (int i = 0; i < dayCount; i++) {
       if (limitDay < i && inFadeAnimating) break;
-      String text;
+      String? text;
       bool isDashed = true;
       switch (viewMode) {
         case ViewMode.weekly:
-          text = weekday[currentDate.weekday % 7];
-          if (currentDate.weekday == DateTime.sunday) isDashed = false;
+          text = weekday![currentDate!.weekday % 7];
+          if (currentDate!.weekday == DateTime.sunday) isDashed = false;
           turnOneBeforeDay();
           break;
         case ViewMode.monthly:
-          text = currentDate.day.toString();
+          text = currentDate!.day.toString();
           turnOneBeforeDay();
           // 월간 보기 모드는 7일에 한 번씩 label 을 표시한다.
           if (i % 7 != (firstDataHasChanged ? 0 : 6)) continue;
       }
 
-      final dx = size.width - (i + 1) * blockWidth;
+      final dx = size.width - (i + 1) * blockWidth!;
       _drawXText(canvas, size, text, dx);
       _drawVerticalDivideLine(canvas, size, dx, isDashed);
     }
   }
 
-  void _drawXText(Canvas canvas, Size size, String text, double dx) {
+  void _drawXText(Canvas canvas, Size size, String? text, double dx) {
     TextPainter textPainter = TextPainter(
       text: TextSpan(
         text: text,
-        style: textTheme.bodyText2.copyWith(color: kTextColor),
+        style: textTheme.bodyText2!.copyWith(color: kTextColor),
       ),
       textDirection: TextDirection.ltr,
       textAlign: TextAlign.center,

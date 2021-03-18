@@ -6,19 +6,19 @@ import '../chart_engine.dart';
 
 class TimeYLabelPainter extends ChartEngine {
   TimeYLabelPainter({
-    @required BuildContext context,
-    @required ViewMode viewMode,
-    @required this.topHour,
-    @required this.bottomHour,
-    @required this.chartHeight,
-    @required this.topPosition,
+    required BuildContext context,
+    required ViewMode viewMode,
+    required this.topHour,
+    required this.bottomHour,
+    required this.chartHeight,
+    required this.topPosition,
   }) : super(
           context: context,
           viewMode: viewMode,
         );
 
-  final int topHour;
-  final int bottomHour;
+  final int? topHour;
+  final int? bottomHour;
   final double chartHeight;
 
   /// 애니메이션시 위쪽이 얼마나 벗어났는지를 이용하여 추가적인 레이블을 그리거나
@@ -42,10 +42,10 @@ class TimeYLabelPainter extends ChartEngine {
         actualPosY <= chartHeight - kXLabelHeight + tolerance;
   }
 
-  void _drawLabelAndLine(Canvas canvas, Size size, double posY, int time) {
+  void _drawLabelAndLine(Canvas canvas, Size size, double posY, int? time) {
     if (visible(posY)) drawHorizontalLine(canvas, size, posY);
     if (visible(posY, onTolerance: true))
-      drawYText(canvas, size, translations.formatHourOnly(time), posY);
+      drawYText(canvas, size, translations!.formatHourOnly(time!), posY);
   }
 
   @override
@@ -55,8 +55,8 @@ class TimeYLabelPainter extends ChartEngine {
     final double gabY = bottomY / (getClockDiff(bottomHour, topHour)) * 2;
 
     // 모든 구간이 꽉 차서 모든 범위가 표시되어야 하는 경우 true 이다.
-    bool sameTopBottomHour = topHour == (bottomHour % 24);
-    int time = topHour;
+    bool sameTopBottomHour = topHour == (bottomHour! % 24);
+    int time = topHour!;
     double posY = 0.0;
 
     // 애니메이션시 상단 부분 레이블과 라인이 비지 않도록 그려준다.
@@ -65,7 +65,7 @@ class TimeYLabelPainter extends ChartEngine {
       posY -= gabY;
       _drawLabelAndLine(canvas, size, posY, time);
     }
-    time = topHour;
+    time = topHour!;
     posY = 0.0;
 
     // 2칸 간격으로 좌측 레이블 표시
@@ -73,7 +73,7 @@ class TimeYLabelPainter extends ChartEngine {
       _drawLabelAndLine(canvas, size, posY, time);
 
       // 맨 아래에 도달한 경우
-      if (time == bottomHour % 24) {
+      if (time == bottomHour! % 24) {
         if (sameTopBottomHour)
           sameTopBottomHour = false;
         else

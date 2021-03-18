@@ -46,8 +46,8 @@ class ShapeHandler {
     return true;
   }
 
-  Offset _getActualOffsetFromScrollController(
-      Offset touchPoint, ScrollController controller, AxisDirection direction) {
+  Offset _getActualOffsetFromScrollController(Offset touchPoint,
+      ScrollController? controller, AxisDirection? direction) {
     if (controller == null) return touchPoint;
 
     final scrollPosition = controller.position;
@@ -89,8 +89,8 @@ class ShapeHandler {
 
   Future<void> handleGestureEvent(
     Gesture gesture, {
-    ScrollController scrollController,
-    AxisDirection direction,
+    ScrollController? scrollController,
+    AxisDirection? direction,
   }) async {
     var touchPoint = _getActualOffsetFromScrollController(
         TouchCanvasUtil.getPointFromGestureDetail(gesture.gestureDetail),

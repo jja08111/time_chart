@@ -1,3 +1,6 @@
+## 0.1.0
+* [Update] Null safe migration.
+
 ## 0.0.8
 * [Update] Code was formatted.
 

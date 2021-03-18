@@ -8,23 +8,18 @@ import '../../view_mode.dart';
 
 class TimeBarPainter extends ChartEngine {
   TimeBarPainter({
-    ScrollController scrollController,
-    @required this.tooltipCallback,
-    @required this.context,
-    @required this.sleepData,
-    @required this.topHour,
-    @required this.bottomHour,
-    @required int dayCount,
-    @required ViewMode viewMode,
-    @required bool isFirstDataChanged,
-    @required this.inFadeAnimating,
+    ScrollController? scrollController,
+    required this.tooltipCallback,
+    required this.context,
+    required this.sleepData,
+    required this.topHour,
+    required this.bottomHour,
+    required int? dayCount,
+    required ViewMode viewMode,
+    required bool isFirstDataChanged,
+    required this.inFadeAnimating,
     this.barColor,
-  })  : assert(tooltipCallback != null),
-        assert(context != null),
-        assert(sleepData != null),
-        assert(topHour != null),
-        assert(bottomHour != null),
-        super(
+  }) : super(
           scrollController: scrollController,
           dayCount: dayCount,
           viewMode: viewMode,
@@ -35,7 +30,7 @@ class TimeBarPainter extends ChartEngine {
 
   final TooltipCallback tooltipCallback;
   final BuildContext context;
-  final Color barColor;
+  final Color? barColor;
   final List<DateTimeRange> sleepData;
   final int topHour;
   final int bottomHour;
@@ -46,7 +41,7 @@ class TimeBarPainter extends ChartEngine {
       [Radius bottomRadius = Radius.zero]) {
     final callback = (_) => tooltipCallback(
           range: data,
-          position: scrollController.position,
+          position: scrollController!.position,
           rect: rect,
           barWidth: barWidth,
         );
@@ -75,7 +70,7 @@ class TimeBarPainter extends ChartEngine {
 
     final top = topOverflow ? height + rect.top : 0.0;
     final bottom = topOverflow ? height : rect.bottom - height;
-    final horizontal = topOverflow ? -blockWidth : blockWidth;
+    final horizontal = topOverflow ? -blockWidth! : blockWidth!;
     final newRect = Rect.fromLTRB(
       rect.left + horizontal,
       top,

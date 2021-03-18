@@ -8,21 +8,18 @@ const double _kPivotVelocity = 240.0;
 
 class CustomScrollPhysics extends ScrollPhysics {
   CustomScrollPhysics({
-    @required this.itemDimension,
-    @required this.viewMode,
-    @required this.chartType,
-    ScrollPhysics parent,
-  })  : assert(itemDimension != null),
-        assert(viewMode != null),
-        assert(chartType != null),
-        super(parent: parent);
+    required this.itemDimension,
+    required this.viewMode,
+    required this.chartType,
+    ScrollPhysics? parent,
+  }) : super(parent: parent);
 
   final double itemDimension;
   final ViewMode viewMode;
   final ChartType chartType;
 
-  static double _timeChartPanDownPixel;
-  static double _amountChartPanDownPixel;
+  static double? _timeChartPanDownPixel;
+  static double? _amountChartPanDownPixel;
 
   static void setPanDownPixels(ChartType chartType, double pixels) {
     switch (chartType) {
@@ -37,25 +34,24 @@ class CustomScrollPhysics extends ScrollPhysics {
   static void addPanDownPixels(ChartType chartType, double add) {
     switch (chartType) {
       case ChartType.time:
-        _timeChartPanDownPixel += add;
+        _timeChartPanDownPixel = add + _timeChartPanDownPixel!;
         break;
       case ChartType.amount:
-        _amountChartPanDownPixel += add;
+        _amountChartPanDownPixel = add + _amountChartPanDownPixel!;
     }
   }
 
-  static double _getPanDownPixels(ChartType chartType) {
+  static double? _getPanDownPixels(ChartType chartType) {
     switch (chartType) {
       case ChartType.time:
         return _timeChartPanDownPixel;
       case ChartType.amount:
         return _amountChartPanDownPixel;
     }
-    return null;
   }
 
   @override
-  CustomScrollPhysics applyTo(ScrollPhysics ancestor) {
+  CustomScrollPhysics applyTo(ScrollPhysics? ancestor) {
     return CustomScrollPhysics(
       itemDimension: itemDimension,
       viewMode: viewMode,
@@ -69,7 +65,7 @@ class CustomScrollPhysics extends ScrollPhysics {
   double _getTargetPixels(
       ScrollPosition position, Tolerance tolerance, double velocity) {
     final double dayLimit = getViewModeLimitDay(viewMode).toDouble();
-    final double startBlock = _getPanDownPixels(chartType) / itemDimension;
+    final double startBlock = _getPanDownPixels(chartType)! / itemDimension;
     double block = getCurrentBlockIndex(position, itemDimension);
 
     if (velocity.abs() > _kPivotVelocity) {
@@ -93,7 +89,7 @@ class CustomScrollPhysics extends ScrollPhysics {
   }
 
   @override
-  Simulation createBallisticSimulation(
+  Simulation? createBallisticSimulation(
       ScrollMetrics position, double velocity) {
     // If we're out of range and not headed back in range, defer to the parent
     // ballistics, which should put us back in range at a page boundary.
@@ -102,7 +98,8 @@ class CustomScrollPhysics extends ScrollPhysics {
       return super.createBallisticSimulation(position, velocity);
 
     final Tolerance tolerance = this.tolerance;
-    final double target = _getTargetPixels(position, tolerance, velocity);
+    final double target =
+        _getTargetPixels(position as ScrollPosition, tolerance, velocity);
     if (target != position.pixels)
       return ScrollSpringSimulation(spring, position.pixels, target, velocity,
           tolerance: tolerance);

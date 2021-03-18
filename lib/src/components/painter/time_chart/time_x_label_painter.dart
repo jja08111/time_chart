@@ -6,12 +6,12 @@ import '../chart_engine.dart';
 
 class TimeXLabelPainter extends ChartEngine {
   TimeXLabelPainter({
-    @required BuildContext context,
-    @required ViewMode viewMode,
-    @required DateTime firstValueDateTime,
-    @required int dayCount,
-    @required this.firstDataHasChanged,
-    @required this.inFadeAnimating,
+    required BuildContext context,
+    required ViewMode viewMode,
+    required DateTime firstValueDateTime,
+    required int? dayCount,
+    required this.firstDataHasChanged,
+    required this.inFadeAnimating,
   }) : super(
           context: context,
           viewMode: viewMode,

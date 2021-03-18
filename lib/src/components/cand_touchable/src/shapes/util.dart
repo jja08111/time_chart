@@ -44,20 +44,20 @@ class TouchCanvasUtil {
   }
 
   static Map<GestureType, Function> getGestureCallbackMap({
-    @required GestureTapDownCallback onTapDown,
-    @required GestureTapUpCallback onTapUp,
-    @required GestureLongPressStartCallback onLongPressStart,
-    @required GestureLongPressEndCallback onLongPressEnd,
-    @required GestureLongPressMoveUpdateCallback onLongPressMoveUpdate,
-    @required GestureForcePressStartCallback onForcePressStart,
-    @required GestureForcePressEndCallback onForcePressEnd,
-    @required GestureForcePressPeakCallback onForcePressPeak,
-    @required GestureForcePressUpdateCallback onForcePressUpdate,
-    @required GestureDragStartCallback onPanStart,
-    @required GestureDragUpdateCallback onPanUpdate,
-    @required GestureDragDownCallback onPanDown,
-    @required GestureTapDownCallback onSecondaryTapDown,
-    @required GestureTapUpCallback onSecondaryTapUp,
+    required GestureTapDownCallback? onTapDown,
+    required GestureTapUpCallback? onTapUp,
+    required GestureLongPressStartCallback? onLongPressStart,
+    required GestureLongPressEndCallback? onLongPressEnd,
+    required GestureLongPressMoveUpdateCallback? onLongPressMoveUpdate,
+    required GestureForcePressStartCallback? onForcePressStart,
+    required GestureForcePressEndCallback? onForcePressEnd,
+    required GestureForcePressPeakCallback? onForcePressPeak,
+    required GestureForcePressUpdateCallback? onForcePressUpdate,
+    required GestureDragStartCallback? onPanStart,
+    required GestureDragUpdateCallback? onPanUpdate,
+    required GestureDragDownCallback? onPanDown,
+    required GestureTapDownCallback? onSecondaryTapDown,
+    required GestureTapUpCallback? onSecondaryTapUp,
   }) {
     var map = <GestureType, Function>{};
     if (onTapDown != null)

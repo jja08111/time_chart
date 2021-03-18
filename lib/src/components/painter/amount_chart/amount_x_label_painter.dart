@@ -6,11 +6,11 @@ import '../chart_engine.dart';
 
 class AmountXLabelPainter extends ChartEngine {
   AmountXLabelPainter({
-    @required BuildContext context,
-    @required ViewMode viewMode,
-    @required DateTime firstValueDateTime,
-    @required int dayCount,
-    @required this.inFadeAnimating,
+    required BuildContext context,
+    required ViewMode viewMode,
+    required DateTime firstValueDateTime,
+    required int? dayCount,
+    required this.inFadeAnimating,
   }) : super(
           context: context,
           viewMode: viewMode,

@@ -37,7 +37,7 @@ class Translations {
   ///
   /// ko: 1월 31일 - 2월 1일
   String compactDateTimeRange(DateTimeRange range) {
-    final shortMonthList = getShortMonthList(_context);
+    final shortMonthList = getShortMonthList(_context)!;
     final daySuffix = isKorean ? '일' : '';
     final sleepTimeMonth = shortMonthList[range.start.month - 1];
     final wakeUpMonth = shortMonthList[range.end.month - 1];
@@ -59,14 +59,11 @@ class Translations {
   /// en: 11:30 AM
   /// ko: 오전 11:30
   Widget formatTimeOfDayWidget({
-    @required Widget a,
-    @required Widget hMM,
+    required Widget a,
+    required Widget hMM,
     double interval = 4,
     MainAxisAlignment mainAxisAlignment = MainAxisAlignment.start,
   }) {
-    assert(a != null);
-    assert(hMM != null);
-
     final _isAHMM = isAHMM;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.baseline,
@@ -102,12 +99,12 @@ class Translations {
 }
 
 /// 일,월,화,... Sun, Mon, Tue,...
-List<String> getShortWeekdayList(BuildContext context) {
+List<String>? getShortWeekdayList(BuildContext context) {
   return dateTimeSymbolMap()[_locale(context)].SHORTWEEKDAYS;
 }
 
 /// 1월, 2월, 3월,... Jan, Feb, Mar,...
-List<String> getShortMonthList(BuildContext context) {
+List<String>? getShortMonthList(BuildContext context) {
   return dateTimeSymbolMap()[_locale(context)].SHORTMONTHS;
 }
 

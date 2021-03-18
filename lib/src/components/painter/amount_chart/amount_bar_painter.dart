@@ -10,20 +10,17 @@ import '../chart_engine.dart';
 
 class AmountBarPainter extends ChartEngine {
   AmountBarPainter({
-    ScrollController scrollController,
-    @required this.tooltipCallback,
-    @required this.context,
-    @required this.sleepData,
-    @required this.topHour,
-    @required this.bottomHour,
-    @required int dayCount,
-    @required ViewMode viewMode,
-    @required this.inFadeAnimating,
+    ScrollController? scrollController,
+    required this.tooltipCallback,
+    required this.context,
+    required this.sleepData,
+    required this.topHour,
+    required this.bottomHour,
+    required int? dayCount,
+    required ViewMode viewMode,
+    required this.inFadeAnimating,
     this.barColor,
-  })  : assert(tooltipCallback != null),
-        assert(context != null),
-        assert(sleepData != null),
-        super(
+  }) : super(
           scrollController: scrollController,
           dayCount: dayCount,
           viewMode: viewMode,
@@ -33,10 +30,10 @@ class AmountBarPainter extends ChartEngine {
 
   final TooltipCallback tooltipCallback;
   final BuildContext context;
-  final Color barColor;
+  final Color? barColor;
   final List<DateTimeRange> sleepData;
-  final int topHour;
-  final int bottomHour;
+  final int? topHour;
+  final int? bottomHour;
 
   /// FadeIn animation 도중에는 보이는 칸만 그리기 위해 이용하는 변수이다.
   final bool inFadeAnimating;
@@ -69,7 +66,7 @@ class AmountBarPainter extends ChartEngine {
       final callback = (_) => tooltipCallback(
             amount: offsetWithAmount.amount,
             amountDate: offsetWithAmount.dateTime,
-            position: scrollController.position,
+            position: scrollController!.position,
             rect: rRect.outerRect,
             barWidth: barWidth,
           );
@@ -89,7 +86,7 @@ class AmountBarPainter extends ChartEngine {
 
   @deprecated
   void drawBrokeBarLine(Canvas canvas, Size size) {
-    double strokeWidth;
+    late double strokeWidth;
     switch (viewMode) {
       case ViewMode.weekly:
         strokeWidth = 8.0;
@@ -105,7 +102,7 @@ class AmountBarPainter extends ChartEngine {
       ..strokeWidth = strokeWidth;
     final Path path = Path();
     final double interval = size.width / 7;
-    final timeDiff = 2 * (topHour - bottomHour);
+    final timeDiff = 2 * (topHour! - bottomHour!);
     final double posY = size.height * (timeDiff - 1) / timeDiff;
     double posX = 0;
 
@@ -139,7 +136,7 @@ class AmountBarPainter extends ChartEngine {
       if (index == length - 1 ||
           sleepData[index].end.day != sleepData[index + 1].end.day) {
         final double normalizedTop =
-            max(0, amountSum - bottomHour) / (topHour - bottomHour);
+            max(0, amountSum - bottomHour!) / (topHour! - bottomHour!);
 
         final double dy = size.height - normalizedTop * size.height;
         final double dx = size.width - intervalOfBars * xIndexCounter;

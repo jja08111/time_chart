@@ -8,10 +8,10 @@ class PathShape extends Shape {
   final Path path;
 
   PathShape(this.path,
-      {Map<GestureType, Function> gestureMap,
-      Paint paint,
-      HitTestBehavior hitTestBehavior,
-      PaintingStyle paintStyleForTouch})
+      {Map<GestureType, Function>? gestureMap,
+      Paint? paint,
+      HitTestBehavior? hitTestBehavior,
+      PaintingStyle? paintStyleForTouch})
       : super(
             hitTestBehavior: hitTestBehavior,
             paint: paint,

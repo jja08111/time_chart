@@ -9,14 +9,14 @@ import '../types/types.dart';
 class Oval extends Shape {
   final Rect rect;
 
-  double a, b;
+  double? a, b;
 
 //  x^2/a^2 + y^2/b^2 = 1
   Oval(this.rect,
-      {Map<GestureType, Function> gestureMap,
-      Paint paint,
-      HitTestBehavior hitTestBehavior,
-      PaintingStyle paintStyleForTouch})
+      {Map<GestureType, Function>? gestureMap,
+      Paint? paint,
+      HitTestBehavior? hitTestBehavior,
+      PaintingStyle? paintStyleForTouch})
       : super(
             hitTestBehavior: hitTestBehavior,
             paint: paint,
@@ -29,12 +29,12 @@ class Oval extends Shape {
   bool isInside(Offset p) {
     if (a == 0 || b == 0) return false;
 
-    var extraWidth = paint.style == PaintingStyle.stroke
-        ? paint.strokeWidth / 2
+    var extraWidth = paint!.style == PaintingStyle.stroke
+        ? paint!.strokeWidth / 2
         : ShapeConstant.floatPrecision;
 
     bool insideOuterOval = _isInsideOval(p, extraWidth);
-    if (paint.style == PaintingStyle.stroke) {
+    if (paint!.style == PaintingStyle.stroke) {
       bool outsideInnerOval = !_isInsideOval(p, -extraWidth);
       return insideOuterOval && outsideInnerOval;
     } else {
@@ -43,14 +43,14 @@ class Oval extends Shape {
   }
 
   bool _isInsideOval(Offset p, double extraWidth) {
-    return pow(p.dx - rect.center.dx, 2) / pow(a + extraWidth, 2) +
-            pow(p.dy - rect.center.dy, 2) / pow(b + extraWidth, 2) <=
+    return pow(p.dx - rect.center.dx, 2) / pow(a! + extraWidth, 2) +
+            pow(p.dy - rect.center.dy, 2) / pow(b! + extraWidth, 2) <=
         1;
   }
 
   bool isOnTheOval(Offset p) {
-    var extraWidth = paint.style == PaintingStyle.stroke
-        ? paint.strokeWidth / 2
+    var extraWidth = paint!.style == PaintingStyle.stroke
+        ? paint!.strokeWidth / 2
         : ShapeConstant.floatPrecision;
     bool insideOuterOval = _isInsideOval(p, extraWidth);
     bool outsideInnerOval = !_isInsideOval(p, -extraWidth);

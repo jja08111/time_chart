@@ -12,10 +12,10 @@ class Point extends Shape {
   final List<Offset> points;
 
   Point(this.pointMode, this.points,
-      {Map<GestureType, Function> gestureMap,
-      Paint paint,
-      HitTestBehavior hitTestBehavior,
-      PaintingStyle paintStyleForTouch})
+      {Map<GestureType, Function>? gestureMap,
+      Paint? paint,
+      HitTestBehavior? hitTestBehavior,
+      PaintingStyle? paintStyleForTouch})
       : super(
             hitTestBehavior: hitTestBehavior,
             paint: paint,
@@ -51,8 +51,8 @@ class Point extends Shape {
 
   bool _checkPointLiesInsideAnotherPoint(Offset point, Offset queryPoint) {
     if (point == queryPoint) return true;
-    var extraWidth = paint.strokeWidth / 2;
-    if (paint.strokeCap == StrokeCap.round) {
+    var extraWidth = paint!.strokeWidth / 2;
+    if (paint!.strokeCap == StrokeCap.round) {
       return Circle(center: point, radius: extraWidth).isInside(queryPoint);
     } else {
       return Rect.fromCenter(
@@ -73,19 +73,19 @@ class PolygonUtil {
 
   static bool _isIntersect(Line l1, Line l2) {
     //four direction for two lines and points of other line
-    int dir1 = _direction(l1.p1, l1.p2, l2.p1);
-    int dir2 = _direction(l1.p1, l1.p2, l2.p2);
-    int dir3 = _direction(l2.p1, l2.p2, l1.p1);
-    int dir4 = _direction(l2.p1, l2.p2, l1.p2);
+    int dir1 = _direction(l1.p1!, l1.p2!, l2.p1!);
+    int dir2 = _direction(l1.p1!, l1.p2!, l2.p2!);
+    int dir3 = _direction(l2.p1!, l2.p2!, l1.p1!);
+    int dir4 = _direction(l2.p1!, l2.p2!, l1.p2!);
 
     if (dir1 != dir2 && dir3 != dir4) return true; //they are intersecting
-    if (dir1 == 0 && l1.isInside(l2.p1)) //when p2 of line2 are on the line1
+    if (dir1 == 0 && l1.isInside(l2.p1!)) //when p2 of line2 are on the line1
       return true;
-    if (dir2 == 0 && l1.isInside(l2.p2)) //when p1 of line2 are on the line1
+    if (dir2 == 0 && l1.isInside(l2.p2!)) //when p1 of line2 are on the line1
       return true;
-    if (dir3 == 0 && l2.isInside(l1.p1)) //when p2 of line1 are on the line2
+    if (dir3 == 0 && l2.isInside(l1.p1!)) //when p2 of line1 are on the line2
       return true;
-    if (dir4 == 0 && l2.isInside(l1.p2)) //when p1 of line1 are on the line2
+    if (dir4 == 0 && l2.isInside(l1.p2!)) //when p1 of line1 are on the line2
       return true;
     return false;
   }
@@ -104,7 +104,7 @@ class PolygonUtil {
       Line side = Line(poly[i], poly[(i + 1) % n], paint: paint);
       if (_isIntersect(side, exline)) {
         //if side is intersects exline
-        if (_direction(side.p1, p, side.p2) == 0) return side.isInside(p);
+        if (_direction(side.p1!, p, side.p2!) == 0) return side.isInside(p);
         count++;
       }
       i = (i + 1) % n;

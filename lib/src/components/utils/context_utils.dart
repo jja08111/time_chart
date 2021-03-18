@@ -5,22 +5,20 @@ class ContextUtils {
   static void getFutureSizeFromGlobalKey(
       GlobalKey key, Function(Size size) callback) {
     Future.microtask(() {
-      Size size = getSizeFromContext(key.currentContext);
-      if (size != null) {
-        callback(size);
-      }
+      Size size = getSizeFromContext(key.currentContext!);
+      callback(size);
     });
   }
 
   // Shortcut to get the renderBox size from a context
   static Size getSizeFromContext(BuildContext context) {
-    RenderBox rb = context.findRenderObject() as RenderBox;
+    RenderBox? rb = context.findRenderObject() as RenderBox?;
     return rb?.size ?? Size.zero;
   }
 
   // Shortcut to get the global position of a context
-  static Offset getOffsetFromContext(BuildContext context, [Offset offset]) {
-    RenderBox rb = context.findRenderObject() as RenderBox;
+  static Offset? getOffsetFromContext(BuildContext context, [Offset? offset]) {
+    RenderBox? rb = context.findRenderObject() as RenderBox?;
     return rb?.localToGlobal(offset ?? Offset.zero);
   }
 }

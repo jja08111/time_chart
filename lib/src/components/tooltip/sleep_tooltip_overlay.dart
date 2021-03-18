@@ -15,31 +15,27 @@ enum Direction { left, right }
 @immutable
 class SleepTooltipOverlay extends StatelessWidget {
   const SleepTooltipOverlay({
-    Key key,
-    @required this.chartType,
+    Key? key,
+    required this.chartType,
     this.timeRange,
     this.bottomHour,
     this.amountHour,
     this.amountDate,
-    @required this.direction,
+    required this.direction,
     this.backgroundColor,
-    @required this.start,
-    @required this.end,
-  })  : assert(chartType != null),
-        assert((amountHour != null && amountDate != null) ||
+    required this.start,
+    required this.end,
+  })   : assert((amountHour != null && amountDate != null) ||
             (timeRange != null && bottomHour != null)),
-        assert(direction != null),
-        assert(start != null),
-        assert(end != null),
         super(key: key);
 
   final ChartType chartType;
-  final int bottomHour;
-  final DateTimeRange timeRange;
-  final double amountHour;
-  final DateTime amountDate;
+  final int? bottomHour;
+  final DateTimeRange? timeRange;
+  final double? amountHour;
+  final DateTime? amountDate;
   final Direction direction;
-  final Color backgroundColor;
+  final Color? backgroundColor;
   final String start;
   final String end;
 
@@ -51,7 +47,7 @@ class SleepTooltipOverlay extends StatelessWidget {
     final wakeUp = timeRange.end;
 
     return (wakeUp.hour == bottomHour && wakeUp.minute > 0) ||
-            bottomHour < wakeUp.hour
+            bottomHour! < wakeUp.hour
         ? DateTimeRange(
             start: timeRange.start.add(oneBeforeDay),
             end: wakeUp.add(oneBeforeDay))
@@ -60,20 +56,20 @@ class SleepTooltipOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget child;
+    Widget? child;
     switch (chartType) {
       case ChartType.time:
         child = _TimeTooltipOverlay(
-          timeRange: _getActualDateTime(timeRange),
-          bottomHour: bottomHour,
+          timeRange: _getActualDateTime(timeRange!),
+          bottomHour: bottomHour!,
           start: start,
           end: end,
         );
         break;
       case ChartType.amount:
         child = _AmountTooltipOverlay(
-          durationHour: amountHour,
-          durationDate: amountDate,
+          durationHour: amountHour!,
+          durationDate: amountDate!,
         );
     }
 
@@ -102,16 +98,12 @@ class SleepTooltipOverlay extends StatelessWidget {
 @immutable
 class _TimeTooltipOverlay extends StatelessWidget {
   const _TimeTooltipOverlay({
-    Key key,
-    this.timeRange,
-    this.bottomHour,
-    this.start,
-    this.end,
-  })  : assert(timeRange != null),
-        assert(bottomHour != null),
-        assert(start != null),
-        assert(end != null),
-        super(key: key);
+    Key? key,
+    required this.timeRange,
+    required this.bottomHour,
+    required this.start,
+    required this.end,
+  }) : super(key: key);
 
   final DateTimeRange timeRange;
   final int bottomHour;
@@ -125,16 +117,16 @@ class _TimeTooltipOverlay extends StatelessWidget {
   Widget _timeTile(BuildContext context, DateTime dateTime) {
     final translations = Translations(context);
     final textTheme = Theme.of(context).textTheme;
-    final subtitle1 = textTheme.subtitle1;
+    final subtitle1 = textTheme.subtitle1!;
     return translations.formatTimeOfDayWidget(
       a: Text(
         translations.dateFormat('a', dateTime),
-        style: subtitle1.copyWith(color: subtitle1.color.withOpacity(0.5)),
+        style: subtitle1.copyWith(color: subtitle1.color!.withOpacity(0.5)),
         textScaleFactor: 1.0,
       ),
       hMM: Text(
         translations.dateFormat('h:mm', dateTime),
-        style: textTheme.headline4.copyWith(height: 1.1),
+        style: textTheme.headline4!.copyWith(height: 1.1),
         textScaleFactor: 1.0,
       ),
     );
@@ -143,9 +135,9 @@ class _TimeTooltipOverlay extends StatelessWidget {
   Widget _buildContent(BuildContext context) {
     final translations = Translations(context);
     final textTheme = Theme.of(context).textTheme;
-    final bodyText2 = textTheme.bodyText2;
+    final bodyText2 = textTheme.bodyText2!;
     final bodyTextStyle = bodyText2.copyWith(
-        height: 1.4, color: bodyText2.color.withOpacity(0.7));
+        height: 1.4, color: bodyText2.color!.withOpacity(0.7));
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -198,12 +190,10 @@ class _TimeTooltipOverlay extends StatelessWidget {
 @immutable
 class _AmountTooltipOverlay extends StatelessWidget {
   const _AmountTooltipOverlay({
-    Key key,
-    @required this.durationHour,
-    @required this.durationDate,
-  })  : assert(durationHour != null),
-        assert(durationDate != null),
-        super(key: key);
+    Key? key,
+    required this.durationHour,
+    required this.durationDate,
+  }) : super(key: key);
 
   final double durationHour;
   final DateTime durationDate;
@@ -229,10 +219,10 @@ class _AmountTooltipOverlay extends StatelessWidget {
     final localizations = MaterialLocalizations.of(context);
     final translations = Translations(context);
     final textTheme = Theme.of(context).textTheme;
-    final body2 = textTheme.bodyText2;
-    final bodyTextStyle = body2.copyWith(color: body2.color.withOpacity(0.5));
-    final sub1 = textTheme.subtitle1;
-    final subTitleStyle = sub1.copyWith(color: sub1.color.withOpacity(0.5));
+    final body2 = textTheme.bodyText2!;
+    final bodyTextStyle = body2.copyWith(color: body2.color!.withOpacity(0.5));
+    final sub1 = textTheme.subtitle1!;
+    final subTitleStyle = sub1.copyWith(color: sub1.color!.withOpacity(0.5));
     final headerStyle = textTheme.headline4;
 
     final hourString = _getHour();

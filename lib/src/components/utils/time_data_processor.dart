@@ -26,11 +26,9 @@ class _SleepPair implements Comparable {
 
   @override
   int compareTo(other) {
-    if (this._sleepTime == null || other == null) return null;
     if (this._sleepTime < other.sleepTime) return -1;
     if (this._sleepTime > other.sleepTime) return 1;
-    if (this._sleepTime == other.sleepTime) return 0;
-    return null;
+    return 0;
   }
 
   @override
@@ -51,17 +49,17 @@ abstract class TimeDataProcessor {
 
   List<DateTimeRange> _pivotList = [];
 
-  int _topHour;
+  int? _topHour;
 
-  int get topHour => _topHour;
+  int? get topHour => _topHour;
 
-  int _bottomHour;
+  int? _bottomHour;
 
-  int get bottomHour => _bottomHour;
+  int? get bottomHour => _bottomHour;
 
-  int _dayCount;
+  int? _dayCount;
 
-  int get dayCount => _dayCount;
+  int? get dayCount => _dayCount;
 
   /// 첫 데이터가 다음날로 넘겨진 경우 true 이다.
   ///
@@ -103,11 +101,11 @@ abstract class TimeDataProcessor {
     }
     _topHour = sleepPair.sleepTime.floor();
     _bottomHour = sleepPair.wakeUp.ceil();
-    if (_topHour % 2 != _bottomHour % 2) {
+    if (_topHour! % 2 != _bottomHour! % 2) {
       _topHour = hourDiffBetween(1, _topHour).toInt();
     }
-    _topHour %= 24;
-    _bottomHour %= 24;
+    _topHour = _topHour! % 24;
+    _bottomHour = _bottomHour! % 24;
   }
 
   void _fillEmptyDay() {
@@ -127,7 +125,11 @@ abstract class TimeDataProcessor {
   }
 
   bool _isNextDayTime(double timeDouble) {
-    return bottomHour < timeDouble && timeDouble < 24.0;
+    return bottomHour! < timeDouble && timeDouble < 24.0;
+  }
+
+  void _increaseDayCount() {
+    _dayCount = _dayCount! + 1;
   }
 
   /// 수면 시간이 [bottomHour]과 24시 사이에 존재하는 경우 해당 데이터를 다음날로 가공한다.
@@ -153,7 +155,7 @@ abstract class TimeDataProcessor {
         );
 
         if (i == 0) {
-          ++_dayCount;
+          _increaseDayCount();
           _firstDataHasChanged = true;
         } // 7일 전부 채워진 상태에서 마지막 날이 다음 칸으로 넘어간 경우
 
@@ -185,18 +187,14 @@ abstract class TimeDataProcessor {
       if (currentTime != postEndTime) {
         assert(currentTime.isBefore(postEndTime),
             'Data is reversed or not sorted.');
-        ++_dayCount;
-        bool exceed = false;
+        _increaseDayCount();
         // 하루 이상 차이나는 경우
         while (currentTime != postEndTime.add(_oneBeforeDayDuration)) {
           postEndTime = postEndTime.add(_oneBeforeDayDuration);
           // 빈 데이터를 넣는다.
           _processedSleepData
               .add(DateTimeRange(start: postEndTime, end: postEndTime));
-          ++_dayCount;
-        }
-        if (exceed) {
-          break;
+          _increaseDayCount();
         }
       }
       postEndTime = currentTime;
@@ -212,7 +210,7 @@ abstract class TimeDataProcessor {
   ///
   /// 수면하지 않은 구간이 가장 넓은 부분이 선택되며, 선택된 값의 취침 시간이
   /// [topHour], 기상 시간이 [bottomHour]가 된다.
-  _SleepPair _getPivotHours(List<DateTimeRange> sleepData) {
+  _SleepPair? _getPivotHours(List<DateTimeRange> sleepData) {
     final List<_SleepPair> rangeList = _getSortedRangeListFrom(sleepData);
     if (rangeList.isEmpty) return null;
 

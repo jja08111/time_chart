@@ -10,7 +10,7 @@ class TooltipShapeBorder extends ShapeBorder {
   final double radius;
 
   TooltipShapeBorder({
-    @required this.direction,
+    required this.direction,
     this.radius = 6.0,
     this.arrowWidth = kTooltipArrowWidth,
     this.arrowHeight = kTooltipArrowHeight,
@@ -21,16 +21,16 @@ class TooltipShapeBorder extends ShapeBorder {
   EdgeInsetsGeometry get dimensions => EdgeInsets.only(bottom: arrowHeight);
 
   @override
-  Path getInnerPath(Rect rect, {TextDirection textDirection}) => null;
+  Path getInnerPath(Rect rect, {TextDirection? textDirection}) => Path();
 
   @override
-  Path getOuterPath(Rect rect, {TextDirection textDirection}) {
+  Path getOuterPath(Rect rect, {TextDirection? textDirection}) {
     rect = Rect.fromPoints(
         rect.topLeft, rect.bottomRight - Offset(0, arrowHeight));
     final double x = arrowWidth, y = arrowHeight, r = 1 - arrowArc;
 
-    Offset pivotOffset;
-    double dir;
+    late Offset pivotOffset;
+    late double dir;
     switch (direction) {
       case Direction.left:
         pivotOffset = rect.centerRight;
@@ -51,7 +51,7 @@ class TooltipShapeBorder extends ShapeBorder {
   }
 
   @override
-  void paint(Canvas canvas, Rect rect, {TextDirection textDirection}) {}
+  void paint(Canvas canvas, Rect rect, {TextDirection? textDirection}) {}
 
   @override
   ShapeBorder scale(double t) => this;
