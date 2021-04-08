@@ -174,7 +174,14 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.1.0"
+    version: "0.1.0-nullsafety.1"
+  touchable:
+    dependency: transitive
+    description:
+      name: touchable
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0-prerelease"
   typed_data:
     dependency: transitive
     description:

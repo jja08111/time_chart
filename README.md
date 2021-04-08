@@ -22,7 +22,7 @@ Add it to your package's pubspec.yaml file
 
 ```yml
 dependencies:
-  time_chart: ^0.1.0-nullsafety.0
+  time_chart: ^0.1.0-nullsafety.1
 ```
 
 ### 2 - Install it
@@ -138,8 +138,3 @@ class MyApp extends StatelessWidget {
 | ![](https://github.com/jja08111/time_chart/blob/main/assets/images/time_chart/weekly_time_chart.gif?raw=true) | ![](https://github.com/jja08111/time_chart/blob/main/assets/images/time_chart/weekly_time_chart_ko.gif?raw=true) |
 
 You can also use korean language by [Internationalizing Flutter apps](https://flutter.dev/docs/development/accessibility-and-localization/internationalization).
-
-## Waiting PR...
-
-I'm using [Touchable plugin](https://github.com/nateshmbhat/touchable), and waiting
-[this PR](https://github.com/nateshmbhat/touchable/pull/17).

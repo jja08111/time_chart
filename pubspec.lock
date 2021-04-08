@@ -161,6 +161,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.19"
+  touchable:
+    dependency: "direct main"
+    description:
+      name: touchable
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0-prerelease"
   typed_data:
     dependency: transitive
     description:

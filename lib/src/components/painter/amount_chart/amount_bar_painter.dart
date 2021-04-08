@@ -1,9 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import '../../cand_touchable/touchable.dart';
-
-//import 'package:touchable/touchable.dart';
+import 'package:touchable/touchable.dart';
 import '../../utils/time_assistant.dart' as TimeAssistant;
 import '../../view_mode.dart';
 import '../chart_engine.dart';

@@ -1,3 +1,7 @@
+## 0.1.0-nullsafety.1
+* [Update] Modified to use touchable plugin because
+[PR](https://github.com/nateshmbhat/touchable/pull/17) was merged.
+
 ## 0.1.0-nullsafety.0
 * [Update] Null safe migration.
 
@@ -30,5 +34,5 @@
 * [Stable] Change sdk version to `>=2.5.2 <3.0.0`.
 
 
-## 0.0.1 Released on (2021 Feb 25)
+## 0.0.1 Released on 2021 Feb 25
 * Released on.

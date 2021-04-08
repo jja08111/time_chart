@@ -5,9 +5,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
-
-//import 'package:touchable/touchable.dart';
-import 'components/cand_touchable/touchable.dart';
+import 'package:touchable/touchable.dart';
 
 import 'components/painter/amount_chart/amount_x_label_painter.dart';
 import 'components/painter/amount_chart/amount_y_label_painter.dart';
