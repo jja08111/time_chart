@@ -1,3 +1,6 @@
+## 0.1.0
+* [Update] Stable release for null safety.
+
 ## 0.1.0-nullsafety.1
 * [Update] Modified to use touchable plugin because
 [PR](https://github.com/nateshmbhat/touchable/pull/17) was merged.
