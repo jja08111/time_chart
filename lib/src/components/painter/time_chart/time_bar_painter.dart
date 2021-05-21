@@ -219,7 +219,7 @@ class TimeBarPainter extends ChartEngine {
         ++dayCounter;
 
         // 현재 보이는 범위를 벗어나면 탈출
-        if (dayCounter - 1 - startPair.day > limitDay + 2) break;
+        if (dayCounter - 1 - startPair.day > limitDay + 4) break;
       }
 
       // 그릴 필요가 없는 경우 넘어간다

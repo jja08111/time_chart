@@ -277,8 +277,8 @@ abstract class ChartEngine extends CustomPainter {
         startDay++;
     }
     // 스크롤시 바로 그려지지 않고 미리 그리도록 한 칸 여유를 둔다.
-    startIndex = math.max(0, startIndex - 1);
-    startDay = math.max(0, startDay - 1);
+    startIndex = math.max(0, startIndex - 2);
+    startDay = math.max(0, startDay - 2);
 
     return StartPair(startIndex, startDay);
   }

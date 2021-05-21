@@ -148,7 +148,7 @@ class AmountBarPainter extends ChartEngine {
         amountSum = 0;
 
         dayCounter++;
-        if (dayCounter - 1 - startPair.day > limitDay + 2) break;
+        if (dayCounter - 1 - startPair.day > limitDay + 4) break;
       }
     }
 
