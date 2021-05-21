@@ -205,7 +205,7 @@ class _TimeChartState extends State<TimeChart>
 
       _scrollControllerGroup.addOffsetChangedListener(() {
         final difference =
-        (_scrollControllerGroup.offset - _prevScrollPosition).abs();
+            (_scrollControllerGroup.offset - _prevScrollPosition).abs();
 
         if (difference >= minDifference) {
           _scrollOffsetNotifier.value = _scrollControllerGroup.offset;
