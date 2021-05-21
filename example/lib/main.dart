@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:time_chart/time_chart.dart';
 
@@ -34,15 +36,30 @@ class MyApp extends StatelessWidget {
       start: DateTime(2021, 1, 22, 12, 10),
       end: DateTime(2021, 1, 22, 16, 20),
     ),
-    DateTimeRange(
-      start: DateTime(2020, 1, 22, 12, 10),
-      end: DateTime(2020, 1, 22, 16, 20),
-    ),
   ];
+
+  List<DateTimeRange> getRandomSampleDataList() {
+    final List<DateTimeRange> list = [];
+    final random = Random();
+
+    for (int i = 0; i < 31; ++i) {
+      final int randomMinutes1 = random.nextInt(59);
+      final int randomMinutes2 = random.nextInt(59);
+      final start = DateTime(2021, 2, 1 - i, 0, randomMinutes1);
+      final end = DateTime(2021, 2, 1 - i, 7, randomMinutes2 + randomMinutes1);
+
+      list.add(DateTimeRange(
+        start: start,
+        end: end,
+      ));
+    }
+    return list;
+  }
 
   @override
   Widget build(BuildContext context) {
     final sizedBox = const SizedBox(height: 16);
+    final dataList = getRandomSampleDataList();
 
     return MaterialApp(
       home: Scaffold(
@@ -54,13 +71,13 @@ class MyApp extends StatelessWidget {
               children: [
                 const Text('Weekly time chart'),
                 TimeChart(
-                  data: data,
+                  data: dataList,
                   viewMode: ViewMode.weekly,
                 ),
                 sizedBox,
                 const Text('Monthly time chart'),
                 TimeChart(
-                  data: data,
+                  data: dataList,
                   viewMode: ViewMode.monthly,
                 ),
                 sizedBox,
