@@ -13,8 +13,8 @@ const double kTooltipArrowHeight = 16.0;
 enum Direction { left, right }
 
 @immutable
-class SleepTooltipOverlay extends StatelessWidget {
-  const SleepTooltipOverlay({
+class TooltipOverlay extends StatelessWidget {
+  const TooltipOverlay({
     Key? key,
     required this.chartType,
     this.timeRange,
@@ -25,7 +25,7 @@ class SleepTooltipOverlay extends StatelessWidget {
     this.backgroundColor,
     required this.start,
     required this.end,
-  })   : assert((amountHour != null && amountDate != null) ||
+  })  : assert((amountHour != null && amountDate != null) ||
             (timeRange != null && bottomHour != null)),
         super(key: key);
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'sleep_tooltip_overlay.dart';
+import 'tooltip_overlay.dart';
 
 class TooltipShapeBorder extends ShapeBorder {
   final Direction direction;

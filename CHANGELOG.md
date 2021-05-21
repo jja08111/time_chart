@@ -1,3 +1,6 @@
+## 0.2.2
+* [Update] Code formatting to fix pub score.
+
 ## 0.2.1
 * [Update] Change how to repaint chart when scrolling by using ValueNotifier.
 

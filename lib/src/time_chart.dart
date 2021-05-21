@@ -19,7 +19,7 @@ import 'components/utils/time_assistant.dart';
 import 'components/utils/time_data_processor.dart';
 import 'components/painter/amount_chart/amount_bar_painter.dart';
 import 'components/painter/time_chart/time_bar_painter.dart';
-import 'components/tooltip/sleep_tooltip_overlay.dart';
+import 'components/tooltip/tooltip_overlay.dart';
 import 'components/tooltip/tooltip_size.dart';
 import 'components/view_mode.dart';
 import 'components/translations/translations.dart';
@@ -312,7 +312,7 @@ class _TimeChartState extends State<TimeChart>
           parent: _tooltipController,
           curve: Curves.fastOutSlowIn,
         ),
-        child: SleepTooltipOverlay(
+        child: TooltipOverlay(
           backgroundColor: widget.tooltipBackgroundColor,
           chartType: chartType,
           bottomHour: bottomHour,
