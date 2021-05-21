@@ -7,7 +7,7 @@ import '../chart_engine.dart';
 class TimeXLabelPainter extends ChartEngine {
   TimeXLabelPainter({
     required ScrollController scrollController,
-    required this.scrollOffset,
+    required this.scrollOffsetNotifier,
     required BuildContext context,
     required ViewMode viewMode,
     required DateTime firstValueDateTime,
@@ -19,9 +19,10 @@ class TimeXLabelPainter extends ChartEngine {
           viewMode: viewMode,
           firstValueDateTime: firstValueDateTime,
           dayCount: dayCount,
+          repaint: scrollOffsetNotifier,
         );
 
-  final double scrollOffset;
+  final ValueNotifier<double> scrollOffsetNotifier;
   final bool firstDataHasChanged;
 
   @override
@@ -41,6 +42,6 @@ class TimeXLabelPainter extends ChartEngine {
 
   @override
   bool shouldRepaint(covariant TimeXLabelPainter oldDelegate) {
-    return scrollOffset != oldDelegate.scrollOffset;
+    return true;
   }
 }

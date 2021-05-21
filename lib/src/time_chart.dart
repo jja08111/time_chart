@@ -147,6 +147,8 @@ class _TimeChartState extends State<TimeChart>
   /// 에니메이션 시작시 올바른 위치에서 시작하기 위한 높이 값
   double? _heightForAlignTop;
 
+  late ValueNotifier<double> _scrollOffsetNotifier;
+
   double _prevScrollPosition = 0;
 
   @override
@@ -176,7 +178,7 @@ class _TimeChartState extends State<TimeChart>
     // if some other control is clicked on.
     GestureBinding.instance!.pointerRouter.addGlobalRoute(_handlePointerEvent);
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _addScrollListener());
+    _addScrollNotifier();
 
     processData(widget.data, widget.viewMode, widget.chartType,
         dateWithoutTime(widget.data.first.end.add(const Duration(days: 1))));
@@ -195,19 +197,21 @@ class _TimeChartState extends State<TimeChart>
     super.dispose();
   }
 
-  void _addScrollListener() {
-    final viewModeLimitDay = getViewModeLimitDay(widget.viewMode);
-    final minDifference = _blockWidth! * viewModeLimitDay;
+  void _addScrollNotifier() {
+    _scrollOffsetNotifier = ValueNotifier(0);
 
-    _scrollControllerGroup.addOffsetChangedListener(() {
-      final difference =
-          (_scrollControllerGroup.offset - _prevScrollPosition).abs();
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      final minDifference = _blockWidth!;
 
-      if (difference >= minDifference) {
-        setState(() {
+      _scrollControllerGroup.addOffsetChangedListener(() {
+        final difference =
+            (_scrollControllerGroup.offset - _prevScrollPosition).abs();
+
+        if (difference >= minDifference) {
+          _scrollOffsetNotifier.value = _scrollControllerGroup.offset;
           _prevScrollPosition = _scrollControllerGroup.offset;
-        });
-      }
+        }
+      });
     });
   }
 
@@ -468,8 +472,10 @@ class _TimeChartState extends State<TimeChart>
                     width: width - yLabelWidth,
                     height: widget.height,
                   ),
-                  Positioned.fill(
-                    child: CustomPaint(painter: BorderLinePainter()),
+                  const Positioned.fill(
+                    child: const CustomPaint(
+                      painter: const BorderLinePainter(),
+                    ),
                   ),
                   Positioned.fill(
                     child: NotificationListener<ScrollNotification>(
@@ -616,8 +622,7 @@ class _TimeChartState extends State<TimeChart>
       case ChartType.time:
         return TimeXLabelPainter(
           scrollController: _xLabelController,
-          scrollOffset:
-              _xLabelController.hasClients ? _xLabelController.offset : 0,
+          scrollOffsetNotifier: _scrollOffsetNotifier,
           context: context,
           viewMode: widget.viewMode,
           firstValueDateTime: processedSleepData.first.end,
@@ -627,8 +632,7 @@ class _TimeChartState extends State<TimeChart>
       case ChartType.amount:
         return AmountXLabelPainter(
           scrollController: _xLabelController,
-          scrollOffset:
-              _xLabelController.hasClients ? _xLabelController.offset : 0,
+          scrollOffsetNotifier: _scrollOffsetNotifier,
           context: context,
           viewMode: widget.viewMode,
           firstValueDateTime: processedSleepData.first.end,
@@ -642,7 +646,7 @@ class _TimeChartState extends State<TimeChart>
       case ChartType.time:
         return TimeBarPainter(
           scrollController: _barController,
-          scrollOffset: _barController.hasClients ? _barController.offset : 0,
+          scrollOffsetNotifier: _scrollOffsetNotifier,
           context: context,
           tooltipCallback: _tooltipCallback,
           sleepData: processedSleepData,
@@ -656,7 +660,7 @@ class _TimeChartState extends State<TimeChart>
       case ChartType.amount:
         return AmountBarPainter(
           scrollController: _barController,
-          scrollOffset: _barController.hasClients ? _barController.offset : 0,
+          scrollOffsetNotifier: _scrollOffsetNotifier,
           context: context,
           sleepData: processedSleepData,
           barColor: widget.barColor,

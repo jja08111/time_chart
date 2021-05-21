@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'chart_engine.dart';
 
 class BorderLinePainter extends CustomPainter {
+  const BorderLinePainter();
+
   @override
   void paint(Canvas canvas, Size size) {
     Paint topPaint = Paint()

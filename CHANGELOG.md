@@ -1,3 +1,6 @@
+## 0.2.1
+* [Update] Change how to repaint chart when scrolling by using ValueNotifier.
+
 ## 0.2.0
 * [Update] Improved performance ([#4](https://github.com/jja08111/time_chart/pull/4)).
 

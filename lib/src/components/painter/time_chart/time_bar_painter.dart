@@ -7,7 +7,7 @@ import '../../view_mode.dart';
 class TimeBarPainter extends ChartEngine {
   TimeBarPainter({
     required ScrollController scrollController,
-    required this.scrollOffset,
+    required this.scrollOffsetNotifier,
     required this.tooltipCallback,
     required this.context,
     required this.sleepData,
@@ -24,9 +24,10 @@ class TimeBarPainter extends ChartEngine {
           firstValueDateTime: sleepData.first.end,
           isLastDataChanged: isFirstDataChanged,
           context: context,
+          repaint: scrollOffsetNotifier,
         );
 
-  final double scrollOffset;
+  final ValueNotifier<double> scrollOffsetNotifier;
   final TooltipCallback tooltipCallback;
   final BuildContext context;
   final Color? barColor;
@@ -228,6 +229,6 @@ class TimeBarPainter extends ChartEngine {
 
   @override
   bool shouldRepaint(TimeBarPainter old) {
-    return old.sleepData != sleepData || scrollOffset != old.scrollOffset;
+    return old.sleepData != sleepData;
   }
 }
