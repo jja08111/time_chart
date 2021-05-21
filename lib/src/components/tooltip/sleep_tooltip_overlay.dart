@@ -56,7 +56,7 @@ class SleepTooltipOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget? child;
+    late Widget child;
     switch (chartType) {
       case ChartType.time:
         child = _TimeTooltipOverlay(

@@ -120,8 +120,8 @@ class _TimeChartState extends State<TimeChart>
 
   LinkedScrollControllerGroup _scrollControllers =
       LinkedScrollControllerGroup();
-  ScrollController? _barController;
-  ScrollController? _xLabelController;
+  late ScrollController _barController;
+  late ScrollController _xLabelController;
 
   Timer? _updatePivotHourTimer;
 
@@ -147,7 +147,7 @@ class _TimeChartState extends State<TimeChart>
   double? _blockWidth;
 
   /// 에니메이션 시작시 전체 그래프의 높이
-  double? _beginHeight;
+  late double _beginHeight;
 
   /// 에니메이션 시작시 올바른 위치에서 시작하기 위한 높이 값
   double? _heightForAlignTop;
@@ -181,14 +181,14 @@ class _TimeChartState extends State<TimeChart>
     WidgetsBinding.instance!.addPostFrameCallback(_setFadeInAnimation);
 
     processData(widget.data, widget.viewMode, widget.chartType,
-        dateWithoutTime(widget.data.first.end.add(Duration(days: 1))));
+        dateWithoutTime(widget.data.first.end.add(const Duration(days: 1))));
   }
 
   @override
   void dispose() {
     _removeEntry();
-    _barController!.dispose();
-    _xLabelController!.dispose();
+    _barController.dispose();
+    _xLabelController.dispose();
     _sizeController.dispose();
     _tooltipController.dispose();
     _cancelTimer();
@@ -349,7 +349,7 @@ class _TimeChartState extends State<TimeChart>
 
   void _handlePanDown(_) {
     CustomScrollPhysics.setPanDownPixels(
-        widget.chartType, _barController!.position.pixels);
+        widget.chartType, _barController.position.pixels);
   }
 
   bool _handleScrollNotification(ScrollNotification notification) {
@@ -370,7 +370,7 @@ class _TimeChartState extends State<TimeChart>
     final beforeBottomHour = bottomHour;
 
     final block =
-        getCurrentBlockIndex(_barController!.position, _blockWidth!).toInt();
+        getCurrentBlockIndex(_barController.position, _blockWidth!).toInt();
     final pivotEnd = dateWithoutTime(widget.data.first.end).add(
         Duration(days: -block + (block > 0 && firstDataHasChanged ? 2 : 1)));
 
@@ -382,7 +382,7 @@ class _TimeChartState extends State<TimeChart>
       // 하루가 추가 혹은 삭제되는 경우 x축 방향으로 발생하는 차이를 해결할 값이다.
       final add = firstDataHasChanged ? _blockWidth! : -_blockWidth!;
 
-      _barController!.jumpTo(_barController!.position.pixels + add);
+      _barController.jumpTo(_barController.position.pixels + add);
       CustomScrollPhysics.addPanDownPixels(widget.chartType, add);
     }
 
@@ -408,7 +408,7 @@ class _TimeChartState extends State<TimeChart>
     setState(() {
       _beginHeight =
           (currentDiff / beforeDiff) * heightWithoutLabel + kXLabelHeight;
-      _heightForAlignTop = (_beginHeight! - widget.height) / 2 +
+      _heightForAlignTop = (_beginHeight - widget.height) / 2 +
           (topDiff / beforeDiff) * heightWithoutLabel;
     });
     _sizeController.reverse(from: 1.0);
