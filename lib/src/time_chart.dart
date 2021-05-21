@@ -176,15 +176,7 @@ class _TimeChartState extends State<TimeChart>
     // if some other control is clicked on.
     GestureBinding.instance!.pointerRouter.addGlobalRoute(_handlePointerEvent);
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
-      _scrollControllerGroup.addOffsetChangedListener(() {
-        if ((_scrollControllerGroup.offset - _prevScrollPosition).abs() >
-            _blockWidth!) {
-          _prevScrollPosition = _scrollControllerGroup.offset;
-          setState(() {});
-        }
-      });
-    });
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _addScrollListener());
 
     processData(widget.data, widget.viewMode, widget.chartType,
         dateWithoutTime(widget.data.first.end.add(const Duration(days: 1))));
@@ -201,6 +193,18 @@ class _TimeChartState extends State<TimeChart>
     GestureBinding.instance!.pointerRouter
         .removeGlobalRoute(_handlePointerEvent);
     super.dispose();
+  }
+
+  void _addScrollListener() {
+    _scrollControllerGroup.addOffsetChangedListener(() {
+      final difference =
+          (_scrollControllerGroup.offset - _prevScrollPosition).abs();
+
+      if (difference >= _blockWidth!) {
+        _prevScrollPosition = _scrollControllerGroup.offset;
+        setState(() {});
+      }
+    });
   }
 
   void _handlePointerEvent(PointerEvent event) {
