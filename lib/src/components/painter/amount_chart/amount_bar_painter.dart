@@ -2,13 +2,14 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:touchable/touchable.dart';
-import '../../utils/time_assistant.dart' as TimeAssistant;
+import '../../utils/time_assistant.dart' as timeAssistant;
 import '../../view_mode.dart';
 import '../chart_engine.dart';
 
 class AmountBarPainter extends ChartEngine {
   AmountBarPainter({
-    ScrollController? scrollController,
+    required ScrollController scrollController,
+    required this.scrollOffset,
     required this.tooltipCallback,
     required this.context,
     required this.sleepData,
@@ -16,7 +17,6 @@ class AmountBarPainter extends ChartEngine {
     required this.bottomHour,
     required int? dayCount,
     required ViewMode viewMode,
-    required this.inFadeAnimating,
     this.barColor,
   }) : super(
           scrollController: scrollController,
@@ -26,15 +26,13 @@ class AmountBarPainter extends ChartEngine {
           context: context,
         );
 
+  final double scrollOffset;
   final TooltipCallback tooltipCallback;
   final BuildContext context;
   final Color? barColor;
   final List<DateTimeRange> sleepData;
   final int? topHour;
   final int? bottomHour;
-
-  /// FadeIn animation 도중에는 보이는 칸만 그리기 위해 이용하는 변수이다.
-  final bool inFadeAnimating;
 
   @override
   void drawBar(Canvas canvas, Size size, List<dynamic> coordinates) {
@@ -123,12 +121,17 @@ class AmountBarPainter extends ChartEngine {
 
     final double intervalOfBars = size.width / dayCount;
     final int length = sleepData.length;
-    final limitDay = getViewModeLimitDay(viewMode);
-    int xIndexCounter = 1;
+
+    final int dayOfCurrentScroll = dayOfCurrentScrollView;
+    final int limitDay = getViewModeLimitDay(viewMode);
+    final startPair = getStartPairFrom(sleepData, dayOfCurrentScroll);
     double amountSum = 0;
 
-    for (var index = 0; index < length; index++) {
-      amountSum += TimeAssistant.durationHour(sleepData[index]);
+    // 1부터 시작
+    int dayCounter = startPair.day + 1;
+
+    for (int index = startPair.index; index < length; index++) {
+      amountSum += timeAssistant.durationHour(sleepData[index]);
 
       // [labels]가 다르면 오른쪽으로 한 칸 이동하여 그린다. 그 외에는 계속 sum 한다.
       if (index == length - 1 ||
@@ -137,13 +140,15 @@ class AmountBarPainter extends ChartEngine {
             max(0, amountSum - bottomHour!) / (topHour! - bottomHour!);
 
         final double dy = size.height - normalizedTop * size.height;
-        final double dx = size.width - intervalOfBars * xIndexCounter;
+        final double dx = size.width - intervalOfBars * dayCounter;
 
         coordinates
             .add(OffsetWithAmountDate(dx, dy, amountSum, sleepData[index].end));
 
         amountSum = 0;
-        if (limitDay < ++xIndexCounter - 1 && inFadeAnimating) break;
+
+        dayCounter++;
+        if (dayCounter - 1 - startPair.day > limitDay + 2) break;
       }
     }
 
@@ -152,7 +157,8 @@ class AmountBarPainter extends ChartEngine {
 
   @override
   bool shouldRepaint(AmountBarPainter old) {
-    return old.sleepData != sleepData || old.inFadeAnimating != inFadeAnimating;
+    return old.sleepData != sleepData ||
+        scrollOffset != old.scrollOffset;
   }
 
   @override

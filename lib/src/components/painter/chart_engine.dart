@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:path_drawing/path_drawing.dart';
+import '../utils/time_assistant.dart' as timeAssistant;
 import '../view_mode.dart';
 import '../translations/translations.dart';
 
@@ -31,6 +32,13 @@ const Color kLineColor1 = Color(0x44757575);
 const Color kLineColor2 = Color(0x77757575);
 const Color kLineColor3 = Color(0xAA757575);
 const Color kTextColor = Color(0xFF757575);
+
+class StartPair {
+  StartPair(this.index, this.day);
+
+  final int index;
+  final int day;
+}
 
 class OffsetRange {
   double dx;
@@ -74,6 +82,11 @@ abstract class ChartEngine extends CustomPainter {
   final DateTime? firstValueDateTime;
 
   final BuildContext context;
+
+  int get dayOfCurrentScrollView {
+    if (!scrollController!.hasClients) return 0;
+    return (scrollController!.offset / blockWidth!).round();
+  }
 
   Radius get barRadius => const Radius.circular(6.0);
 
@@ -157,40 +170,47 @@ abstract class ChartEngine extends CustomPainter {
     _paddingForAlignedBar = blockWidth! * kBarPaddingWidthRatio;
   }
 
-  void drawXLabels(Canvas canvas, Size size,
-      {bool inFadeAnimating = false, bool firstDataHasChanged = false}) {
-    final limitDay = getViewModeLimitDay(viewMode);
+  void drawXLabels(
+    Canvas canvas,
+    Size size, {
+    bool firstDataHasChanged = false,
+  }) {
+    final viewLimitDay = getViewModeLimitDay(viewMode);
     final weekday = getShortWeekdayList(context);
-    DateTime? currentDate = firstValueDateTime;
+    final startDay = math.max(dayOfCurrentScrollView - 1, 0);
+    DateTime currentDate = firstValueDateTime!.add(Duration(days: -startDay));
 
     void turnOneBeforeDay() {
-      currentDate = currentDate!.add(const Duration(days: -1));
+      currentDate = currentDate.add(const Duration(days: -1));
     }
 
-    for (int i = 0; i < dayCount; i++) {
-      if (limitDay < i && inFadeAnimating) break;
-      String? text;
+    for (int i = startDay; i < dayCount; i++) {
+      if (i - startDay > viewLimitDay + 1) break;
+
+      late String text;
       bool isDashed = true;
+
       switch (viewMode) {
         case ViewMode.weekly:
-          text = weekday![currentDate!.weekday % 7];
-          if (currentDate!.weekday == DateTime.sunday) isDashed = false;
+          text = weekday[currentDate.weekday % 7];
+          if (currentDate.weekday == DateTime.sunday) isDashed = false;
           turnOneBeforeDay();
           break;
         case ViewMode.monthly:
-          text = currentDate!.day.toString();
+          text = currentDate.day.toString();
           turnOneBeforeDay();
           // 월간 보기 모드는 7일에 한 번씩 label 을 표시한다.
           if (i % 7 != (firstDataHasChanged ? 0 : 6)) continue;
       }
 
       final dx = size.width - (i + 1) * blockWidth!;
+
       _drawXText(canvas, size, text, dx);
       _drawVerticalDivideLine(canvas, size, dx, isDashed);
     }
   }
 
-  void _drawXText(Canvas canvas, Size size, String? text, double dx) {
+  void _drawXText(Canvas canvas, Size size, String text, double dx) {
     TextPainter textPainter = TextPainter(
       text: TextSpan(
         text: text,
@@ -245,5 +265,21 @@ abstract class ChartEngine extends CustomPainter {
   dynamic getClockDiff(var pivot, var duration) {
     var ret = pivot - duration;
     return ret + (ret <= 0 ? 24 : 0);
+  }
+
+  StartPair getStartPairFrom(List<DateTimeRange> sleepData, int dayOfCurrentScroll) {
+    int startDay = 0;
+    int startIndex = 0;
+
+    for (int i = startIndex; i < dayOfCurrentScroll && i + 1 < sleepData.length; ++i) {
+      startIndex++;
+      if (!timeAssistant.areSameDate(sleepData[i].end, sleepData[i + 1].end))
+        startDay++;
+    }
+    // 스크롤시 바로 그려지지 않고 미리 그리도록 한 칸 여유를 둔다.
+    startIndex = math.max(0, startIndex - 1);
+    startDay = math.max(0, startDay - 1);
+
+    return StartPair(startIndex, startDay);
   }
 }

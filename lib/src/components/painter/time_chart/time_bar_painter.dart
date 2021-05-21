@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:touchable/touchable.dart';
-import '../../utils/time_assistant.dart' as TimeAssistant;
+import '../../utils/time_assistant.dart' as timeAssistant;
 import '../chart_engine.dart';
 import '../../view_mode.dart';
 
 class TimeBarPainter extends ChartEngine {
   TimeBarPainter({
-    ScrollController? scrollController,
+    required ScrollController scrollController,
+    required this.scrollOffset,
     required this.tooltipCallback,
     required this.context,
     required this.sleepData,
@@ -15,7 +16,6 @@ class TimeBarPainter extends ChartEngine {
     required int? dayCount,
     required ViewMode viewMode,
     required bool isFirstDataChanged,
-    required this.inFadeAnimating,
     this.barColor,
   }) : super(
           scrollController: scrollController,
@@ -26,17 +26,26 @@ class TimeBarPainter extends ChartEngine {
           context: context,
         );
 
+  final double scrollOffset;
   final TooltipCallback tooltipCallback;
   final BuildContext context;
   final Color? barColor;
+
+  /// 수면 데이터이다.
+  ///
+  /// 데이터가 없는 날에는 범위가 0인 데이터가 이미 계산되어 들어가있다.
   final List<DateTimeRange> sleepData;
   final int topHour;
   final int bottomHour;
-  final bool inFadeAnimating;
 
-  void _drawRRect(TouchyCanvas canvas, Paint paint, DateTimeRange data,
-      Rect rect, Radius topRadius,
-      [Radius bottomRadius = Radius.zero]) {
+  void _drawRRect(
+    TouchyCanvas canvas,
+    Paint paint,
+    DateTimeRange data,
+    Rect rect,
+    Radius topRadius, [
+    Radius bottomRadius = Radius.zero,
+  ]) {
     final callback = (_) => tooltipCallback(
           range: data,
           position: scrollController!.position,
@@ -59,8 +68,13 @@ class TimeBarPainter extends ChartEngine {
     );
   }
 
-  void _drawOutRangedBar(TouchyCanvas canvas, Paint paint, Size size, Rect rect,
-      DateTimeRange data) {
+  void _drawOutRangedBar(
+    TouchyCanvas canvas,
+    Paint paint,
+    Size size,
+    Rect rect,
+    DateTimeRange data,
+  ) {
     if (topHour != bottomHour && (bottomHour - topHour).abs() != 24) return;
 
     final height = size.height;
@@ -161,19 +175,24 @@ class TimeBarPainter extends ChartEngine {
   List<OffsetRange> generateCoordinates(Size size) {
     List<OffsetRange> coordinates = [];
 
-    final intervalOfBars = size.width / dayCount;
+    final double intervalOfBars = size.width / dayCount;
     // 제일 아래에 붙은 바가 정각이 아닌 경우 올려 바를 그린다.
     final int pivotBottom = _convertUsing(topHour, bottomHour);
     final int pivotHeight = pivotBottom > topHour ? pivotBottom - topHour : 24;
     final int length = sleepData.length;
     final double height = size.height;
-    final limitDay = getViewModeLimitDay(viewMode);
-    int xIndexCounter = 1;
 
-    for (var index = 0; index < length; index++) {
+    final int dayOfCurrentScroll = dayOfCurrentScrollView;
+    final int limitDay = getViewModeLimitDay(viewMode);
+
+    final startPair = getStartPairFrom(sleepData, dayOfCurrentScroll);
+    // 1부터 시작
+    int dayCounter = startPair.day + 1;
+
+    for (int index = startPair.index; index < length; index++) {
       final wakeUpTimeDouble =
-          TimeAssistant.dateTimeToDouble(sleepData[index].end);
-      final sleepAmountDouble = TimeAssistant.durationHour(sleepData[index]);
+          timeAssistant.dateTimeToDouble(sleepData[index].end);
+      final sleepAmountDouble = timeAssistant.durationHour(sleepData[index]);
 
       // 좌측 라벨이 아래로 갈수록 시간이 흐르는 것을 표현하기 위해
       // 큰 시간 값과 현재 시간의 차를 구한다.
@@ -190,12 +209,17 @@ class TimeBarPainter extends ChartEngine {
 
       final double bottom = height - normalizedBottom * height;
       final double top = height - normalizedTop * height;
-      final double right = size.width - intervalOfBars * xIndexCounter;
+      final double right = size.width - intervalOfBars * dayCounter;
 
       // [weekdays]가 달라야 왼쪽으로 한 칸 이동한다.
       if (index + 1 < length &&
-          sleepData[index].end.day != sleepData[index + 1].end.day) {
-        if (limitDay < ++xIndexCounter - 1 && inFadeAnimating) break;
+          !timeAssistant.areSameDate(
+              sleepData[index].end, sleepData[index + 1].end)) {
+
+        ++dayCounter;
+
+        // 현재 보이는 범위를 벗어나면 탈출
+        if (dayCounter - 1 - startPair.day > limitDay + 2) break;
       }
 
       // 그릴 필요가 없는 경우 넘어간다
@@ -205,12 +229,11 @@ class TimeBarPainter extends ChartEngine {
 
       coordinates.add(OffsetRange(right, top, bottom, sleepData[index]));
     }
-
     return coordinates;
   }
 
   @override
   bool shouldRepaint(TimeBarPainter old) {
-    return old.sleepData != sleepData || old.inFadeAnimating != inFadeAnimating;
+    return old.sleepData != sleepData || scrollOffset != old.scrollOffset;
   }
 }
