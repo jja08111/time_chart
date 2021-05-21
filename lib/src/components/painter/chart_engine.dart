@@ -267,18 +267,21 @@ abstract class ChartEngine extends CustomPainter {
     return ret + (ret <= 0 ? 24 : 0);
   }
 
-  StartPair getStartPairFrom(List<DateTimeRange> sleepData, int dayOfCurrentScroll) {
+  StartPair getStartPairFrom(
+    List<DateTimeRange> sleepData,
+    int dayOfCurrentScroll,
+  ) {
     int startDay = 0;
     int startIndex = 0;
 
-    for (int i = startIndex; i < dayOfCurrentScroll && i + 1 < sleepData.length; ++i) {
+    // 스크롤시 바로 그려지지 않고 미리 그리도록 한 칸 여유를 둔다.
+    for (int i = startIndex;
+        i < dayOfCurrentScroll - 2 && i + 1 < sleepData.length;
+        ++i) {
       startIndex++;
       if (!timeAssistant.areSameDate(sleepData[i].end, sleepData[i + 1].end))
         startDay++;
     }
-    // 스크롤시 바로 그려지지 않고 미리 그리도록 한 칸 여유를 둔다.
-    startIndex = math.max(0, startIndex - 2);
-    startDay = math.max(0, startDay - 2);
 
     return StartPair(startIndex, startDay);
   }
