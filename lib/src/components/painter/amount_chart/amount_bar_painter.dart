@@ -121,16 +121,11 @@ class AmountBarPainter extends ChartEngine {
 
     final double intervalOfBars = size.width / dayCount;
     final int length = sleepData.length;
-
-    final int dayOfCurrentScroll = dayOfCurrentScrollView;
-    final int limitDay = getViewModeLimitDay(viewMode);
-    final startPair = getStartPairFrom(sleepData, dayOfCurrentScroll);
     double amountSum = 0;
-
     // 1부터 시작
-    int dayCounter = startPair.day + 1;
+    int dayCounter = 1;
 
-    for (int index = startPair.index; index < length; index++) {
+    for (int index = 0; index < length; index++) {
       amountSum += timeAssistant.durationHour(sleepData[index]);
 
       // [labels]가 다르면 오른쪽으로 한 칸 이동하여 그린다. 그 외에는 계속 sum 한다.
@@ -142,13 +137,17 @@ class AmountBarPainter extends ChartEngine {
         final double dy = size.height - normalizedTop * size.height;
         final double dx = size.width - intervalOfBars * dayCounter;
 
+        dayCounter++;
+
+        if(!inViewRange(size, dx)) {
+          amountSum = 0;
+          continue;
+        }
+
         coordinates
             .add(OffsetWithAmountDate(dx, dy, amountSum, sleepData[index].end));
 
         amountSum = 0;
-
-        dayCounter++;
-        if (dayCounter - 1 - startPair.day > limitDay + 4) break;
       }
     }
 

@@ -182,14 +182,10 @@ class TimeBarPainter extends ChartEngine {
     final int length = sleepData.length;
     final double height = size.height;
 
-    final int dayOfCurrentScroll = dayOfCurrentScrollView;
-    final int limitDay = getViewModeLimitDay(viewMode);
-
-    final startPair = getStartPairFrom(sleepData, dayOfCurrentScroll);
     // 1부터 시작
-    int dayCounter = startPair.day + 1;
+    int dayCounter = 1;
 
-    for (int index = startPair.index; index < length; index++) {
+    for (int index = 0; index < length; index++) {
       final wakeUpTimeDouble =
           timeAssistant.dateTimeToDouble(sleepData[index].end);
       final sleepAmountDouble = timeAssistant.durationHour(sleepData[index]);
@@ -215,12 +211,10 @@ class TimeBarPainter extends ChartEngine {
       if (index + 1 < length &&
           !timeAssistant.areSameDate(
               sleepData[index].end, sleepData[index + 1].end)) {
-
         ++dayCounter;
-
-        // 현재 보이는 범위를 벗어나면 탈출
-        if (dayCounter - 1 - startPair.day > limitDay + 4) break;
       }
+
+      if (!inViewRange(size, right)) continue;
 
       // 그릴 필요가 없는 경우 넘어간다
       if (top == bottom ||

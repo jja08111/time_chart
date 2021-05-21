@@ -2,7 +2,6 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:path_drawing/path_drawing.dart';
-import '../utils/time_assistant.dart' as timeAssistant;
 import '../view_mode.dart';
 import '../translations/translations.dart';
 
@@ -32,13 +31,6 @@ const Color kLineColor1 = Color(0x44757575);
 const Color kLineColor2 = Color(0x77757575);
 const Color kLineColor3 = Color(0xAA757575);
 const Color kTextColor = Color(0xFF757575);
-
-class StartPair {
-  StartPair(this.index, this.day);
-
-  final int index;
-  final int day;
-}
 
 class OffsetRange {
   double dx;
@@ -83,7 +75,7 @@ abstract class ChartEngine extends CustomPainter {
 
   final BuildContext context;
 
-  int get dayOfCurrentScrollView {
+  int get currentScrollOffsetToDay {
     if (!scrollController!.hasClients) return 0;
     return (scrollController!.offset / blockWidth!).round();
   }
@@ -177,7 +169,7 @@ abstract class ChartEngine extends CustomPainter {
   }) {
     final viewLimitDay = getViewModeLimitDay(viewMode);
     final weekday = getShortWeekdayList(context);
-    final startDay = math.max(dayOfCurrentScrollView - 1, 0);
+    final startDay = math.max(currentScrollOffsetToDay - 2, 0);
     DateTime currentDate = firstValueDateTime!.add(Duration(days: -startDay));
 
     void turnOneBeforeDay() {
@@ -185,7 +177,7 @@ abstract class ChartEngine extends CustomPainter {
     }
 
     for (int i = startDay; i < dayCount; i++) {
-      if (i - startDay > viewLimitDay + 1) break;
+      if (i - startDay > viewLimitDay + 3) break;
 
       late String text;
       bool isDashed = true;
@@ -267,22 +259,14 @@ abstract class ChartEngine extends CustomPainter {
     return ret + (ret <= 0 ? 24 : 0);
   }
 
-  StartPair getStartPairFrom(
-    List<DateTimeRange> sleepData,
-    int dayOfCurrentScroll,
-  ) {
-    int startDay = 0;
-    int startIndex = 0;
+  bool inViewRange(Size size, double right) {
+    final barLeftPosition = size.width - right;
+    final barRightPosition = size.width - right - blockWidth!;
+    final tolerance = blockWidth! + 12.0;
+    final scrollOffset = scrollController!.offset;
+    final int limitDay = getViewModeLimitDay(viewMode);
 
-    // 스크롤시 바로 그려지지 않고 미리 그리도록 한 칸 여유를 둔다.
-    for (int i = startIndex;
-        i < dayOfCurrentScroll - 2 && i + 1 < sleepData.length;
-        ++i) {
-      startIndex++;
-      if (!timeAssistant.areSameDate(sleepData[i].end, sleepData[i + 1].end))
-        startDay++;
-    }
-
-    return StartPair(startIndex, startDay);
+    return barLeftPosition >= scrollOffset - tolerance &&
+        scrollOffset + (blockWidth! * limitDay) + tolerance >= barRightPosition;
   }
 }
