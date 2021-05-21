@@ -262,7 +262,7 @@ abstract class ChartEngine extends CustomPainter {
     final barRightPosition = size.width - dx - blockWidth!;
     final scrollOffset = scrollController!.offset;
     final int viewModeLimitDay = getViewModeLimitDay(viewMode);
-    final tolerance = blockWidth! * viewModeLimitDay * 2;
+    final tolerance = blockWidth!;
 
     return barLeftPosition >= scrollOffset - tolerance &&
         scrollOffset + (blockWidth! * viewModeLimitDay) + tolerance >=

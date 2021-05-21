@@ -196,8 +196,7 @@ class _TimeChartState extends State<TimeChart>
   }
 
   void _addScrollListener() {
-    final viewModeLimitDay = getViewModeLimitDay(widget.viewMode);
-    final minDifference = _blockWidth! * viewModeLimitDay;
+    final minDifference = _blockWidth!;
 
     _scrollControllerGroup.addOffsetChangedListener(() {
       final difference =
