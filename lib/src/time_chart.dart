@@ -111,14 +111,13 @@ class TimeChart extends StatefulWidget {
 
 class _TimeChartState extends State<TimeChart>
     with TickerProviderStateMixin, TimeDataProcessor {
-  static const Duration _fadeInDuration = Duration(milliseconds: 200);
   static const Duration _tooltipFadeInDuration = Duration(milliseconds: 150);
   static const Duration _tooltipFadeOutDuration = Duration(milliseconds: 75);
 
   /// 최상단에 그려진 것들이 잘리지 않기 위해 필요한 상단 패딩값이다.
   static const double _topPadding = 4.0;
 
-  LinkedScrollControllerGroup _scrollControllers =
+  LinkedScrollControllerGroup _scrollControllerGroup =
       LinkedScrollControllerGroup();
   late ScrollController _barController;
   late ScrollController _xLabelController;
@@ -126,7 +125,7 @@ class _TimeChartState extends State<TimeChart>
   Timer? _updatePivotHourTimer;
 
   late AnimationController _sizeController;
-  late Animation _sizeAnimation;
+  late Animation<double> _sizeAnimation;
 
   /// 툴팁을 띄우기 위해 사용한다.
   OverlayEntry? _overlayEntry;
@@ -139,10 +138,6 @@ class _TimeChartState extends State<TimeChart>
   /// 툴팁의 fadeIn out 애니메이션을 다룬다.
   late AnimationController _tooltipController;
 
-  /// For fade in animation
-  bool _visible = false;
-  bool _overflowVisible = true;
-
   /// 바와 그 양 옆의 여백의 너비를 더한 값이다.
   double? _blockWidth;
 
@@ -152,12 +147,14 @@ class _TimeChartState extends State<TimeChart>
   /// 에니메이션 시작시 올바른 위치에서 시작하기 위한 높이 값
   double? _heightForAlignTop;
 
+  double _prevScrollPosition = 0;
+
   @override
   void initState() {
     super.initState();
 
-    _barController = _scrollControllers.addAndGet();
-    _xLabelController = _scrollControllers.addAndGet();
+    _barController = _scrollControllerGroup.addAndGet();
+    _xLabelController = _scrollControllerGroup.addAndGet();
 
     _sizeController = AnimationController(
       duration: widget.timeChartSizeAnimationDuration,
@@ -178,7 +175,16 @@ class _TimeChartState extends State<TimeChart>
     // Listen to global pointer events so that we can hide a tooltip immediately
     // if some other control is clicked on.
     GestureBinding.instance!.pointerRouter.addGlobalRoute(_handlePointerEvent);
-    WidgetsBinding.instance!.addPostFrameCallback(_setFadeInAnimation);
+
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      _scrollControllerGroup.addOffsetChangedListener(() {
+        if ((_scrollControllerGroup.offset - _prevScrollPosition).abs() >
+            _blockWidth!) {
+          _prevScrollPosition = _scrollControllerGroup.offset;
+          setState(() {});
+        }
+      });
+    });
 
     processData(widget.data, widget.viewMode, widget.chartType,
         dateWithoutTime(widget.data.first.end.add(const Duration(days: 1))));
@@ -200,16 +206,6 @@ class _TimeChartState extends State<TimeChart>
   void _handlePointerEvent(PointerEvent event) {
     if (_overlayEntry == null) return;
     if (event is PointerDownEvent) _removeEntry();
-  }
-
-  void _setFadeInAnimation(_) {
-    setState(() {
-      _visible = true;
-      _overflowVisible = true;
-    });
-    Future.delayed(_fadeInDuration, () {
-      if (mounted) setState(() => _overflowVisible = false);
-    });
   }
 
   /// 해당 바(bar)를 눌렀을 경우 툴팁을 띄운다.
@@ -434,94 +430,84 @@ class _TimeChartState extends State<TimeChart>
       child: SizedBox(
         height: outerHeight,
         width: width,
-        child: AnimatedOpacity(
-          duration: _fadeInDuration,
-          curve: Curves.easeOutCirc,
-          opacity: _visible ? 1.0 : 0.3,
-          child: AnimatedContainer(
-            duration: _fadeInDuration,
-            curve: Curves.easeOutCirc,
-            padding: EdgeInsets.only(top: _visible ? 0.0 : 16.0),
-            child: Stack(
-              alignment: Alignment.topLeft,
-              children: [
-                // # #
-                // # #
-                SizedBox(
-                  width: width,
-                  height: outerHeight,
-                ),
-                _buildAnimatedBox(
-                  topPadding: _topPadding,
-                  width: width,
-                  builder: (context, topPosition) => CustomPaint(
-                    key: key,
-                    size: Size(width, double.infinity),
-                    painter: _buildYLabelPainter(context, topPosition),
-                  ),
-                ),
-                //-----
-                // # .
-                // # .
-                Positioned(
-                  top: _topPadding,
-                  child: Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      SizedBox(
-                        width: width - yLabelWidth,
-                        height: widget.height,
-                      ),
-                      Positioned.fill(
-                        child: CustomPaint(painter: BorderLinePainter()),
-                      ),
-                      Positioned.fill(
-                        child: NotificationListener<ScrollNotification>(
-                          onNotification: _handleScrollNotification,
-                          child: _horizontalScrollView(
-                            key: key,
-                            controller: _xLabelController,
-                            child: CustomPaint(
-                              size: innerSize,
-                              painter: _buildXLabelPainter(context),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                //-----
-                // # .
-                // . .
-                Positioned(
-                  top: _topPadding,
-                  child: Stack(
-                    children: [
-                      SizedBox(
-                        width: width - yLabelWidth,
-                        height: widget.height - kXLabelHeight,
-                      ),
-                      _buildAnimatedBox(
-                        bottomPadding: kXLabelHeight,
-                        width: width - yLabelWidth,
-                        child: _horizontalScrollView(
-                          key: key,
-                          controller: _barController,
-                          child: CanvasTouchDetector(
-                            builder: (context) => CustomPaint(
-                              size: innerSize,
-                              painter: _buildBarPainter(context),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+        child: Stack(
+          alignment: Alignment.topLeft,
+          children: [
+            // # #
+            // # #
+            SizedBox(
+              width: width,
+              height: outerHeight,
             ),
-          ),
+            _buildAnimatedBox(
+              topPadding: _topPadding,
+              width: width,
+              builder: (context, topPosition) => CustomPaint(
+                key: key,
+                size: Size(width, double.infinity),
+                painter: _buildYLabelPainter(context, topPosition),
+              ),
+            ),
+            //-----
+            // # .
+            // # .
+            Positioned(
+              top: _topPadding,
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  SizedBox(
+                    width: width - yLabelWidth,
+                    height: widget.height,
+                  ),
+                  Positioned.fill(
+                    child: CustomPaint(painter: BorderLinePainter()),
+                  ),
+                  Positioned.fill(
+                    child: NotificationListener<ScrollNotification>(
+                      onNotification: _handleScrollNotification,
+                      child: _horizontalScrollView(
+                        key: key,
+                        controller: _xLabelController,
+                        child: CustomPaint(
+                          size: innerSize,
+                          painter: _buildXLabelPainter(context),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            //-----
+            // # .
+            // . .
+            Positioned(
+              top: _topPadding,
+              child: Stack(
+                children: [
+                  SizedBox(
+                    width: width - yLabelWidth,
+                    height: widget.height - kXLabelHeight,
+                  ),
+                  _buildAnimatedBox(
+                    bottomPadding: kXLabelHeight,
+                    width: width - yLabelWidth,
+                    child: _horizontalScrollView(
+                      key: key,
+                      controller: _barController,
+                      child: CanvasTouchDetector(
+                        builder: (context) => CustomPaint(
+                          size: innerSize,
+                          painter: _buildBarPainter(context),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -567,11 +553,11 @@ class _TimeChartState extends State<TimeChart>
     final _heightAnimation = Tween<double>(
       begin: widget.height,
       end: _beginHeight,
-    ).animate(_sizeAnimation as Animation<double>);
+    ).animate(_sizeAnimation);
     final _heightForAlignTopAnimation = Tween<double>(
       begin: 0,
       end: _heightForAlignTop,
-    ).animate(_sizeAnimation as Animation<double>);
+    ).animate(_sizeAnimation);
 
     return AnimatedBuilder(
       animation: _sizeAnimation,
@@ -621,20 +607,24 @@ class _TimeChartState extends State<TimeChart>
     switch (widget.chartType) {
       case ChartType.time:
         return TimeXLabelPainter(
+          scrollController: _xLabelController,
+          scrollOffset:
+              _xLabelController.hasClients ? _xLabelController.offset : 0,
           context: context,
           viewMode: widget.viewMode,
           firstValueDateTime: processedSleepData.first.end,
           dayCount: dayCount,
           firstDataHasChanged: firstDataHasChanged,
-          inFadeAnimating: _overflowVisible,
         );
       case ChartType.amount:
         return AmountXLabelPainter(
+          scrollController: _xLabelController,
+          scrollOffset:
+              _xLabelController.hasClients ? _xLabelController.offset : 0,
           context: context,
           viewMode: widget.viewMode,
           firstValueDateTime: processedSleepData.first.end,
           dayCount: dayCount,
-          inFadeAnimating: _overflowVisible,
         );
     }
   }
@@ -644,6 +634,7 @@ class _TimeChartState extends State<TimeChart>
       case ChartType.time:
         return TimeBarPainter(
           scrollController: _barController,
+          scrollOffset: _barController.hasClients ? _barController.offset : 0,
           context: context,
           tooltipCallback: _tooltipCallback,
           sleepData: processedSleepData,
@@ -653,11 +644,11 @@ class _TimeChartState extends State<TimeChart>
           dayCount: dayCount,
           viewMode: widget.viewMode,
           isFirstDataChanged: firstDataHasChanged,
-          inFadeAnimating: _overflowVisible,
         );
       case ChartType.amount:
         return AmountBarPainter(
           scrollController: _barController,
+          scrollOffset: _barController.hasClients ? _barController.offset : 0,
           context: context,
           sleepData: processedSleepData,
           barColor: widget.barColor,
@@ -666,7 +657,6 @@ class _TimeChartState extends State<TimeChart>
           tooltipCallback: _tooltipCallback,
           dayCount: dayCount,
           viewMode: widget.viewMode,
-          inFadeAnimating: _overflowVisible,
         );
     }
   }

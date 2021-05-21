@@ -2,6 +2,10 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+bool areSameDate(DateTime a, DateTime b) {
+  return a.year == b.year && a.month == b.month && a.day == b.day;
+}
+
 DateTime dateWithoutTime(DateTime dateTime) {
   return DateTime(dateTime.year, dateTime.month, dateTime.day);
 }

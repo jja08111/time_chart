@@ -6,33 +6,29 @@ import '../chart_engine.dart';
 
 class TimeXLabelPainter extends ChartEngine {
   TimeXLabelPainter({
+    required ScrollController scrollController,
+    required this.scrollOffset,
     required BuildContext context,
     required ViewMode viewMode,
     required DateTime firstValueDateTime,
     required int? dayCount,
     required this.firstDataHasChanged,
-    required this.inFadeAnimating,
   }) : super(
+          scrollController: scrollController,
           context: context,
           viewMode: viewMode,
           firstValueDateTime: firstValueDateTime,
           dayCount: dayCount,
         );
 
+  final double scrollOffset;
   final bool firstDataHasChanged;
-  final bool inFadeAnimating;
 
   @override
   void paint(Canvas canvas, Size size) {
     setDefaultValue(size);
     drawXLabels(canvas, size,
-        inFadeAnimating: inFadeAnimating,
         firstDataHasChanged: firstDataHasChanged);
-  }
-
-  @override
-  bool shouldRepaint(covariant TimeXLabelPainter oldDelegate) {
-    return oldDelegate.inFadeAnimating != inFadeAnimating;
   }
 
   @override
@@ -43,4 +39,9 @@ class TimeXLabelPainter extends ChartEngine {
 
   @override
   void drawBar(Canvas canvas, Size size, List coordinates) {}
+
+  @override
+  bool shouldRepaint(covariant TimeXLabelPainter oldDelegate) {
+    return scrollOffset != oldDelegate.scrollOffset;
+  }
 }
