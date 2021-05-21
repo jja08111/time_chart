@@ -167,18 +167,14 @@ abstract class ChartEngine extends CustomPainter {
     Size size, {
     bool firstDataHasChanged = false,
   }) {
-    final viewLimitDay = getViewModeLimitDay(viewMode);
     final weekday = getShortWeekdayList(context);
-    final startDay = math.max(currentScrollOffsetToDay - 2, 0);
-    DateTime currentDate = firstValueDateTime!.add(Duration(days: -startDay));
+    DateTime currentDate = firstValueDateTime!;
 
     void turnOneBeforeDay() {
       currentDate = currentDate.add(const Duration(days: -1));
     }
 
-    for (int i = startDay; i < dayCount; i++) {
-      if (i - startDay > viewLimitDay + 3) break;
-
+    for (int i = 0; i < dayCount; i++) {
       late String text;
       bool isDashed = true;
 
@@ -197,8 +193,10 @@ abstract class ChartEngine extends CustomPainter {
 
       final dx = size.width - (i + 1) * blockWidth!;
 
-      _drawXText(canvas, size, text, dx);
-      _drawVerticalDivideLine(canvas, size, dx, isDashed);
+      if (inViewRange(size, dx)) {
+        _drawXText(canvas, size, text, dx);
+        _drawVerticalDivideLine(canvas, size, dx, isDashed);
+      }
     }
   }
 
@@ -259,14 +257,15 @@ abstract class ChartEngine extends CustomPainter {
     return ret + (ret <= 0 ? 24 : 0);
   }
 
-  bool inViewRange(Size size, double right) {
-    final barLeftPosition = size.width - right;
-    final barRightPosition = size.width - right - blockWidth!;
-    final tolerance = blockWidth! + 12.0;
+  bool inViewRange(Size size, double dx) {
+    final barLeftPosition = size.width - dx;
+    final barRightPosition = size.width - dx - blockWidth!;
     final scrollOffset = scrollController!.offset;
-    final int limitDay = getViewModeLimitDay(viewMode);
+    final int viewModeLimitDay = getViewModeLimitDay(viewMode);
+    final tolerance = blockWidth! * (viewModeLimitDay * 1.5);
 
     return barLeftPosition >= scrollOffset - tolerance &&
-        scrollOffset + (blockWidth! * limitDay) + tolerance >= barRightPosition;
+        scrollOffset + (blockWidth! * viewModeLimitDay) + tolerance >=
+            barRightPosition;
   }
 }

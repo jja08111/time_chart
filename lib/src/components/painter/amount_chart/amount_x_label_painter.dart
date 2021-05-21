@@ -21,7 +21,7 @@ class AmountXLabelPainter extends ChartEngine {
         );
 
   final double scrollOffset;
-  
+
   @override
   void paint(Canvas canvas, Size size) {
     setDefaultValue(size);

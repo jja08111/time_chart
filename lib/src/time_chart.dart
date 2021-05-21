@@ -197,10 +197,11 @@ class _TimeChartState extends State<TimeChart>
 
   void _addScrollListener() {
     _scrollControllerGroup.addOffsetChangedListener(() {
+      final viewModeLimitDay = getViewModeLimitDay(widget.viewMode);
       final difference =
           (_scrollControllerGroup.offset - _prevScrollPosition).abs();
 
-      if (difference >= _blockWidth!) {
+      if (difference >= (_blockWidth! * viewModeLimitDay)) {
         _prevScrollPosition = _scrollControllerGroup.offset;
         setState(() {});
       }

@@ -27,8 +27,7 @@ class TimeXLabelPainter extends ChartEngine {
   @override
   void paint(Canvas canvas, Size size) {
     setDefaultValue(size);
-    drawXLabels(canvas, size,
-        firstDataHasChanged: firstDataHasChanged);
+    drawXLabels(canvas, size, firstDataHasChanged: firstDataHasChanged);
   }
 
   @override
