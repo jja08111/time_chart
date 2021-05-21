@@ -34,6 +34,10 @@ class MyApp extends StatelessWidget {
       start: DateTime(2021, 1, 22, 12, 10),
       end: DateTime(2021, 1, 22, 16, 20),
     ),
+    DateTimeRange(
+      start: DateTime(2020, 1, 22, 12, 10),
+      end: DateTime(2020, 1, 22, 16, 20),
+    ),
   ];
 
   @override
