@@ -1,3 +1,6 @@
+## 0.2.0
+* [Update] Improved performance ([#4](https://github.com/jja08111/time_chart/pull/4)).
+
 ## 0.1.0
 * [Update] Stable release for null safety.
 

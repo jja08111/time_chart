@@ -139,7 +139,7 @@ class AmountBarPainter extends ChartEngine {
 
         dayCounter++;
 
-        if(!inViewRange(size, dx)) {
+        if (!inViewRange(size, dx)) {
           amountSum = 0;
           continue;
         }
@@ -156,8 +156,7 @@ class AmountBarPainter extends ChartEngine {
 
   @override
   bool shouldRepaint(AmountBarPainter old) {
-    return old.sleepData != sleepData ||
-        scrollOffset != old.scrollOffset;
+    return old.sleepData != sleepData || scrollOffset != old.scrollOffset;
   }
 
   @override
