@@ -7,7 +7,7 @@ import '../chart_engine.dart';
 class AmountXLabelPainter extends ChartEngine {
   AmountXLabelPainter({
     required ScrollController scrollController,
-    required this.scrollOffset,
+    required this.scrollOffsetNotifier,
     required BuildContext context,
     required ViewMode viewMode,
     required DateTime firstValueDateTime,
@@ -18,9 +18,10 @@ class AmountXLabelPainter extends ChartEngine {
           viewMode: viewMode,
           firstValueDateTime: firstValueDateTime,
           dayCount: dayCount,
+          repaint: scrollOffsetNotifier,
         );
 
-  final double scrollOffset;
+  final ValueNotifier<double> scrollOffsetNotifier;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -39,6 +40,6 @@ class AmountXLabelPainter extends ChartEngine {
 
   @override
   bool shouldRepaint(covariant AmountXLabelPainter oldDelegate) {
-    return scrollOffset != oldDelegate.scrollOffset;
+    return true;
   }
 }

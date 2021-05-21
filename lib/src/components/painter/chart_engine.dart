@@ -58,8 +58,10 @@ abstract class ChartEngine extends CustomPainter {
     required this.viewMode,
     this.firstValueDateTime,
     required this.context,
-  }) : dayCount = math.max(dayCount ?? getViewModeLimitDay(viewMode),
-            viewMode == ViewMode.weekly ? kWeeklyDayCount : kMonthlyDayCount) {
+    Listenable? repaint,
+  })  : dayCount = math.max(dayCount ?? getViewModeLimitDay(viewMode),
+            viewMode == ViewMode.weekly ? kWeeklyDayCount : kMonthlyDayCount),
+        super(repaint: repaint) {
     _translations = Translations(context);
   }
 
@@ -262,7 +264,7 @@ abstract class ChartEngine extends CustomPainter {
     final barRightPosition = size.width - dx - blockWidth!;
     final scrollOffset = scrollController!.offset;
     final int viewModeLimitDay = getViewModeLimitDay(viewMode);
-    final tolerance = blockWidth!;
+    final tolerance = blockWidth! * 2;
 
     return barLeftPosition >= scrollOffset - tolerance &&
         scrollOffset + (blockWidth! * viewModeLimitDay) + tolerance >=

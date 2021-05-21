@@ -9,7 +9,7 @@ import '../chart_engine.dart';
 class AmountBarPainter extends ChartEngine {
   AmountBarPainter({
     required ScrollController scrollController,
-    required this.scrollOffset,
+    required this.scrollOffsetNotifier,
     required this.tooltipCallback,
     required this.context,
     required this.sleepData,
@@ -24,9 +24,10 @@ class AmountBarPainter extends ChartEngine {
           viewMode: viewMode,
           firstValueDateTime: sleepData.first.end,
           context: context,
+          repaint: scrollOffsetNotifier,
         );
 
-  final double scrollOffset;
+  final ValueNotifier<double> scrollOffsetNotifier;
   final TooltipCallback tooltipCallback;
   final BuildContext context;
   final Color? barColor;
@@ -156,7 +157,7 @@ class AmountBarPainter extends ChartEngine {
 
   @override
   bool shouldRepaint(AmountBarPainter old) {
-    return old.sleepData != sleepData || scrollOffset != old.scrollOffset;
+    return old.sleepData != sleepData;
   }
 
   @override
