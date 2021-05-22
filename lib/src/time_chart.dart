@@ -27,12 +27,15 @@ import 'components/utils/context_utils.dart';
 
 const double _kStatusBarHeight = 30.0;
 
+/// 최상단에 그려진 것들이 잘리지 않기 위해 필요한 상단 패딩값이다.
+const double _kChartTopPadding = 4.0;
+
 enum ChartType {
   time,
   amount,
 }
 
-class TimeChart extends StatefulWidget {
+class TimeChart extends StatelessWidget {
   TimeChart({
     Key? key,
     this.chartType = ChartType.time,
@@ -60,7 +63,7 @@ class TimeChart extends StatefulWidget {
 
   /// Total chart height
   ///
-  /// Default is `280.0`. Actual height is [height] + 4.0([_TimeChartState._topPadding]).
+  /// Default is `280.0`. Actual height is [height] + 4.0([_kChartTopPadding]).
   final double height;
 
   /// The color of the bar in the chart.
@@ -106,16 +109,67 @@ class TimeChart extends StatefulWidget {
   final ViewMode viewMode;
 
   @override
-  _TimeChartState createState() => _TimeChartState();
+  Widget build(BuildContext context) {
+    return LayoutBuilder(builder: (_, box) {
+      final actualWidth = width ?? box.maxWidth;
+
+      return SizedBox(
+        height: height + _kChartTopPadding,
+        width: actualWidth,
+        child: _Chart(
+          chartType: chartType,
+          width: actualWidth,
+          height: height,
+          barColor: barColor,
+          data: data,
+          timeChartSizeAnimationDuration: timeChartSizeAnimationDuration,
+          tooltipDuration: tooltipDuration,
+          tooltipBackgroundColor: tooltipBackgroundColor,
+          tooltipStart: tooltipStart,
+          tooltipEnd: tooltipEnd,
+          viewMode: viewMode,
+        ),
+      );
+    });
+  }
 }
 
-class _TimeChartState extends State<TimeChart>
+class _Chart extends StatefulWidget {
+  _Chart({
+    Key? key,
+    required this.chartType,
+    required this.width,
+    required this.height,
+    required this.barColor,
+    required this.data,
+    required this.timeChartSizeAnimationDuration,
+    required this.tooltipDuration,
+    required this.tooltipBackgroundColor,
+    required this.tooltipStart,
+    required this.tooltipEnd,
+    required this.viewMode,
+  }) : super(key: key);
+
+  final ChartType chartType;
+  final double width;
+  final double height;
+  final Color? barColor;
+  final List<DateTimeRange> data;
+  final Duration timeChartSizeAnimationDuration;
+  final Duration tooltipDuration;
+  final Color? tooltipBackgroundColor;
+  final String tooltipStart;
+  final String tooltipEnd;
+  final ViewMode viewMode;
+
+  @override
+  _ChartState createState() => _ChartState();
+}
+
+class _ChartState extends State<_Chart>
     with TickerProviderStateMixin, TimeDataProcessor {
   static const Duration _tooltipFadeInDuration = Duration(milliseconds: 150);
   static const Duration _tooltipFadeOutDuration = Duration(milliseconds: 75);
-
-  /// 최상단에 그려진 것들이 잘리지 않기 위해 필요한 상단 패딩값이다.
-  static const double _topPadding = 4.0;
 
   LinkedScrollControllerGroup _scrollControllerGroup =
       LinkedScrollControllerGroup();
@@ -286,7 +340,7 @@ class _TimeChartState extends State<TimeChart>
     final candidateTop = rect.top +
         pivotOffset.dy -
         tooltipSize.height / 2 +
-        _topPadding +
+        _kChartTopPadding +
         (chartType == ChartType.time
             ? (rect.bottom - rect.top) / 2
             : kTooltipArrowHeight / 2);
@@ -425,110 +479,102 @@ class _TimeChartState extends State<TimeChart>
   @override
   Widget build(BuildContext context) {
     final int viewModeLimitDay = getViewModeLimitDay(widget.viewMode);
-    final double outerHeight = _topPadding + widget.height;
-    final double yLabelWidth = _getRightMargin(context);
-
     final key = ValueKey((topHour ?? 0) + (bottomHour ?? 1) * 100);
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final double width = widget.width ?? constraints.maxWidth;
-        _blockWidth ??= (width - yLabelWidth) / viewModeLimitDay;
+    final double outerHeight = _kChartTopPadding + widget.height;
+    final double yLabelWidth = _getRightMargin(context);
+    final double totalWidth = widget.width;
 
-        final innerSize = Size(
-          _blockWidth! * max(dayCount!, viewModeLimitDay),
-          double.infinity,
-        );
+    _blockWidth ??= (totalWidth - yLabelWidth) / viewModeLimitDay;
 
-        return GestureDetector(
-          onPanDown: _handlePanDown,
-          child: SizedBox(
+    final innerSize = Size(
+      _blockWidth! * max(dayCount!, viewModeLimitDay),
+      double.infinity,
+    );
+
+    return GestureDetector(
+      onPanDown: _handlePanDown,
+      child: Stack(
+        alignment: Alignment.topLeft,
+        children: [
+          // # #
+          // # #
+          SizedBox(
+            width: totalWidth,
             height: outerHeight,
-            width: width,
+          ),
+          _buildAnimatedBox(
+            topPadding: _kChartTopPadding,
+            width: totalWidth,
+            builder: (context, topPosition) => CustomPaint(
+              key: key,
+              size: Size(totalWidth, double.infinity),
+              painter: _buildYLabelPainter(context, topPosition),
+            ),
+          ),
+          //-----
+          // # .
+          // # .
+          Positioned(
+            top: _kChartTopPadding,
             child: Stack(
-              alignment: Alignment.topLeft,
+              clipBehavior: Clip.none,
               children: [
-                // # #
-                // # #
                 SizedBox(
-                  width: width,
-                  height: outerHeight,
+                  width: totalWidth - yLabelWidth,
+                  height: widget.height,
                 ),
-                _buildAnimatedBox(
-                  topPadding: _topPadding,
-                  width: width,
-                  builder: (context, topPosition) => CustomPaint(
-                    key: key,
-                    size: Size(width, double.infinity),
-                    painter: _buildYLabelPainter(context, topPosition),
+                const Positioned.fill(
+                  child: const CustomPaint(
+                    painter: const BorderLinePainter(),
                   ),
                 ),
-                //-----
-                // # .
-                // # .
-                Positioned(
-                  top: _topPadding,
-                  child: Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      SizedBox(
-                        width: width - yLabelWidth,
-                        height: widget.height,
+                Positioned.fill(
+                  child: NotificationListener<ScrollNotification>(
+                    onNotification: _handleScrollNotification,
+                    child: _horizontalScrollView(
+                      key: key,
+                      controller: _xLabelController,
+                      child: CustomPaint(
+                        size: innerSize,
+                        painter: _buildXLabelPainter(context),
                       ),
-                      const Positioned.fill(
-                        child: const CustomPaint(
-                          painter: const BorderLinePainter(),
-                        ),
-                      ),
-                      Positioned.fill(
-                        child: NotificationListener<ScrollNotification>(
-                          onNotification: _handleScrollNotification,
-                          child: _horizontalScrollView(
-                            key: key,
-                            controller: _xLabelController,
-                            child: CustomPaint(
-                              size: innerSize,
-                              painter: _buildXLabelPainter(context),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                //-----
-                // # .
-                // . .
-                Positioned(
-                  top: _topPadding,
-                  child: Stack(
-                    children: [
-                      SizedBox(
-                        width: width - yLabelWidth,
-                        height: widget.height - kXLabelHeight,
-                      ),
-                      _buildAnimatedBox(
-                        bottomPadding: kXLabelHeight,
-                        width: width - yLabelWidth,
-                        child: _horizontalScrollView(
-                          key: key,
-                          controller: _barController,
-                          child: CanvasTouchDetector(
-                            builder: (context) => CustomPaint(
-                              size: innerSize,
-                              painter: _buildBarPainter(context),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
               ],
             ),
           ),
-        );
-      },
+          //-----
+          // # .
+          // . .
+          Positioned(
+            top: _kChartTopPadding,
+            child: Stack(
+              children: [
+                SizedBox(
+                  width: totalWidth - yLabelWidth,
+                  height: widget.height - kXLabelHeight,
+                ),
+                _buildAnimatedBox(
+                  bottomPadding: kXLabelHeight,
+                  width: totalWidth - yLabelWidth,
+                  child: _horizontalScrollView(
+                    key: key,
+                    controller: _barController,
+                    child: CanvasTouchDetector(
+                      builder: (context) => CustomPaint(
+                        size: innerSize,
+                        painter: _buildBarPainter(context),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -593,7 +639,7 @@ class _TimeChartState extends State<TimeChart>
             alignment: Alignment.center,
             child: child != null
                 ? child
-                : builder!(context, topPosition - _topPadding),
+                : builder!(context, topPosition - _kChartTopPadding),
           ),
         );
       },

@@ -1,3 +1,6 @@
+## 0.2.5
+* [Bug] Fixed chart state bug caused LayoutBuilder.
+
 ## 0.2.4
 * [Bug] Fixed invalid sum in amount chart.
 * [Bug] Fixed chart layout bug.
