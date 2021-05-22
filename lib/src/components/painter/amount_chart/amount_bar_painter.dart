@@ -147,7 +147,7 @@ class AmountBarPainter extends ChartEngine {
 
         dayCounter++;
 
-        if ((dayCounter - 1 - ChartEngine.toleranceDay) -
+        if ((dayCounter - 1 - (ChartEngine.toleranceDay * 2)) -
                 scrollOffsetToDayCount >
             viewLimitDay) {
           break;

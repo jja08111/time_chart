@@ -223,7 +223,8 @@ class TimeBarPainter extends ChartEngine {
         ++dayCounter;
       }
 
-      if ((dayCounter - 1 - ChartEngine.toleranceDay) - scrollOffsetToDayCount >
+      if ((dayCounter - 1 - (ChartEngine.toleranceDay * 2)) -
+              scrollOffsetToDayCount >
           viewLimitDay) {
         break;
       }

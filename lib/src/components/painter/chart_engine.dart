@@ -52,6 +52,8 @@ class OffsetWithAmountDate {
 }
 
 abstract class ChartEngine extends CustomPainter {
+  static const int toleranceDay = 1;
+
   ChartEngine({
     this.scrollController,
     int? dayCount,
@@ -181,7 +183,9 @@ abstract class ChartEngine extends CustomPainter {
       currentDate = currentDate.add(const Duration(days: -1));
     }
 
-    for (int i = 0; i <= viewModeLimitDay + toleranceDay * 2; i++) {
+    for (int i = scrollOffsetToDay;
+        i <= scrollOffsetToDay + viewModeLimitDay + toleranceDay * 2;
+        i++) {
       late String text;
       bool isDashed = true;
 
@@ -198,7 +202,7 @@ abstract class ChartEngine extends CustomPainter {
           if (i % 7 != (firstDataHasChanged ? 0 : 6)) continue;
       }
 
-      final dx = size.width - (i + 1 + scrollOffsetToDay) * blockWidth!;
+      final dx = size.width - (i + 1) * blockWidth!;
 
       _drawXText(canvas, size, text, dx);
       _drawVerticalDivideLine(canvas, size, dx, isDashed);
@@ -261,8 +265,6 @@ abstract class ChartEngine extends CustomPainter {
     var ret = pivot - duration;
     return ret + (ret <= 0 ? 24 : 0);
   }
-
-  static const int toleranceDay = 2;
 
   /// 이진 탐색을 하며 [targetDate]에 [toleranceDay]를 더한 날짜를 가진
   /// (시간은 제외한) 값을 반환한다.
