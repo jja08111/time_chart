@@ -1,3 +1,7 @@
+## 0.2.4
+* [Bug] Fixed invalid sum in amount chart.
+* [Bug] Fixed chart layout bug.
+
 ## 0.2.3
 * [Update] Improved performance by using binary search.
 
