@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:touchable/touchable.dart';
 import '../../utils/time_assistant.dart' as timeAssistant;
@@ -182,11 +184,17 @@ class TimeBarPainter extends ChartEngine {
     final int pivotHeight = pivotBottom > topHour ? pivotBottom - topHour : 24;
     final int length = sleepData.length;
     final double height = size.height;
+    final int viewLimitDay = getViewModeLimitDay(viewMode);
 
-    // 1부터 시작
-    int dayCounter = 1;
+    final scrollOffsetToDayCount = currentScrollOffsetToDay;
+    final DateTime startDateTime =
+        sleepData.first.end.add(Duration(days: -scrollOffsetToDayCount));
+    final int startIndex = indexOf(startDateTime, sleepData);
+    // 1부터 시작한다.
+    int dayCounter =
+        max(1, 1 + scrollOffsetToDayCount - ChartEngine.toleranceDay);
 
-    for (int index = 0; index < length; index++) {
+    for (int index = startIndex; index < length; index++) {
       final wakeUpTimeDouble =
           timeAssistant.dateTimeToDouble(sleepData[index].end);
       final sleepAmountDouble = timeAssistant.durationHour(sleepData[index]);
@@ -215,7 +223,10 @@ class TimeBarPainter extends ChartEngine {
         ++dayCounter;
       }
 
-      if (!inViewRange(size, right)) continue;
+      if ((dayCounter - 1 - ChartEngine.toleranceDay) - scrollOffsetToDayCount >
+          viewLimitDay) {
+        break;
+      }
 
       // 그릴 필요가 없는 경우 넘어간다
       if (top == bottom ||

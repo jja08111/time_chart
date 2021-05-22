@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:path_drawing/path_drawing.dart';
+import 'package:time_chart/src/components/utils/time_assistant.dart';
 import '../view_mode.dart';
 import '../translations/translations.dart';
 
@@ -79,7 +80,7 @@ abstract class ChartEngine extends CustomPainter {
 
   int get currentScrollOffsetToDay {
     if (!scrollController!.hasClients) return 0;
-    return (scrollController!.offset / blockWidth!).round();
+    return (scrollController!.offset / blockWidth!).floor();
   }
 
   Radius get barRadius => const Radius.circular(6.0);
@@ -170,13 +171,17 @@ abstract class ChartEngine extends CustomPainter {
     bool firstDataHasChanged = false,
   }) {
     final weekday = getShortWeekdayList(context);
-    DateTime currentDate = firstValueDateTime!;
+    final viewModeLimitDay = getViewModeLimitDay(viewMode);
+    final scrollOffsetToDay =
+        math.max(0, currentScrollOffsetToDay - toleranceDay);
+    DateTime currentDate =
+        firstValueDateTime!.add(Duration(days: -scrollOffsetToDay));
 
     void turnOneBeforeDay() {
       currentDate = currentDate.add(const Duration(days: -1));
     }
 
-    for (int i = 0; i < dayCount; i++) {
+    for (int i = 0; i <= viewModeLimitDay + toleranceDay * 2; i++) {
       late String text;
       bool isDashed = true;
 
@@ -193,12 +198,10 @@ abstract class ChartEngine extends CustomPainter {
           if (i % 7 != (firstDataHasChanged ? 0 : 6)) continue;
       }
 
-      final dx = size.width - (i + 1) * blockWidth!;
+      final dx = size.width - (i + 1 + scrollOffsetToDay) * blockWidth!;
 
-      if (inViewRange(size, dx)) {
-        _drawXText(canvas, size, text, dx);
-        _drawVerticalDivideLine(canvas, size, dx, isDashed);
-      }
+      _drawXText(canvas, size, text, dx);
+      _drawVerticalDivideLine(canvas, size, dx, isDashed);
     }
   }
 
@@ -259,15 +262,41 @@ abstract class ChartEngine extends CustomPainter {
     return ret + (ret <= 0 ? 24 : 0);
   }
 
-  bool inViewRange(Size size, double dx) {
-    final barLeftPosition = size.width - dx;
-    final barRightPosition = size.width - dx - blockWidth!;
-    final scrollOffset = scrollController!.offset;
-    final int viewModeLimitDay = getViewModeLimitDay(viewMode);
-    final tolerance = blockWidth! * 2;
+  static const int toleranceDay = 2;
 
-    return barLeftPosition >= scrollOffset - tolerance &&
-        scrollOffset + (blockWidth! * viewModeLimitDay) + tolerance >=
-            barRightPosition;
+  /// 이진 탐색을 하며 [targetDate]에 [toleranceDay]를 더한 날짜를 가진
+  /// (시간은 제외한) 값을 반환한다.
+  ///
+  /// 이때 [sleepDataList]의 값들은 빈 공백이 없이 전부 채워진 상태로 가공되어 있어야 한다.
+  int indexOf(DateTime targetDate, List<DateTimeRange> sleepDataList) {
+    targetDate = targetDate.add(const Duration(days: toleranceDay));
+    int min = 0;
+    int max = sleepDataList.length;
+    late int result;
+    while (min < max) {
+      result = min + ((max - min) >> 1);
+      final DateTimeRange element = sleepDataList[result];
+      final int comp = _compareDateWithOutTime(element.end, targetDate);
+      if (comp == 0) {
+        break;
+      }
+      if (comp < 0) {
+        min = result + 1;
+      } else {
+        max = result;
+      }
+    }
+    // 같은 날 중에 가장 최근 날짜 데이터로 고른다.
+    while (result - 1 >= 0 &&
+        sleepDataList[result - 1].end == sleepDataList[result].end) {
+      result--;
+    }
+    return result;
+  }
+
+  int _compareDateWithOutTime(DateTime a, DateTime b) {
+    if (areSameDate(a, b)) return 0;
+    if (a.isBefore(b)) return 1;
+    return -1;
   }
 }

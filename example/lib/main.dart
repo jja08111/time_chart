@@ -5,9 +5,10 @@ import 'package:time_chart/time_chart.dart';
 
 void main() => runApp(MyApp());
 
+// ignore: must_be_immutable
 class MyApp extends StatelessWidget {
   // Data must be sorted.
-  final data = [
+  final smallDataList = [
     DateTimeRange(
       start: DateTime(2021, 2, 24, 23, 15),
       end: DateTime(2021, 2, 25, 7, 30),
@@ -42,7 +43,7 @@ class MyApp extends StatelessWidget {
     final List<DateTimeRange> list = [];
     final random = Random();
 
-    for (int i = 0; i < 31; ++i) {
+    for (int i = 0; i < 10000; ++i) {
       final int randomMinutes1 = random.nextInt(59);
       final int randomMinutes2 = random.nextInt(59);
       final start = DateTime(2021, 2, 1 - i, 0, randomMinutes1);
@@ -56,10 +57,12 @@ class MyApp extends StatelessWidget {
     return list;
   }
 
+  late List<DateTimeRange> bigDataList = [];
+
   @override
   Widget build(BuildContext context) {
     final sizedBox = const SizedBox(height: 16);
-    final dataList = getRandomSampleDataList();
+    if (bigDataList.isEmpty) bigDataList = getRandomSampleDataList();
 
     return MaterialApp(
       home: Scaffold(
@@ -71,19 +74,19 @@ class MyApp extends StatelessWidget {
               children: [
                 const Text('Weekly time chart'),
                 TimeChart(
-                  data: dataList,
+                  data: bigDataList,
                   viewMode: ViewMode.weekly,
                 ),
                 sizedBox,
                 const Text('Monthly time chart'),
                 TimeChart(
-                  data: dataList,
+                  data: bigDataList,
                   viewMode: ViewMode.monthly,
                 ),
                 sizedBox,
                 const Text('Weekly amount chart'),
                 TimeChart(
-                  data: data,
+                  data: smallDataList,
                   chartType: ChartType.amount,
                   viewMode: ViewMode.weekly,
                   barColor: Colors.deepPurple,
@@ -91,7 +94,7 @@ class MyApp extends StatelessWidget {
                 sizedBox,
                 const Text('Monthly amount chart'),
                 TimeChart(
-                  data: data,
+                  data: smallDataList,
                   chartType: ChartType.amount,
                   viewMode: ViewMode.monthly,
                   barColor: Colors.deepPurple,
