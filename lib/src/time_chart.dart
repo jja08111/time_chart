@@ -426,104 +426,109 @@ class _TimeChartState extends State<TimeChart>
   Widget build(BuildContext context) {
     final int viewModeLimitDay = getViewModeLimitDay(widget.viewMode);
     final double outerHeight = _topPadding + widget.height;
-    final double width =
-        widget.width ?? MediaQuery.of(context).size.width - 32.0;
     final double yLabelWidth = _getRightMargin(context);
 
-    _blockWidth ??= (width - yLabelWidth) / viewModeLimitDay;
     final key = ValueKey((topHour ?? 0) + (bottomHour ?? 1) * 100);
-    final innerSize = Size(
-      _blockWidth! * max(dayCount!, viewModeLimitDay),
-      double.infinity,
-    );
 
-    return GestureDetector(
-      onPanDown: _handlePanDown,
-      child: SizedBox(
-        height: outerHeight,
-        width: width,
-        child: Stack(
-          alignment: Alignment.topLeft,
-          children: [
-            // # #
-            // # #
-            SizedBox(
-              width: width,
-              height: outerHeight,
-            ),
-            _buildAnimatedBox(
-              topPadding: _topPadding,
-              width: width,
-              builder: (context, topPosition) => CustomPaint(
-                key: key,
-                size: Size(width, double.infinity),
-                painter: _buildYLabelPainter(context, topPosition),
-              ),
-            ),
-            //-----
-            // # .
-            // # .
-            Positioned(
-              top: _topPadding,
-              child: Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  SizedBox(
-                    width: width - yLabelWidth,
-                    height: widget.height,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final double width = widget.width ?? constraints.maxWidth;
+        _blockWidth ??= (width - yLabelWidth) / viewModeLimitDay;
+
+        final innerSize = Size(
+          _blockWidth! * max(dayCount!, viewModeLimitDay),
+          double.infinity,
+        );
+
+        return GestureDetector(
+          onPanDown: _handlePanDown,
+          child: SizedBox(
+            height: outerHeight,
+            width: width,
+            child: Stack(
+              alignment: Alignment.topLeft,
+              children: [
+                // # #
+                // # #
+                SizedBox(
+                  width: width,
+                  height: outerHeight,
+                ),
+                _buildAnimatedBox(
+                  topPadding: _topPadding,
+                  width: width,
+                  builder: (context, topPosition) => CustomPaint(
+                    key: key,
+                    size: Size(width, double.infinity),
+                    painter: _buildYLabelPainter(context, topPosition),
                   ),
-                  const Positioned.fill(
-                    child: const CustomPaint(
-                      painter: const BorderLinePainter(),
-                    ),
-                  ),
-                  Positioned.fill(
-                    child: NotificationListener<ScrollNotification>(
-                      onNotification: _handleScrollNotification,
-                      child: _horizontalScrollView(
-                        key: key,
-                        controller: _xLabelController,
-                        child: CustomPaint(
-                          size: innerSize,
-                          painter: _buildXLabelPainter(context),
+                ),
+                //-----
+                // # .
+                // # .
+                Positioned(
+                  top: _topPadding,
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      SizedBox(
+                        width: width - yLabelWidth,
+                        height: widget.height,
+                      ),
+                      const Positioned.fill(
+                        child: const CustomPaint(
+                          painter: const BorderLinePainter(),
                         ),
                       ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            //-----
-            // # .
-            // . .
-            Positioned(
-              top: _topPadding,
-              child: Stack(
-                children: [
-                  SizedBox(
-                    width: width - yLabelWidth,
-                    height: widget.height - kXLabelHeight,
-                  ),
-                  _buildAnimatedBox(
-                    bottomPadding: kXLabelHeight,
-                    width: width - yLabelWidth,
-                    child: _horizontalScrollView(
-                      key: key,
-                      controller: _barController,
-                      child: CanvasTouchDetector(
-                        builder: (context) => CustomPaint(
-                          size: innerSize,
-                          painter: _buildBarPainter(context),
+                      Positioned.fill(
+                        child: NotificationListener<ScrollNotification>(
+                          onNotification: _handleScrollNotification,
+                          child: _horizontalScrollView(
+                            key: key,
+                            controller: _xLabelController,
+                            child: CustomPaint(
+                              size: innerSize,
+                              painter: _buildXLabelPainter(context),
+                            ),
+                          ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+                //-----
+                // # .
+                // . .
+                Positioned(
+                  top: _topPadding,
+                  child: Stack(
+                    children: [
+                      SizedBox(
+                        width: width - yLabelWidth,
+                        height: widget.height - kXLabelHeight,
+                      ),
+                      _buildAnimatedBox(
+                        bottomPadding: kXLabelHeight,
+                        width: width - yLabelWidth,
+                        child: _horizontalScrollView(
+                          key: key,
+                          controller: _barController,
+                          child: CanvasTouchDetector(
+                            builder: (context) => CustomPaint(
+                              size: innerSize,
+                              painter: _buildBarPainter(context),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
