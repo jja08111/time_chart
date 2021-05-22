@@ -275,6 +275,7 @@ abstract class ChartEngine extends CustomPainter {
     int min = 0;
     int max = sleepDataList.length;
     late int result;
+
     while (min < max) {
       result = min + ((max - min) >> 1);
       final DateTimeRange element = sleepDataList[result];
@@ -290,7 +291,7 @@ abstract class ChartEngine extends CustomPainter {
     }
     // 같은 날 중에 가장 최근 날짜 데이터로 고른다.
     while (result - 1 >= 0 &&
-        sleepDataList[result - 1].end == sleepDataList[result].end) {
+        sleepDataList[result - 1].end.day == sleepDataList[result].end.day) {
       result--;
     }
     return result;
