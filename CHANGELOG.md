@@ -1,3 +1,6 @@
+## 0.2.3
+* [Update] Improved performance by using binary search.
+
 ## 0.2.2
 * [Update] Code formatting to fix pub score.
 
