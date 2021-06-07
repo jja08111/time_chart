@@ -74,7 +74,7 @@ class MyApp extends StatelessWidget {
               children: [
                 const Text('Weekly time chart'),
                 TimeChart(
-                  data: smallDataList,
+                  data: bigDataList,
                   viewMode: ViewMode.weekly,
                 ),
                 sizedBox,
