@@ -7,6 +7,12 @@ void main() => runApp(MyApp());
 
 // ignore: must_be_immutable
 class MyApp extends StatelessWidget {
+  MyApp() {
+    bigDataList = getRandomSampleDataList();
+  }
+
+  late List<DateTimeRange> bigDataList = [];
+
   // Data must be sorted.
   final smallDataList = [
     DateTimeRange(
@@ -57,12 +63,9 @@ class MyApp extends StatelessWidget {
     return list;
   }
 
-  late List<DateTimeRange> bigDataList = [];
-
   @override
   Widget build(BuildContext context) {
     final sizedBox = const SizedBox(height: 16);
-    if (bigDataList.isEmpty) bigDataList = getRandomSampleDataList();
 
     return MaterialApp(
       home: Scaffold(
@@ -75,6 +78,13 @@ class MyApp extends StatelessWidget {
                 const Text('Weekly time chart'),
                 TimeChart(
                   data: bigDataList,
+                  foregroundData: [
+                    DateTimeRange(
+                      start: DateTime(2021, 2, 1, 3, 15),
+                      end: DateTime(2021, 2, 1, 5, 30),
+                    ),
+                  ],
+                  foregroundBarColor: Colors.red,
                   viewMode: ViewMode.weekly,
                 ),
                 sizedBox,

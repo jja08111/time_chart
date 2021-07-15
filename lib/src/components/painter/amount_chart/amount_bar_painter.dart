@@ -17,7 +17,7 @@ class AmountBarPainter extends ChartEngine {
     required this.bottomHour,
     required int? dayCount,
     required ViewMode viewMode,
-    this.barColor,
+    required this.barColor,
   }) : super(
           scrollController: scrollController,
           dayCount: dayCount,
@@ -30,7 +30,7 @@ class AmountBarPainter extends ChartEngine {
   final ValueNotifier<double> scrollOffsetNotifier;
   final TooltipCallback tooltipCallback;
   final BuildContext context;
-  final Color? barColor;
+  final Color barColor;
   final List<DateTimeRange> sleepData;
   final int? topHour;
   final int? bottomHour;
@@ -41,7 +41,7 @@ class AmountBarPainter extends ChartEngine {
         scrollController: scrollController,
         scrollDirection: AxisDirection.left);
     final paint = Paint()
-      ..color = barColor ?? Theme.of(context).accentColor
+      ..color = barColor
       ..style = PaintingStyle.fill
       ..strokeCap = StrokeCap.round;
 

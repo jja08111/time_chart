@@ -42,7 +42,9 @@ class TimeChart extends StatelessWidget {
     this.width,
     this.height = 280.0,
     this.barColor,
+    this.foregroundBarColor,
     required this.data,
+    this.foregroundData,
     this.timeChartSizeAnimationDuration = const Duration(milliseconds: 300),
     this.tooltipDuration = const Duration(seconds: 7),
     this.tooltipBackgroundColor,
@@ -71,11 +73,22 @@ class TimeChart extends StatelessWidget {
   /// Default is [accentColor].
   final Color? barColor;
 
+  /// The color of the foreground bar in the chart.
+  ///
+  /// Default is darker [accentColor].
+  final Color? foregroundBarColor;
+
   /// The list of [DateTimeRange].
   ///
-  /// First index is latest data, End data is oldest data. It must be sorted
+  /// First index is latest data, last data is oldest data. It must be sorted
   /// because of correctly painting the chart. This value must not be null.
   final List<DateTimeRange> data;
+
+  /// The list of [DateTimeRange] for showing foreground bars.
+  ///
+  /// These are shown upper on [data] bars. First index is latest data,
+  /// last data is oldest data. It must be sorted because of correctly painting the chart.
+  final List<DateTimeRange>? foregroundData;
 
   /// The size animation duration of time chart when is changed pivot hours.
   ///
@@ -121,7 +134,9 @@ class TimeChart extends StatelessWidget {
           width: actualWidth,
           height: height,
           barColor: barColor,
+          foregroundBarColor: foregroundBarColor,
           data: data,
+          foregroundData: foregroundData,
           timeChartSizeAnimationDuration: timeChartSizeAnimationDuration,
           tooltipDuration: tooltipDuration,
           tooltipBackgroundColor: tooltipBackgroundColor,
@@ -141,7 +156,9 @@ class _Chart extends StatefulWidget {
     required this.width,
     required this.height,
     required this.barColor,
+    required this.foregroundBarColor,
     required this.data,
+    required this.foregroundData,
     required this.timeChartSizeAnimationDuration,
     required this.tooltipDuration,
     required this.tooltipBackgroundColor,
@@ -154,7 +171,12 @@ class _Chart extends StatefulWidget {
   final double width;
   final double height;
   final Color? barColor;
+  final Color? foregroundBarColor;
   final List<DateTimeRange> data;
+
+  // TODO: 데이터 가공 필요함
+  final List<DateTimeRange>? foregroundData;
+
   final Duration timeChartSizeAnimationDuration;
   final Duration tooltipDuration;
   final Color? tooltipBackgroundColor;
@@ -565,7 +587,21 @@ class _ChartState extends State<_Chart>
                     child: CanvasTouchDetector(
                       builder: (context) => CustomPaint(
                         size: innerSize,
-                        painter: _buildBarPainter(context),
+                        painter: _buildBarPainter(
+                          context: context,
+                          data: processedSleepData,
+                          barColor:
+                              widget.barColor ?? Theme.of(context).accentColor,
+                        ),
+                        // TODO: 포어그라운드 그래프가 뒤쪽에 위치하여 보이질 않음
+                        foregroundPainter: widget.foregroundData == null
+                            ? null
+                            : _buildBarPainter(
+                                context: context,
+                                data: widget.foregroundData!,
+                                barColor: widget.barColor ??
+                                    Theme.of(context).primaryColor,
+                              ),
                       ),
                     ),
                   ),
@@ -692,7 +728,11 @@ class _ChartState extends State<_Chart>
     }
   }
 
-  CustomPainter _buildBarPainter(BuildContext context) {
+  CustomPainter _buildBarPainter({
+    required BuildContext context,
+    required List<DateTimeRange> data,
+    required Color barColor,
+  }) {
     switch (widget.chartType) {
       case ChartType.time:
         return TimeBarPainter(
@@ -700,8 +740,8 @@ class _ChartState extends State<_Chart>
           scrollOffsetNotifier: _scrollOffsetNotifier,
           context: context,
           tooltipCallback: _tooltipCallback,
-          sleepData: processedSleepData,
-          barColor: widget.barColor,
+          sleepData: data,
+          barColor: barColor,
           topHour: topHour!,
           bottomHour: bottomHour!,
           dayCount: dayCount,
@@ -713,8 +753,8 @@ class _ChartState extends State<_Chart>
           scrollController: _barController,
           scrollOffsetNotifier: _scrollOffsetNotifier,
           context: context,
-          sleepData: processedSleepData,
-          barColor: widget.barColor,
+          sleepData: data,
+          barColor: barColor,
           topHour: topHour,
           bottomHour: bottomHour,
           tooltipCallback: _tooltipCallback,

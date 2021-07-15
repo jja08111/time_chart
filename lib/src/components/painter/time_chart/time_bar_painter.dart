@@ -18,7 +18,7 @@ class TimeBarPainter extends ChartEngine {
     required int? dayCount,
     required ViewMode viewMode,
     required bool isFirstDataChanged,
-    this.barColor,
+    required this.barColor,
   }) : super(
           scrollController: scrollController,
           dayCount: dayCount,
@@ -32,7 +32,7 @@ class TimeBarPainter extends ChartEngine {
   final ValueNotifier<double> scrollOffsetNotifier;
   final TooltipCallback tooltipCallback;
   final BuildContext context;
-  final Color? barColor;
+  final Color barColor;
 
   /// 수면 데이터이다.
   ///
@@ -105,7 +105,7 @@ class TimeBarPainter extends ChartEngine {
         scrollController: scrollController,
         scrollDirection: AxisDirection.left);
     final paint = Paint()
-      ..color = barColor ?? Theme.of(context).accentColor
+      ..color = barColor
       ..style = PaintingStyle.fill
       ..strokeCap = StrokeCap.round;
     final maxBottom = size.height;
