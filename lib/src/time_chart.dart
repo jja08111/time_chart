@@ -53,12 +53,12 @@ class TimeChart extends StatelessWidget {
 
   /// The type of chart.
   ///
-  /// Default is [ChartType.time].
+  /// Default is the [ChartType.time].
   final ChartType chartType;
 
-  /// Total chart width
+  /// Total chart width.
   ///
-  /// Default is `MediaQuery.of(context).size.width - 32.0`.
+  /// Default is parent box width.
   final double? width;
 
   /// Total chart height
@@ -73,8 +73,8 @@ class TimeChart extends StatelessWidget {
 
   /// The list of [DateTimeRange].
   ///
-  /// First index is latest data, End data is oldest data. It must be sorted
-  /// because of correctly painting the chart. This value must not be null.
+  /// The first index is the latest data, The end data is the oldest data.
+  /// It must be sorted because of correctly painting the chart.
   final List<DateTimeRange> data;
 
   /// The size animation duration of time chart when is changed pivot hours.
@@ -87,7 +87,7 @@ class TimeChart extends StatelessWidget {
   /// Default is `Duration(seconds: 7)`.
   final Duration tooltipDuration;
 
-  /// The color of tooltip background.
+  /// The color of the tooltip background.
   ///
   /// [Theme.of(context).dialogBackgroundColor] is default color.
   final Color? tooltipBackgroundColor;
@@ -104,8 +104,7 @@ class TimeChart extends StatelessWidget {
 
   /// The chart view mode.
   ///
-  /// There is two type [ViewMode.weekly] and [ViewMode.monthly]. This value
-  /// must not be null.
+  /// There is two type [ViewMode.weekly] and [ViewMode.monthly].
   final ViewMode viewMode;
 
   @override
