@@ -25,8 +25,6 @@ import 'components/view_mode.dart';
 import 'components/translations/translations.dart';
 import 'components/utils/context_utils.dart';
 
-const double _kStatusBarHeight = 30.0;
-
 /// 최상단에 그려진 것들이 잘리지 않기 위해 필요한 상단 패딩값이다.
 const double _kChartTopPadding = 4.0;
 
@@ -333,9 +331,6 @@ class _ChartState extends State<_Chart>
     final Size tooltipSize =
         chartType == ChartType.time ? kTimeTooltipSize : kAmountTooltipSize;
 
-    final minTop =
-        kToolbarHeight + _kStatusBarHeight - (tooltipSize.height) / 2;
-
     final candidateTop = rect.top +
         pivotOffset.dy -
         tooltipSize.height / 2 +
@@ -346,7 +341,7 @@ class _ChartState extends State<_Chart>
 
     final scrollPixels = position.maxScrollExtent - position.pixels;
     final localLeft = rect.left + pivotOffset.dx - scrollPixels;
-    final top = max(candidateTop, minTop);
+    final top = max(candidateTop, 0.0);
 
     Direction direction = Direction.left;
     double left = localLeft - tooltipSize.width - _tooltipPadding;
