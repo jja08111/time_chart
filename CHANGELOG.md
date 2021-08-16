@@ -1,3 +1,6 @@
+## 0.2.7
+* [Bug] Fixed state bug when changing `ViewMode` in `StatefulWidget`.
+
 ## 0.2.6
 * [Invalid] Fixed comments
 * [Update] Simplify min top position of tooltip
