@@ -114,6 +114,7 @@ class TimeChart extends StatelessWidget {
         height: height + _kChartTopPadding,
         width: actualWidth,
         child: _Chart(
+          key: ValueKey(viewMode),
           chartType: chartType,
           width: actualWidth,
           height: height,
