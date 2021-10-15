@@ -1,20 +1,63 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:time_chart/time_chart.dart';
-import 'data_pool.dart';
+
+ChartState getChartState(WidgetTester tester) {
+  return tester.state(find.byType(Chart));
+}
 
 void main() {
-  group('Chart pivot hours tests.', () {
-    testWidgets('TimeChart pivot hours test.', (tester) async {
-      await tester.pumpWidget(TimeChart(
-        data: smallDataList,
-        viewMode: ViewMode.monthly,
+  group('Time chart tests', () {
+    testWidgets('Time chart data merging test', (tester) async {
+      await tester.pumpWidget(MaterialApp(
+        home: TimeChart(
+          data: [
+            DateTimeRange(
+              start: DateTime(2021, 2, 24, 23, 15),
+              end: DateTime(2021, 2, 25, 7, 30),
+            ),
+            DateTimeRange(
+              start: DateTime(2021, 2, 22, 1, 55),
+              end: DateTime(2021, 2, 22, 9, 12),
+            ),
+          ],
+          viewMode: ViewMode.monthly,
+        ),
       ));
-      final ChartState chartState = tester.state(find.byType(Chart));
+      final ChartState chartState = getChartState(tester);
 
       expect(chartState.topHour, 22);
       expect(chartState.bottomHour, 10);
     });
+
+    testWidgets('Time chart empty space comparing test', (tester) async {
+      await tester.pumpWidget(MaterialApp(
+        home: TimeChart(
+          data: [
+            DateTimeRange(
+              start: DateTime(2021, 2, 1, 22, 12),
+              end: DateTime(2021, 2, 2, 3, 30),
+            ),
+            DateTimeRange(
+              start: DateTime(2021, 2, 2, 4, 52),
+              end: DateTime(2021, 2, 2, 9, 0),
+            ),
+            DateTimeRange(
+              start: DateTime(2021, 2, 2, 11, 39),
+              end: DateTime(2021, 2, 2, 18, 2),
+            ),
+            DateTimeRange(
+              start: DateTime(2021, 2, 2, 18, 42),
+              end: DateTime(2021, 2, 2, 21, 22),
+            ),
+          ],
+          viewMode: ViewMode.monthly,
+        ),
+      ));
+      final ChartState chartState = getChartState(tester);
+
+      expect(chartState.topHour, 11);
+      expect(chartState.bottomHour, 9);
+    });
   });
 }
-// command: flutter pub run test test\time_chart_test.dart
-// flutter test test\time_chart_test.dart
