@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:time_chart/time_chart.dart';
 
-ChartState _getChartState(WidgetTester tester) {
-  return tester.state(find.byType(Chart));
-}
+import '../utils/chart_state_utils.dart';
 
 void testTimeChartPivotHours() {
   group('Time chart pivot hours test', () {
-    testWidgets('Time chart simple data merging test', (tester) async {
+    testWidgets('merge if has overlapping time in time chart', (tester) async {
       await tester.pumpWidget(MaterialApp(
         home: TimeChart(
           data: [
@@ -24,13 +22,13 @@ void testTimeChartPivotHours() {
           viewMode: ViewMode.monthly,
         ),
       ));
-      final ChartState chartState = _getChartState(tester);
+      final ChartState chartState = getChartState(tester);
 
       expect(chartState.topHour, 22);
       expect(chartState.bottomHour, 10);
     });
 
-    testWidgets('Time chart empty space comparing test', (tester) async {
+    testWidgets('compare empty space for setting pivot hours', (tester) async {
       await tester.pumpWidget(MaterialApp(
         home: TimeChart(
           data: [
@@ -54,13 +52,13 @@ void testTimeChartPivotHours() {
           viewMode: ViewMode.monthly,
         ),
       ));
-      final ChartState chartState = _getChartState(tester);
+      final ChartState chartState = getChartState(tester);
 
       expect(chartState.topHour, 11);
       expect(chartState.bottomHour, 9);
     });
 
-    testWidgets('Time chart empty space comparing and merging test',
+    testWidgets('compare and merge time for setting pivot hours',
         (tester) async {
       await tester.pumpWidget(MaterialApp(
         home: TimeChart(
@@ -85,13 +83,14 @@ void testTimeChartPivotHours() {
           viewMode: ViewMode.weekly,
         ),
       ));
-      final ChartState chartState = _getChartState(tester);
+      final ChartState chartState = getChartState(tester);
 
       expect(chartState.topHour, 11);
       expect(chartState.bottomHour, 9);
     });
 
-    testWidgets('Time chart that has not any space test', (tester) async {
+    testWidgets('default pivot hours is used if there are no space',
+        (tester) async {
       await tester.pumpWidget(MaterialApp(
         home: TimeChart(
           data: [
@@ -115,7 +114,7 @@ void testTimeChartPivotHours() {
           viewMode: ViewMode.monthly,
         ),
       ));
-      final ChartState chartState = _getChartState(tester);
+      final ChartState chartState = getChartState(tester);
 
       expect(chartState.topHour, 0);
       expect(chartState.bottomHour, 0);
