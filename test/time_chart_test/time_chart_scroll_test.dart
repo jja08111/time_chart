@@ -5,7 +5,7 @@ import 'package:time_chart/time_chart.dart';
 
 import '../utils/chart_state_utils.dart';
 
-void testTimeChartScroll() {
+void main() {
   group('Time chart scrolling test', () {
     testWidgets('scroll weekly time chart', (tester) async {
       tester.binding.window.physicalSizeTestValue = Size(400, 800);

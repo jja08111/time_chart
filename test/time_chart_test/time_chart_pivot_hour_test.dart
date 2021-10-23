@@ -4,7 +4,7 @@ import 'package:time_chart/time_chart.dart';
 
 import '../utils/chart_state_utils.dart';
 
-void testTimeChartPivotHours() {
+void main() {
   group('Time chart pivot hours test', () {
     testWidgets('merge if has overlapping time in time chart', (tester) async {
       await tester.pumpWidget(MaterialApp(
