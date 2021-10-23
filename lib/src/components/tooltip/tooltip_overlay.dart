@@ -220,10 +220,16 @@ class _AmountTooltipOverlay extends StatelessWidget {
     final translations = Translations(context);
     final textTheme = Theme.of(context).textTheme;
     final body2 = textTheme.bodyText2!;
-    final bodyTextStyle = body2.copyWith(color: body2.color!.withOpacity(0.5));
+    final bodyTextStyle = body2.copyWith(
+      color: body2.color!.withOpacity(0.5),
+      height: 1.2,
+    );
     final sub1 = textTheme.subtitle1!;
-    final subTitleStyle = sub1.copyWith(color: sub1.color!.withOpacity(0.5));
-    final headerStyle = textTheme.headline4;
+    final subTitleStyle = sub1.copyWith(
+      color: sub1.color!.withOpacity(0.5),
+      height: 1.2,
+    );
+    final headerStyle = textTheme.headline4!.copyWith(height: 1.2);
 
     final hourString = _getHour();
     final minuteString = _getMinute();
