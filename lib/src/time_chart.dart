@@ -132,8 +132,9 @@ class TimeChart extends StatelessWidget {
   }
 }
 
-class _Chart extends StatefulWidget {
-  _Chart({
+@visibleForTesting
+class Chart extends StatefulWidget {
+  Chart({
     Key? key,
     required this.chartType,
     required this.width,
@@ -161,10 +162,11 @@ class _Chart extends StatefulWidget {
   final ViewMode viewMode;
 
   @override
-  _ChartState createState() => _ChartState();
+  ChartState createState() => ChartState();
 }
 
-class _ChartState extends State<_Chart>
+@visibleForTesting
+class ChartState extends State<Chart>
     with TickerProviderStateMixin, TimeDataProcessor {
   static const Duration _tooltipFadeInDuration = Duration(milliseconds: 150);
   static const Duration _tooltipFadeOutDuration = Duration(milliseconds: 75);
