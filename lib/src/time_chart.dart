@@ -502,8 +502,9 @@ class ChartState extends State<Chart>
     );
     if (_scrollPhysics == null)
       _scrollPhysics = CustomScrollPhysics(
-        itemDimension: _blockWidth!,
+        blockWidth: _blockWidth!,
         viewMode: widget.viewMode,
+        maxWidth: innerSize.width,
         tapDownPosition: TapDownPosition(),
       );
     return GestureDetector(

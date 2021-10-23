@@ -11,15 +11,17 @@ class TapDownPosition {
 
 class CustomScrollPhysics extends ScrollPhysics {
   CustomScrollPhysics({
-    required this.itemDimension,
+    required this.blockWidth,
     required this.viewMode,
     required this.tapDownPosition,
+    required this.maxWidth,
     ScrollPhysics? parent,
   }) : super(parent: parent);
 
-  final double itemDimension;
+  final double blockWidth;
   final ViewMode viewMode;
   final TapDownPosition tapDownPosition;
+  final double maxWidth;
 
   void setPanDownPixels(double pixels) {
     tapDownPosition.pixels = pixels;
@@ -29,23 +31,28 @@ class CustomScrollPhysics extends ScrollPhysics {
     tapDownPosition.pixels += add;
   }
 
+  double get _maxPosition {
+    return (maxWidth / blockWidth) - getViewModeLimitDay(viewMode);
+  }
+
   @override
   CustomScrollPhysics applyTo(ScrollPhysics? ancestor) {
     return CustomScrollPhysics(
-      itemDimension: itemDimension,
+      blockWidth: blockWidth,
       viewMode: viewMode,
       tapDownPosition: tapDownPosition,
+      maxWidth: maxWidth,
       parent: buildParent(ancestor),
     );
   }
 
-  double _getPixels(double page) => page * itemDimension;
+  double _getPixels(double blockPosition) => blockPosition * blockWidth;
 
   double _getTargetPixels(
       ScrollPosition position, Tolerance tolerance, double velocity) {
     final double dayLimit = getViewModeLimitDay(viewMode).toDouble();
-    final double startBlock = tapDownPosition.pixels / itemDimension;
-    double block = getCurrentBlockIndex(position, itemDimension);
+    final double startBlock = tapDownPosition.pixels / blockWidth;
+    double block = getCurrentBlockIndex(position, blockWidth);
 
     if (velocity.abs() > _kPivotVelocity) {
       if (velocity < -tolerance.velocity) {
@@ -60,11 +67,15 @@ class CustomScrollPhysics extends ScrollPhysics {
         block += 1;
       }
     }
-    double page = block.roundToDouble();
-    page = max((startBlock - dayLimit).roundToDouble(),
-        min((startBlock + dayLimit).roundToDouble(), page));
+    double blockPosition = block.roundToDouble();
 
-    return _getPixels(page);
+    blockPosition = min((startBlock + dayLimit).roundToDouble(), blockPosition);
+    blockPosition = max((startBlock - dayLimit).roundToDouble(), blockPosition);
+
+    blockPosition = max(0, blockPosition);
+    blockPosition = min(_maxPosition, blockPosition);
+
+    return _getPixels(blockPosition);
   }
 
   @override
