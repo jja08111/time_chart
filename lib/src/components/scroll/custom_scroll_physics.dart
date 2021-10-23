@@ -1,53 +1,32 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import '../../time_chart.dart';
 import '../view_mode.dart';
 
 const double _kPivotVelocity = 240.0;
+
+class TapDownPosition {
+  double pixels = 0.0;
+}
 
 class CustomScrollPhysics extends ScrollPhysics {
   CustomScrollPhysics({
     required this.itemDimension,
     required this.viewMode,
-    required this.chartType,
+    required this.tapDownPosition,
     ScrollPhysics? parent,
   }) : super(parent: parent);
 
   final double itemDimension;
   final ViewMode viewMode;
-  final ChartType chartType;
+  final TapDownPosition tapDownPosition;
 
-  static double? _timeChartPanDownPixel;
-  static double? _amountChartPanDownPixel;
-
-  static void setPanDownPixels(ChartType chartType, double pixels) {
-    switch (chartType) {
-      case ChartType.time:
-        _timeChartPanDownPixel = pixels;
-        break;
-      case ChartType.amount:
-        _amountChartPanDownPixel = pixels;
-    }
+  void setPanDownPixels(double pixels) {
+    tapDownPosition.pixels = pixels;
   }
 
-  static void addPanDownPixels(ChartType chartType, double add) {
-    switch (chartType) {
-      case ChartType.time:
-        _timeChartPanDownPixel = add + _timeChartPanDownPixel!;
-        break;
-      case ChartType.amount:
-        _amountChartPanDownPixel = add + _amountChartPanDownPixel!;
-    }
-  }
-
-  static double? _getPanDownPixels(ChartType chartType) {
-    switch (chartType) {
-      case ChartType.time:
-        return _timeChartPanDownPixel;
-      case ChartType.amount:
-        return _amountChartPanDownPixel;
-    }
+  void addPanDownPixels(double add) {
+    tapDownPosition.pixels += add;
   }
 
   @override
@@ -55,7 +34,7 @@ class CustomScrollPhysics extends ScrollPhysics {
     return CustomScrollPhysics(
       itemDimension: itemDimension,
       viewMode: viewMode,
-      chartType: chartType,
+      tapDownPosition: tapDownPosition,
       parent: buildParent(ancestor),
     );
   }
@@ -65,7 +44,7 @@ class CustomScrollPhysics extends ScrollPhysics {
   double _getTargetPixels(
       ScrollPosition position, Tolerance tolerance, double velocity) {
     final double dayLimit = getViewModeLimitDay(viewMode).toDouble();
-    final double startBlock = _getPanDownPixels(chartType)! / itemDimension;
+    final double startBlock = tapDownPosition.pixels / itemDimension;
     double block = getCurrentBlockIndex(position, itemDimension);
 
     if (velocity.abs() > _kPivotVelocity) {
@@ -81,11 +60,11 @@ class CustomScrollPhysics extends ScrollPhysics {
         block += 1;
       }
     }
-    double result = block.roundToDouble();
-    result = max((startBlock - dayLimit).roundToDouble(),
-        min((startBlock + dayLimit).roundToDouble(), result));
+    double page = block.roundToDouble();
+    page = max((startBlock - dayLimit).roundToDouble(),
+        min((startBlock + dayLimit).roundToDouble(), page));
 
-    return _getPixels(result);
+    return _getPixels(page);
   }
 
   @override

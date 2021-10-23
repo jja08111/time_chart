@@ -180,6 +180,7 @@ class ChartState extends State<Chart>
   static const Duration _tooltipFadeInDuration = Duration(milliseconds: 150);
   static const Duration _tooltipFadeOutDuration = Duration(milliseconds: 75);
 
+  CustomScrollPhysics? _scrollPhysics;
   LinkedScrollControllerGroup _scrollControllerGroup =
       LinkedScrollControllerGroup();
   late ScrollController _barController;
@@ -419,8 +420,7 @@ class ChartState extends State<Chart>
   }
 
   void _handlePanDown(_) {
-    CustomScrollPhysics.setPanDownPixels(
-        widget.chartType, _barController.position.pixels);
+    _scrollPhysics!.setPanDownPixels(_barController.position.pixels);
   }
 
   bool _handleScrollNotification(ScrollNotification notification) {
@@ -454,7 +454,7 @@ class ChartState extends State<Chart>
       final add = firstDataHasChanged ? _blockWidth! : -_blockWidth!;
 
       _barController.jumpTo(_barController.position.pixels + add);
-      CustomScrollPhysics.addPanDownPixels(widget.chartType, add);
+      _scrollPhysics!.addPanDownPixels(add);
     }
 
     _heightAnimation(beforeTopHour!, beforeBottomHour!);
@@ -500,7 +500,12 @@ class ChartState extends State<Chart>
       _blockWidth! * max(dayCount!, viewModeLimitDay),
       double.infinity,
     );
-
+    if (_scrollPhysics == null)
+      _scrollPhysics = CustomScrollPhysics(
+        itemDimension: _blockWidth!,
+        viewMode: widget.viewMode,
+        tapDownPosition: TapDownPosition(),
+      );
     return GestureDetector(
       onPanDown: _handlePanDown,
       child: Stack(
@@ -601,11 +606,7 @@ class ChartState extends State<Chart>
         reverse: true,
         scrollDirection: Axis.horizontal,
         controller: controller,
-        physics: CustomScrollPhysics(
-          itemDimension: _blockWidth!,
-          viewMode: widget.viewMode,
-          chartType: widget.chartType,
-        ),
+        physics: _scrollPhysics,
         child: RepaintBoundary(
           key: key,
           child: child,
