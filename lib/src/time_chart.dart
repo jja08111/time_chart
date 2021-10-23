@@ -46,6 +46,7 @@ class TimeChart extends StatelessWidget {
     this.tooltipBackgroundColor,
     this.tooltipStart = "START",
     this.tooltipEnd = "END",
+    this.activeTooltip = true,
     required this.viewMode,
   }) : super(key: key);
 
@@ -100,6 +101,11 @@ class TimeChart extends StatelessWidget {
   /// Default is "end"
   final String tooltipEnd;
 
+  /// If it's `true` active showing the tooltip when tapped a bar.
+  ///
+  /// Default value is `true`
+  final bool activeTooltip;
+
   /// The chart view mode.
   ///
   /// There is two type [ViewMode.weekly] and [ViewMode.monthly].
@@ -125,6 +131,7 @@ class TimeChart extends StatelessWidget {
           tooltipBackgroundColor: tooltipBackgroundColor,
           tooltipStart: tooltipStart,
           tooltipEnd: tooltipEnd,
+          activeTooltip: activeTooltip,
           viewMode: viewMode,
         ),
       );
@@ -146,6 +153,7 @@ class Chart extends StatefulWidget {
     required this.tooltipBackgroundColor,
     required this.tooltipStart,
     required this.tooltipEnd,
+    required this.activeTooltip,
     required this.viewMode,
   }) : super(key: key);
 
@@ -159,6 +167,7 @@ class Chart extends StatefulWidget {
   final Color? tooltipBackgroundColor;
   final String tooltipStart;
   final String tooltipEnd;
+  final bool activeTooltip;
   final ViewMode viewMode;
 
   @override
@@ -288,6 +297,9 @@ class ChartState extends State<Chart>
     required double barWidth,
   }) {
     assert(range != null || amount != null);
+
+    if (!widget.activeTooltip) return;
+
     // 현재 보이는 그래프의 범위를 벗어난 바의 툴팁은 무시한다.
     final viewRange = _blockWidth! * getViewModeLimitDay(widget.viewMode);
     final actualPosition = position.maxScrollExtent - position.pixels;
