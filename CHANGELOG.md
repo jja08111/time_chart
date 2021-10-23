@@ -1,3 +1,6 @@
+## 0.2.10
+* [Bug] Fixed max scroll position bug in scroll physics.
+
 ## 0.2.9
 * [Bug] Fixed over scrolling bug in IOS.
 * [Update] Simplify custom scroll physics.
