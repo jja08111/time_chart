@@ -1,3 +1,7 @@
+## 0.2.9
+* [Bug] Fixed over scrolling bug in IOS.
+* [Update] Simplify custom scroll physics.
+
 ## 0.2.8
 * [Bug] Fixed overflow caused from big text height.
 * [Update] Added a `activeTooltip` parameter.
