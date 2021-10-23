@@ -1,3 +1,8 @@
+## 0.2.8
+* [Bug] Fixed overflow caused from big text height.
+* [Update] Added a `activeTooltip` parameter.
+* [Update] Added time chart widget tests.
+
 ## 0.2.7
 * [Bug] Fixed state bug when changing `ViewMode` in `StatefulWidget`.
 
