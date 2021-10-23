@@ -174,8 +174,7 @@ abstract class ChartEngine extends CustomPainter {
   }) {
     final weekday = getShortWeekdayList(context);
     final viewModeLimitDay = getViewModeLimitDay(viewMode);
-    final scrollOffsetToDay =
-        math.max(0, currentScrollOffsetToDay - toleranceDay);
+    final scrollOffsetToDay = currentScrollOffsetToDay - toleranceDay;
     DateTime currentDate =
         firstValueDateTime!.add(Duration(days: -scrollOffsetToDay));
 
