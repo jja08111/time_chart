@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:time_chart/time_chart.dart';
 
-ChartState getChartState(WidgetTester tester) {
+ChartState _getChartState(WidgetTester tester) {
   return tester.state(find.byType(Chart));
 }
 
-void main() {
-  group('Time chart pivot hour test', () {
+void testTimeChartPivotHours() {
+  group('Time chart pivot hours test', () {
     testWidgets('Time chart simple data merging test', (tester) async {
       await tester.pumpWidget(MaterialApp(
         home: TimeChart(
@@ -24,7 +24,7 @@ void main() {
           viewMode: ViewMode.monthly,
         ),
       ));
-      final ChartState chartState = getChartState(tester);
+      final ChartState chartState = _getChartState(tester);
 
       expect(chartState.topHour, 22);
       expect(chartState.bottomHour, 10);
@@ -54,7 +54,7 @@ void main() {
           viewMode: ViewMode.monthly,
         ),
       ));
-      final ChartState chartState = getChartState(tester);
+      final ChartState chartState = _getChartState(tester);
 
       expect(chartState.topHour, 11);
       expect(chartState.bottomHour, 9);
@@ -85,7 +85,7 @@ void main() {
           viewMode: ViewMode.weekly,
         ),
       ));
-      final ChartState chartState = getChartState(tester);
+      final ChartState chartState = _getChartState(tester);
 
       expect(chartState.topHour, 11);
       expect(chartState.bottomHour, 9);
@@ -115,7 +115,7 @@ void main() {
           viewMode: ViewMode.monthly,
         ),
       ));
-      final ChartState chartState = getChartState(tester);
+      final ChartState chartState = _getChartState(tester);
 
       expect(chartState.topHour, 0);
       expect(chartState.bottomHour, 0);
