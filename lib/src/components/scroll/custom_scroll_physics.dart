@@ -5,34 +5,41 @@ import '../view_mode.dart';
 
 const double _kPivotVelocity = 240.0;
 
-class TapDownPosition {
+class ScrollPhysicsState {
+  ScrollPhysicsState({required this.dayCount});
+
   double pixels = 0.0;
+  int dayCount;
 }
 
 class CustomScrollPhysics extends ScrollPhysics {
   CustomScrollPhysics({
     required this.blockWidth,
     required this.viewMode,
-    required this.tapDownPosition,
-    required this.maxWidth,
+    required this.scrollPhysicsState,
     ScrollPhysics? parent,
   }) : super(parent: parent);
 
   final double blockWidth;
   final ViewMode viewMode;
-  final TapDownPosition tapDownPosition;
-  final double maxWidth;
+  final ScrollPhysicsState scrollPhysicsState;
 
   void setPanDownPixels(double pixels) {
-    tapDownPosition.pixels = pixels;
+    scrollPhysicsState.pixels = pixels;
   }
 
   void addPanDownPixels(double add) {
-    tapDownPosition.pixels += add;
+    scrollPhysicsState.pixels += add;
+  }
+
+  void setDayCount(int dayCount) {
+    scrollPhysicsState.dayCount = dayCount;
   }
 
   double get _maxPosition {
-    return (maxWidth / blockWidth) - getViewModeLimitDay(viewMode);
+    var maxPosition =
+        scrollPhysicsState.dayCount.toDouble() - getViewModeLimitDay(viewMode);
+    return max(0.0, maxPosition);
   }
 
   @override
@@ -40,8 +47,7 @@ class CustomScrollPhysics extends ScrollPhysics {
     return CustomScrollPhysics(
       blockWidth: blockWidth,
       viewMode: viewMode,
-      tapDownPosition: tapDownPosition,
-      maxWidth: maxWidth,
+      scrollPhysicsState: scrollPhysicsState,
       parent: buildParent(ancestor),
     );
   }
@@ -51,7 +57,7 @@ class CustomScrollPhysics extends ScrollPhysics {
   double _getTargetPixels(
       ScrollPosition position, Tolerance tolerance, double velocity) {
     final double dayLimit = getViewModeLimitDay(viewMode).toDouble();
-    final double startBlock = tapDownPosition.pixels / blockWidth;
+    final double startBlock = scrollPhysicsState.pixels / blockWidth;
     double block = getCurrentBlockIndex(position, blockWidth);
 
     if (velocity.abs() > _kPivotVelocity) {

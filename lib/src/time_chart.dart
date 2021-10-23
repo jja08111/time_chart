@@ -455,6 +455,7 @@ class ChartState extends State<Chart>
 
       _barController.jumpTo(_barController.position.pixels + add);
       _scrollPhysics!.addPanDownPixels(add);
+      _scrollPhysics!.setDayCount(dayCount!);
     }
 
     _heightAnimation(beforeTopHour!, beforeBottomHour!);
@@ -504,8 +505,7 @@ class ChartState extends State<Chart>
       _scrollPhysics = CustomScrollPhysics(
         blockWidth: _blockWidth!,
         viewMode: widget.viewMode,
-        maxWidth: innerSize.width,
-        tapDownPosition: TapDownPosition(),
+        scrollPhysicsState: ScrollPhysicsState(dayCount: dayCount!),
       );
     return GestureDetector(
       onPanDown: _handlePanDown,
