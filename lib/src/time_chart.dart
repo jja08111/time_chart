@@ -25,8 +25,6 @@ import 'components/view_mode.dart';
 import 'components/translations/translations.dart';
 import 'components/utils/context_utils.dart';
 
-const double _kStatusBarHeight = 30.0;
-
 /// 최상단에 그려진 것들이 잘리지 않기 위해 필요한 상단 패딩값이다.
 const double _kChartTopPadding = 4.0;
 
@@ -53,12 +51,12 @@ class TimeChart extends StatelessWidget {
 
   /// The type of chart.
   ///
-  /// Default is [ChartType.time].
+  /// Default is the [ChartType.time].
   final ChartType chartType;
 
-  /// Total chart width
+  /// Total chart width.
   ///
-  /// Default is `MediaQuery.of(context).size.width - 32.0`.
+  /// Default is parent box width.
   final double? width;
 
   /// Total chart height
@@ -73,8 +71,8 @@ class TimeChart extends StatelessWidget {
 
   /// The list of [DateTimeRange].
   ///
-  /// First index is latest data, End data is oldest data. It must be sorted
-  /// because of correctly painting the chart. This value must not be null.
+  /// The first index is the latest data, The end data is the oldest data.
+  /// It must be sorted because of correctly painting the chart.
   final List<DateTimeRange> data;
 
   /// The size animation duration of time chart when is changed pivot hours.
@@ -87,7 +85,7 @@ class TimeChart extends StatelessWidget {
   /// Default is `Duration(seconds: 7)`.
   final Duration tooltipDuration;
 
-  /// The color of tooltip background.
+  /// The color of the tooltip background.
   ///
   /// [Theme.of(context).dialogBackgroundColor] is default color.
   final Color? tooltipBackgroundColor;
@@ -104,8 +102,7 @@ class TimeChart extends StatelessWidget {
 
   /// The chart view mode.
   ///
-  /// There is two type [ViewMode.weekly] and [ViewMode.monthly]. This value
-  /// must not be null.
+  /// There is two type [ViewMode.weekly] and [ViewMode.monthly].
   final ViewMode viewMode;
 
   @override
@@ -116,7 +113,8 @@ class TimeChart extends StatelessWidget {
       return SizedBox(
         height: height + _kChartTopPadding,
         width: actualWidth,
-        child: Chart(
+        child: _Chart(
+          key: ValueKey(viewMode),
           chartType: chartType,
           width: actualWidth,
           height: height,
@@ -336,9 +334,6 @@ class ChartState extends State<Chart>
     final Size tooltipSize =
         chartType == ChartType.time ? kTimeTooltipSize : kAmountTooltipSize;
 
-    final minTop =
-        kToolbarHeight + _kStatusBarHeight - (tooltipSize.height) / 2;
-
     final candidateTop = rect.top +
         pivotOffset.dy -
         tooltipSize.height / 2 +
@@ -349,7 +344,7 @@ class ChartState extends State<Chart>
 
     final scrollPixels = position.maxScrollExtent - position.pixels;
     final localLeft = rect.left + pivotOffset.dx - scrollPixels;
-    final top = max(candidateTop, minTop);
+    final top = max(candidateTop, 0.0);
 
     Direction direction = Direction.left;
     double left = localLeft - tooltipSize.width - _tooltipPadding;
