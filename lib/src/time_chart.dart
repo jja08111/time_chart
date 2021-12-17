@@ -67,7 +67,7 @@ class TimeChart extends StatelessWidget {
 
   /// The color of the bar in the chart.
   ///
-  /// Default is [accentColor].
+  /// Default is the `Theme.of(context).colorScheme.secondary`.
   final Color? barColor;
 
   /// The list of [DateTimeRange].

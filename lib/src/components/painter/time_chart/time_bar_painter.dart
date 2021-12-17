@@ -103,7 +103,7 @@ class TimeBarPainter extends ChartEngine {
         scrollController: scrollController,
         scrollDirection: AxisDirection.left);
     final paint = Paint()
-      ..color = barColor ?? Theme.of(context).accentColor
+      ..color = barColor ?? Theme.of(context).colorScheme.secondary
       ..style = PaintingStyle.fill
       ..strokeCap = StrokeCap.round;
     final maxBottom = size.height;
