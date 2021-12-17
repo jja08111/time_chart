@@ -57,7 +57,6 @@ abstract class ChartEngine extends CustomPainter {
   ChartEngine({
     this.scrollController,
     int? dayCount,
-    bool isLastDataChanged = false,
     required this.viewMode,
     this.firstValueDateTime,
     required this.context,

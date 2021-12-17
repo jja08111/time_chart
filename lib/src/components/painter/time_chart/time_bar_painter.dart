@@ -17,14 +17,12 @@ class TimeBarPainter extends ChartEngine {
     required this.bottomHour,
     required int? dayCount,
     required ViewMode viewMode,
-    required bool isFirstDataChanged,
     this.barColor,
   }) : super(
           scrollController: scrollController,
           dayCount: dayCount,
           viewMode: viewMode,
           firstValueDateTime: sleepData.first.end,
-          isLastDataChanged: isFirstDataChanged,
           context: context,
           repaint: scrollOffsetNotifier,
         );

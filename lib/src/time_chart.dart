@@ -717,7 +717,6 @@ class ChartState extends State<Chart>
           bottomHour: bottomHour!,
           dayCount: dayCount,
           viewMode: widget.viewMode,
-          isFirstDataChanged: firstDataHasChanged,
         );
       case ChartType.amount:
         return AmountBarPainter(
