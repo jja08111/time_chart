@@ -123,15 +123,15 @@ class AmountBarPainter extends ChartEngine {
     final double intervalOfBars = size.width / dayCount;
     final int length = sleepData.length;
     final int viewLimitDay = getViewModeLimitDay(viewMode);
-    final scrollOffsetToDayCount = currentScrollOffsetToDay;
+    final dayFromScrollOffset = getDayFromScrollOffset();
     final DateTime startDateTime =
-        sleepData.first.end.add(Duration(days: -scrollOffsetToDayCount));
+        sleepData.first.end.add(Duration(days: -dayFromScrollOffset));
     final int startIndex = indexOf(startDateTime, sleepData);
 
     double amountSum = 0;
     // 1부터 시작
     int dayCounter =
-        max(1, 1 + scrollOffsetToDayCount - ChartEngine.toleranceDay);
+        max(1, 1 + dayFromScrollOffset - ChartEngine.toleranceDay);
 
     for (int index = startIndex; index < length; index++) {
       amountSum += timeAssistant.durationHour(sleepData[index]);
@@ -148,7 +148,7 @@ class AmountBarPainter extends ChartEngine {
         dayCounter++;
 
         if ((dayCounter - 1 - (ChartEngine.toleranceDay * 2)) -
-                scrollOffsetToDayCount >
+                dayFromScrollOffset >
             viewLimitDay) {
           break;
         }

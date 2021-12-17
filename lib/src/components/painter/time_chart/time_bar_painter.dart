@@ -184,13 +184,12 @@ class TimeBarPainter extends ChartEngine {
     final double height = size.height;
     final int viewLimitDay = getViewModeLimitDay(viewMode);
 
-    final scrollOffsetToDayCount = currentScrollOffsetToDay;
+    final dayFromScrollOffset = getDayFromScrollOffset();
     final DateTime startDateTime =
-        sleepData.first.end.add(Duration(days: -scrollOffsetToDayCount));
+        sleepData.first.end.add(Duration(days: -dayFromScrollOffset));
     final int startIndex = indexOf(startDateTime, sleepData);
     // 1부터 시작한다.
-    int dayCounter =
-        max(1, 1 + scrollOffsetToDayCount - ChartEngine.toleranceDay);
+    int dayCounter = max(1, 1 + dayFromScrollOffset - ChartEngine.toleranceDay);
 
     for (int index = startIndex; index < length; index++) {
       final wakeUpTimeDouble =
@@ -222,7 +221,7 @@ class TimeBarPainter extends ChartEngine {
       }
 
       if ((dayCounter - 1 - (ChartEngine.toleranceDay * 2)) -
-              scrollOffsetToDayCount >
+              dayFromScrollOffset >
           viewLimitDay) {
         break;
       }
