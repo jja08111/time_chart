@@ -43,6 +43,10 @@ abstract class TimeDataProcessor {
   static const Duration _onePostDayDuration = const Duration(days: 1);
   static const Duration _oneBeforeDayDuration = const Duration(days: -1);
 
+  // TODO: 사용자가 커스텀 가능하도록 수정
+  /// This is used when the time chart has no data or the time range is fully visible.
+  static const int defaultPivotHour = 18;
+
   List<DateTimeRange> _processedSleepData = [];
 
   List<DateTimeRange> get processedSleepData => _processedSleepData;
@@ -99,13 +103,18 @@ abstract class TimeDataProcessor {
       _bottomHour = sleepTime.floor();
       return;
     }
-    _topHour = sleepPair.sleepTime.floor();
-    _bottomHour = sleepPair.wakeUp.ceil();
+    _topHour = sleepTime.floor();
+    _bottomHour = wakeUp.ceil();
     if (_topHour! % 2 != _bottomHour! % 2) {
       _topHour = hourDiffBetween(1, _topHour).toInt();
     }
     _topHour = _topHour! % 24;
     _bottomHour = _bottomHour! % 24;
+    // use default pivot hour if there are no space or the time range is fully visible
+    if (_topHour == _bottomHour) {
+      _topHour = defaultPivotHour;
+      _bottomHour = defaultPivotHour;
+    }
   }
 
   void _fillEmptyDay() {

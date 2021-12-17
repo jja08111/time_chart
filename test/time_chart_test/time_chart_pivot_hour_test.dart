@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:time_chart/src/components/utils/time_data_processor.dart';
 import 'package:time_chart/time_chart.dart';
 
 import '../utils/chart_state_utils.dart';
@@ -116,8 +117,27 @@ void main() {
       ));
       final ChartState chartState = getChartState(tester);
 
-      expect(chartState.topHour, 0);
-      expect(chartState.bottomHour, 0);
+      expect(chartState.topHour, TimeDataProcessor.defaultPivotHour);
+      expect(chartState.bottomHour, TimeDataProcessor.defaultPivotHour);
+    });
+
+    testWidgets('set both pivot hours to 12 AM if both pivot hours are the same',
+        (tester) async {
+      await tester.pumpWidget(MaterialApp(
+        home: TimeChart(
+          data: [
+            DateTimeRange(
+              start: DateTime(2021, 12, 17, 3, 12),
+              end: DateTime(2021, 12, 18, 2, 30),
+            ),
+          ],
+          viewMode: ViewMode.monthly,
+        ),
+      ));
+      final ChartState chartState = getChartState(tester);
+
+      expect(chartState.topHour, TimeDataProcessor.defaultPivotHour);
+      expect(chartState.bottomHour, TimeDataProcessor.defaultPivotHour);
     });
   });
 }
