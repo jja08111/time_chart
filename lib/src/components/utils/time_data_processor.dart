@@ -106,7 +106,7 @@ mixin TimeDataProcessor {
   }
 
   bool _isNextDayTime(double timeDouble) {
-    return bottomHour! < timeDouble && timeDouble < 24.0;
+    return bottomHour! < timeDouble;
   }
 
   void _increaseDayCount() {
@@ -164,12 +164,9 @@ mixin TimeDataProcessor {
       final DateTime startTime = _processedSleepData[i].start;
       final DateTime endTime = _processedSleepData[i].end;
       final double startTimeDouble = TimeAssistant.dateTimeToDouble(startTime);
-      final double endTimeDouble =
-          TimeAssistant.dateTimeToDouble(endTime);
+      final double endTimeDouble = TimeAssistant.dateTimeToDouble(endTime);
 
-      if (startTimeDouble < endTimeDouble &&
-          _isNextDayTime(startTimeDouble) &&
-          _isNextDayTime(endTimeDouble)) {
+      if (_isNextDayTime(startTimeDouble) && _isNextDayTime(endTimeDouble)) {
         _processedSleepData.removeAt(i);
         _processedSleepData.insert(
           i,
