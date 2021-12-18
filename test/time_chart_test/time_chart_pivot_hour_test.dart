@@ -34,20 +34,20 @@ void main() {
         home: TimeChart(
           data: [
             DateTimeRange(
-              start: DateTime(2021, 2, 1, 22, 12),
-              end: DateTime(2021, 2, 2, 3, 30),
-            ),
-            DateTimeRange(
-              start: DateTime(2021, 2, 2, 4, 52),
-              end: DateTime(2021, 2, 2, 9, 0),
+              start: DateTime(2021, 2, 2, 18, 42),
+              end: DateTime(2021, 2, 2, 21, 22),
             ),
             DateTimeRange(
               start: DateTime(2021, 2, 2, 11, 39),
               end: DateTime(2021, 2, 2, 18, 2),
             ),
             DateTimeRange(
-              start: DateTime(2021, 2, 2, 18, 42),
-              end: DateTime(2021, 2, 2, 21, 22),
+              start: DateTime(2021, 2, 2, 4, 52),
+              end: DateTime(2021, 2, 2, 9, 0),
+            ),
+            DateTimeRange(
+              start: DateTime(2021, 2, 1, 22, 12),
+              end: DateTime(2021, 2, 2, 3, 30),
             ),
           ],
           viewMode: ViewMode.monthly,
@@ -65,20 +65,20 @@ void main() {
         home: TimeChart(
           data: [
             DateTimeRange(
-              start: DateTime(2021, 2, 1, 22, 12),
-              end: DateTime(2021, 2, 2, 3, 30),
-            ),
-            DateTimeRange(
-              start: DateTime(2021, 2, 2, 2, 52),
-              end: DateTime(2021, 2, 2, 9, 0),
+              start: DateTime(2021, 2, 2, 14, 42),
+              end: DateTime(2021, 2, 2, 21, 22),
             ),
             DateTimeRange(
               start: DateTime(2021, 2, 2, 11, 39),
               end: DateTime(2021, 2, 2, 16, 2),
             ),
             DateTimeRange(
-              start: DateTime(2021, 2, 2, 14, 42),
-              end: DateTime(2021, 2, 2, 21, 22),
+              start: DateTime(2021, 2, 2, 2, 52),
+              end: DateTime(2021, 2, 2, 9, 0),
+            ),
+            DateTimeRange(
+              start: DateTime(2021, 2, 1, 22, 12),
+              end: DateTime(2021, 2, 2, 3, 30),
             ),
           ],
           viewMode: ViewMode.weekly,
@@ -96,20 +96,20 @@ void main() {
         home: TimeChart(
           data: [
             DateTimeRange(
-              start: DateTime(2021, 2, 1, 22, 12),
-              end: DateTime(2021, 2, 2, 3, 30),
-            ),
-            DateTimeRange(
-              start: DateTime(2021, 2, 2, 2, 52),
-              end: DateTime(2021, 2, 2, 9, 0),
+              start: DateTime(2021, 2, 2, 17, 42),
+              end: DateTime(2021, 2, 2, 22, 22),
             ),
             DateTimeRange(
               start: DateTime(2021, 2, 2, 8, 39),
               end: DateTime(2021, 2, 2, 18, 2),
             ),
             DateTimeRange(
-              start: DateTime(2021, 2, 2, 17, 42),
-              end: DateTime(2021, 2, 2, 22, 22),
+              start: DateTime(2021, 2, 2, 2, 52),
+              end: DateTime(2021, 2, 2, 9, 0),
+            ),
+            DateTimeRange(
+              start: DateTime(2021, 2, 1, 22, 12),
+              end: DateTime(2021, 2, 2, 3, 30),
             ),
           ],
           viewMode: ViewMode.monthly,
@@ -121,7 +121,8 @@ void main() {
       expect(chartState.bottomHour, TimeDataProcessor.defaultPivotHour);
     });
 
-    testWidgets('set both pivot hours to 12 AM if both pivot hours are the same',
+    testWidgets(
+        'set both pivot hours to 12 AM if both pivot hours are the same',
         (tester) async {
       await tester.pumpWidget(MaterialApp(
         home: TimeChart(
