@@ -161,21 +161,21 @@ mixin TimeDataProcessor {
   void _secondProcessData() {
     final len = _processedSleepData.length;
     for (int i = 0; i < len; ++i) {
-      final DateTime sleepTime = _processedSleepData[i].start;
-      final DateTime wakeUpTime = _processedSleepData[i].end;
-      final double sleepTimeDouble = TimeAssistant.dateTimeToDouble(sleepTime);
-      final double wakeUpTimeDouble =
-          TimeAssistant.dateTimeToDouble(wakeUpTime);
+      final DateTime startTime = _processedSleepData[i].start;
+      final DateTime endTime = _processedSleepData[i].end;
+      final double startTimeDouble = TimeAssistant.dateTimeToDouble(startTime);
+      final double endTimeDouble =
+          TimeAssistant.dateTimeToDouble(endTime);
 
-      if (sleepTimeDouble < wakeUpTimeDouble &&
-          _isNextDayTime(sleepTimeDouble) &&
-          _isNextDayTime(wakeUpTimeDouble)) {
+      if (startTimeDouble < endTimeDouble &&
+          _isNextDayTime(startTimeDouble) &&
+          _isNextDayTime(endTimeDouble)) {
         _processedSleepData.removeAt(i);
         _processedSleepData.insert(
           i,
           DateTimeRange(
-            start: sleepTime.add(_oneAfterDayDuration),
-            end: wakeUpTime.add(_oneAfterDayDuration),
+            start: startTime.add(_oneAfterDayDuration),
+            end: endTime.add(_oneAfterDayDuration),
           ),
         );
 
