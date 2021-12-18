@@ -48,6 +48,7 @@ class TimeChart extends StatelessWidget {
     this.tooltipEnd = "END",
     this.activeTooltip = true,
     required this.viewMode,
+    this.defaultPivotHour = 0,
   }) : super(key: key);
 
   /// The type of chart.
@@ -111,6 +112,18 @@ class TimeChart extends StatelessWidget {
   /// There is two type [ViewMode.weekly] and [ViewMode.monthly].
   final ViewMode viewMode;
 
+  /// The hour is used as a pivot if the data time range is fully visible when
+  /// the type is the [ChartType.time].
+  ///
+  /// For example, this value will be used when you use the data like below.
+  /// ```dart
+  /// [DateTimeRange(
+  ///       start: DateTime(2021, 12, 17, 3, 12),
+  ///       end: DateTime(2021, 12, 18, 2, 30),
+  /// )];
+  /// ```
+  final int defaultPivotHour;
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (_, box) {
@@ -133,12 +146,14 @@ class TimeChart extends StatelessWidget {
           tooltipEnd: tooltipEnd,
           activeTooltip: activeTooltip,
           viewMode: viewMode,
+          defaultPivotHour: defaultPivotHour,
         ),
       );
     });
   }
 }
 
+//TODO: 새로운 파일로 옮기기
 @visibleForTesting
 class Chart extends StatefulWidget {
   Chart({
@@ -155,6 +170,7 @@ class Chart extends StatefulWidget {
     required this.tooltipEnd,
     required this.activeTooltip,
     required this.viewMode,
+    required this.defaultPivotHour,
   }) : super(key: key);
 
   final ChartType chartType;
@@ -169,6 +185,7 @@ class Chart extends StatefulWidget {
   final String tooltipEnd;
   final bool activeTooltip;
   final ViewMode viewMode;
+  final int defaultPivotHour;
 
   @override
   ChartState createState() => ChartState();
@@ -244,7 +261,7 @@ class ChartState extends State<Chart>
 
     _addScrollNotifier();
 
-    processData(widget.data, widget.viewMode, widget.chartType,
+    processData(widget,
         dateWithoutTime(widget.data.first.end.add(const Duration(days: 1))));
   }
 
@@ -445,7 +462,7 @@ class ChartState extends State<Chart>
     final pivotEnd = dateWithoutTime(widget.data.first.end).add(
         Duration(days: -block + (block > 0 && firstDataHasChanged ? 2 : 1)));
 
-    processData(widget.data, widget.viewMode, widget.chartType, pivotEnd);
+    processData(widget, pivotEnd);
 
     if (topHour == beforeTopHour && bottomHour == beforeBottomHour) return;
 

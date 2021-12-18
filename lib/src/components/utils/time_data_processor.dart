@@ -19,10 +19,6 @@ abstract class TimeDataProcessor {
   static const Duration _onePostDayDuration = const Duration(days: 1);
   static const Duration _oneBeforeDayDuration = const Duration(days: -1);
 
-  // TODO: 사용자가 커스텀 가능하도록 수정
-  /// This is used when the time chart has no data or the time range is fully visible.
-  static const int defaultPivotHour = 18;
-
   List<DateTimeRange> _processedSleepData = [];
 
   List<DateTimeRange> get processedSleepData => _processedSleepData;
@@ -48,22 +44,21 @@ abstract class TimeDataProcessor {
 
   bool get firstDataHasChanged => _firstDataHasChanged;
 
-  void processData(List<DateTimeRange> dataList, ViewMode viewMode,
-      ChartType chartType, DateTime pivotEnd) {
-    _initProcessData(dataList, viewMode, pivotEnd);
-    switch (chartType) {
+  void processData(Chart chart, pivotEnd) {
+    _initProcessData(chart.data, chart.viewMode, pivotEnd);
+    switch (chart.chartType) {
       case ChartType.time:
-        _generatePivotHours();
+        _generatePivotHours(chart.defaultPivotHour);
         _secondProcessData();
         // 가공 후 다시 기준 값을 구한다.
-        _generatePivotHours();
+        _generatePivotHours(chart.defaultPivotHour);
         break;
       case ChartType.amount:
-        _calcAmountPivotHeights(dataList);
+        _calcAmountPivotHeights(chart.data);
     }
   }
 
-  void _generatePivotHours() {
+  void _generatePivotHours(int defaultPivotHour) {
     final sleepPair = _getPivotHours(_pivotList);
     if (sleepPair == null) return;
     final sleepTime = sleepPair.startTime;
