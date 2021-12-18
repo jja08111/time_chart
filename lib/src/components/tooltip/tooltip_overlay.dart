@@ -61,7 +61,6 @@ class TooltipOverlay extends StatelessWidget {
       case ChartType.time:
         child = _TimeTooltipOverlay(
           timeRange: _getActualDateTime(timeRange!),
-          bottomHour: bottomHour!,
           start: start,
           end: end,
         );
@@ -100,13 +99,11 @@ class _TimeTooltipOverlay extends StatelessWidget {
   const _TimeTooltipOverlay({
     Key? key,
     required this.timeRange,
-    required this.bottomHour,
     required this.start,
     required this.end,
   }) : super(key: key);
 
   final DateTimeRange timeRange;
-  final int bottomHour;
   final String start;
   final String end;
 
