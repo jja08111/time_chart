@@ -167,11 +167,13 @@ abstract class TimeDataProcessor {
     DateTime postEndTime = TimeAssistant.dateWithoutTime(
         sleepData.first.end.add(_onePostDayDuration));
     for (int i = 0; i < sleepData.length; ++i) {
+      if (i > 0) {
+        assert(sleepData[i - 1].end.isAfter(sleepData[i].end),
+            'The data list is reversed or not sorted. Check the data parameter. The first data must be oldest data.');
+      }
       final currentTime = TimeAssistant.dateWithoutTime(sleepData[i].end);
       // 이전 데이터와 날짜가 다른 경우
       if (currentTime != postEndTime) {
-        assert(currentTime.isBefore(postEndTime),
-            'Data is reversed or not sorted.');
         _increaseDayCount();
         // 하루 이상 차이나는 경우
         while (currentTime != postEndTime.add(_oneBeforeDayDuration)) {
