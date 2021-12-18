@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'chart.dart';
+import 'components/chart_type.dart';
 import 'components/view_mode.dart';
 
 /// 최상단에 그려진 것들이 잘리지 않기 위해 필요한 상단 패딩값이다.
 const double kTimeChartTopPadding = 4.0;
-
-enum ChartType {
-  time,
-  amount,
-}
 
 class TimeChart extends StatelessWidget {
   TimeChart({

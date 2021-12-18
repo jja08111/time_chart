@@ -2,10 +2,10 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
+import '../../../time_chart.dart';
 import 'tooltip_shape_border.dart';
 import 'tooltip_size.dart';
 import '../translations/translations.dart';
-import '../../time_chart.dart';
 
 const double kTooltipArrowWidth = 8.0;
 const double kTooltipArrowHeight = 16.0;
