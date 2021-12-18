@@ -22,7 +22,8 @@ class TimeChart extends StatelessWidget {
     this.activeTooltip = true,
     required this.viewMode,
     this.defaultPivotHour = 0,
-  }) : super(key: key);
+  })  : assert(0 <= defaultPivotHour && defaultPivotHour < 24),
+        super(key: key);
 
   /// The type of chart.
   ///
