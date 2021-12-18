@@ -117,38 +117,6 @@ abstract class TimeDataProcessor {
     _dayCount = _dayCount! + 1;
   }
 
-  /// 수면 시간이 [bottomHour]과 24시 사이에 존재하는 경우 해당 데이터를 다음날로 가공한다.
-  void _secondProcessData() {
-    final len = _processedSleepData.length;
-    for (int i = 0; i < len; ++i) {
-      final DateTime sleepTime = _processedSleepData[i].start;
-      final DateTime wakeUpTime = _processedSleepData[i].end;
-      final double sleepTimeDouble = TimeAssistant.dateTimeToDouble(sleepTime);
-      final double wakeUpTimeDouble =
-          TimeAssistant.dateTimeToDouble(wakeUpTime);
-
-      if (sleepTimeDouble < wakeUpTimeDouble &&
-          _isNextDayTime(sleepTimeDouble) &&
-          _isNextDayTime(wakeUpTimeDouble)) {
-        _processedSleepData.removeAt(i);
-        _processedSleepData.insert(
-          i,
-          DateTimeRange(
-            start: sleepTime.add(_onePostDayDuration),
-            end: wakeUpTime.add(_onePostDayDuration),
-          ),
-        );
-
-        if (i == 0) {
-          _increaseDayCount();
-          _firstDataHasChanged = true;
-        } // 7일 전부 채워진 상태에서 마지막 날이 다음 칸으로 넘어간 경우
-
-      }
-    }
-    _fillEmptyDay();
-  }
-
   /// 첫 입력으로 들어온 데이터를 이용 가능하게 초기 가공해준다.
   ///
   /// 이때 데이터에서 빈 날짜를 0인 수면량으로 채우고 데이터 타입에 맞게 데이터 길이를
@@ -193,10 +161,42 @@ abstract class TimeDataProcessor {
     }
   }
 
-  /// 수면 그래프의 기준이 될 값들을 구한다.
+  /// 종료 시간이 [bottomHour]와 24시 사이에 존재하는 경우 해당 데이터를 다음날로 가공한다.
+  void _secondProcessData() {
+    final len = _processedSleepData.length;
+    for (int i = 0; i < len; ++i) {
+      final DateTime sleepTime = _processedSleepData[i].start;
+      final DateTime wakeUpTime = _processedSleepData[i].end;
+      final double sleepTimeDouble = TimeAssistant.dateTimeToDouble(sleepTime);
+      final double wakeUpTimeDouble =
+          TimeAssistant.dateTimeToDouble(wakeUpTime);
+
+      if (sleepTimeDouble < wakeUpTimeDouble &&
+          _isNextDayTime(sleepTimeDouble) &&
+          _isNextDayTime(wakeUpTimeDouble)) {
+        _processedSleepData.removeAt(i);
+        _processedSleepData.insert(
+          i,
+          DateTimeRange(
+            start: sleepTime.add(_onePostDayDuration),
+            end: wakeUpTime.add(_onePostDayDuration),
+          ),
+        );
+
+        if (i == 0) {
+          _increaseDayCount();
+          _firstDataHasChanged = true;
+        } // 7일 전부 채워진 상태에서 마지막 날이 다음 칸으로 넘어간 경우
+
+      }
+    }
+    _fillEmptyDay();
+  }
+
+  /// 시간 그래프의 기준이 될 값들을 구한다.
   ///
-  /// 수면하지 않은 구간이 가장 넓은 부분이 선택되며, 선택된 값의 취침 시간이
-  /// [topHour], 기상 시간이 [bottomHour]가 된다.
+  /// 시간 데이터가 비어 있는 구간 중 가장 넓은 부분이 선택되며, 선택된 값의 시작 시간이
+  /// [topHour], 종료 시간이 [bottomHour]가 된다.
   _TimePair? _getPivotHours(List<DateTimeRange> dataList) {
     final List<_TimePair> rangeList = _getSortedRangeListFrom(dataList);
     if (rangeList.isEmpty) return null;
@@ -222,11 +222,11 @@ abstract class TimeDataProcessor {
         resultPair = _TimePair(sleepTime, wakeUp);
       }
     }
-    //print(resultPair);
     return resultPair;
   }
 
-  /// [sleepAmountList]과 [wakeUpTimeList]를 이용하여 수면한 범위들을 구한다.
+  /// [double] 형식으로 24시간에 시간 데이터 리스트가 어떻게 분포되어있는지 구간 리스트를 반환한다.
+  ///
   /// 이 값들은 오름차순으로 정렬되어 있다.
   List<_TimePair> _getSortedRangeListFrom(List<DateTimeRange> dataList) {
     List<_TimePair> rangeList = [];
