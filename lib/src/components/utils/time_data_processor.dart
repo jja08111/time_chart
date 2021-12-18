@@ -17,7 +17,7 @@ const double _kMaxHour = 24.0;
 /// 이 클래스는 빈 날짜를 수면량이 0인 데이터로 채우고 [topHour]와 [bottomHour]를
 /// 계산한다.
 abstract class TimeDataProcessor {
-  static const Duration _onePostDayDuration = const Duration(days: 1);
+  static const Duration _oneAfterDayDuration = const Duration(days: 1);
   static const Duration _oneBeforeDayDuration = const Duration(days: -1);
 
   List<DateTimeRange> _processedSleepData = [];
@@ -97,7 +97,7 @@ abstract class TimeDataProcessor {
       if (i > 0 &&
           TimeAssistant.hasEmptyDayBetween(
               _processedSleepData[i - 1].end, beforeEndTime)) {
-        final postDate = beforeEndTime.add(_onePostDayDuration);
+        final postDate = beforeEndTime.add(_oneAfterDayDuration);
         _processedSleepData.insert(
             i, DateTimeRange(start: postDate, end: postDate));
         ++i;
@@ -129,7 +129,7 @@ abstract class TimeDataProcessor {
     _firstDataHasChanged = false;
 
     DateTime postEndTime = TimeAssistant.dateWithoutTime(
-        dataList.first.end.add(_onePostDayDuration));
+        dataList.first.end.add(_oneAfterDayDuration));
     for (int i = 0; i < dataList.length; ++i) {
       if (i > 0) {
         assert(dataList[i - 1].end.isAfter(dataList[i].end),
@@ -174,8 +174,8 @@ abstract class TimeDataProcessor {
         _processedSleepData.insert(
           i,
           DateTimeRange(
-            start: sleepTime.add(_onePostDayDuration),
-            end: wakeUpTime.add(_onePostDayDuration),
+            start: sleepTime.add(_oneAfterDayDuration),
+            end: wakeUpTime.add(_oneAfterDayDuration),
           ),
         );
 
