@@ -44,13 +44,13 @@ class TooltipOverlay extends StatelessWidget {
   /// 만약 수정된 시간이면 하루 이전으로 변경해야 한다.
   DateTimeRange _getActualDateTime(DateTimeRange timeRange) {
     final oneBeforeDay = const Duration(days: -1);
-    final wakeUp = timeRange.end;
+    final endTime = timeRange.end;
 
-    return (wakeUp.hour == bottomHour && wakeUp.minute > 0) ||
-            bottomHour! < wakeUp.hour
+    return (endTime.hour == bottomHour && endTime.minute > 0) ||
+            bottomHour! < endTime.hour
         ? DateTimeRange(
             start: timeRange.start.add(oneBeforeDay),
-            end: wakeUp.add(oneBeforeDay))
+            end: endTime.add(oneBeforeDay))
         : timeRange;
   }
 
