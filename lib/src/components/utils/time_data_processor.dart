@@ -12,11 +12,11 @@ const double _kMinHour = 0.0;
 /// 24
 const double _kMaxHour = 24.0;
 
-/// 데이터를 적절히 가공하는 클래스이다.
+/// 데이터를 적절히 가공하는 믹스인이다.
 ///
 /// 이 클래스는 빈 날짜를 수면량이 0인 데이터로 채우고 [topHour]와 [bottomHour]를
 /// 계산한다.
-abstract class TimeDataProcessor {
+mixin TimeDataProcessor {
   static const Duration _oneAfterDayDuration = const Duration(days: 1);
   static const Duration _oneBeforeDayDuration = const Duration(days: -1);
 
