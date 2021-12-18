@@ -48,10 +48,9 @@ abstract class TimeDataProcessor {
 
   bool get firstDataHasChanged => _firstDataHasChanged;
 
-  //TODO: [sleepData]변수명 바꾸기
-  void processData(List<DateTimeRange> sleepData, ViewMode viewMode,
+  void processData(List<DateTimeRange> dataList, ViewMode viewMode,
       ChartType chartType, DateTime pivotEnd) {
-    _initProcessData(sleepData, viewMode, pivotEnd);
+    _initProcessData(dataList, viewMode, pivotEnd);
     switch (chartType) {
       case ChartType.time:
         _generatePivotHours();
@@ -60,7 +59,7 @@ abstract class TimeDataProcessor {
         _generatePivotHours();
         break;
       case ChartType.amount:
-        _calcAmountPivotHeights(sleepData);
+        _calcAmountPivotHeights(dataList);
     }
   }
 
@@ -198,8 +197,8 @@ abstract class TimeDataProcessor {
   ///
   /// 수면하지 않은 구간이 가장 넓은 부분이 선택되며, 선택된 값의 취침 시간이
   /// [topHour], 기상 시간이 [bottomHour]가 된다.
-  _TimePair? _getPivotHours(List<DateTimeRange> sleepData) {
-    final List<_TimePair> rangeList = _getSortedRangeListFrom(sleepData);
+  _TimePair? _getPivotHours(List<DateTimeRange> dataList) {
+    final List<_TimePair> rangeList = _getSortedRangeListFrom(dataList);
     if (rangeList.isEmpty) return null;
 
     // 빈 공간 중 범위가 가장 넓은 부분을 찾는다.
@@ -229,13 +228,13 @@ abstract class TimeDataProcessor {
 
   /// [sleepAmountList]과 [wakeUpTimeList]를 이용하여 수면한 범위들을 구한다.
   /// 이 값들은 오름차순으로 정렬되어 있다.
-  List<_TimePair> _getSortedRangeListFrom(List<DateTimeRange> sleepData) {
+  List<_TimePair> _getSortedRangeListFrom(List<DateTimeRange> dataList) {
     List<_TimePair> rangeList = [];
 
-    for (int i = 0; i < sleepData.length; ++i) {
+    for (int i = 0; i < dataList.length; ++i) {
       final curSleepPair = _TimePair(
-          TimeAssistant.dateTimeToDouble(sleepData[i].start),
-          TimeAssistant.dateTimeToDouble(sleepData[i].end));
+          TimeAssistant.dateTimeToDouble(dataList[i].start),
+          TimeAssistant.dateTimeToDouble(dataList[i].end));
 
       // 23시 ~ 6시와 같은 0시를 사이에 둔 경우 0시를 기준으로 두 범위로 나눈다.
       if (curSleepPair.startTime > curSleepPair.endTime) {
@@ -257,25 +256,25 @@ abstract class TimeDataProcessor {
   /// [rangeList]를 반환한다.
   ///
   /// 항상 [rangeList]의 값들 중 서로 겹쳐지는 값은 존재하지 않는다.
-  List<_TimePair> _mergeRange(_TimePair sleepPair, List<_TimePair> rangeList) {
+  List<_TimePair> _mergeRange(_TimePair timePair, List<_TimePair> rangeList) {
     int loIdx = -1;
     int hiIdx = -1;
 
     // 먼저 [sleepPair]의 안에 포함되는 목록을 제거한다.
     for (int i = 0; i < rangeList.length; ++i) {
       final curPair = rangeList[i];
-      if (sleepPair.inRange(curPair.startTime) &&
-          sleepPair.inRange(curPair.endTime)) rangeList.removeAt(i--);
+      if (timePair.inRange(curPair.startTime) &&
+          timePair.inRange(curPair.endTime)) rangeList.removeAt(i--);
     }
 
     for (int i = 0; i < rangeList.length; ++i) {
       final _TimePair curSleepPair =
           _TimePair(rangeList[i].startTime, rangeList[i].endTime);
 
-      if (loIdx == -1 && curSleepPair.inRange(sleepPair.startTime)) {
+      if (loIdx == -1 && curSleepPair.inRange(timePair.startTime)) {
         loIdx = i;
       }
-      if (hiIdx == -1 && curSleepPair.inRange(sleepPair.endTime)) {
+      if (hiIdx == -1 && curSleepPair.inRange(timePair.endTime)) {
         hiIdx = i;
       }
       if (loIdx != -1 && hiIdx != -1) {
@@ -284,8 +283,8 @@ abstract class TimeDataProcessor {
     }
 
     final newSleepPair = _TimePair(
-        loIdx == -1 ? sleepPair.startTime : rangeList[loIdx].startTime,
-        hiIdx == -1 ? sleepPair.endTime : rangeList[hiIdx].endTime);
+        loIdx == -1 ? timePair.startTime : rangeList[loIdx].startTime,
+        hiIdx == -1 ? timePair.endTime : rangeList[hiIdx].endTime);
 
     // 겹치는 부분을 제거한다.
     // 1. 이미 존재하는 것에 완전히 포함되는 경우
@@ -312,21 +311,21 @@ abstract class TimeDataProcessor {
     return rangeList;
   }
 
-  void _calcAmountPivotHeights(List<DateTimeRange> sleepData) {
+  void _calcAmountPivotHeights(List<DateTimeRange> dataList) {
     final double infinity = 10000.0;
-    final int len = sleepData.length;
+    final int len = dataList.length;
 
     double maxResult = 0.0;
     double minResult = infinity;
     double sum = 0.0;
 
     for (int i = 0; i < len; ++i) {
-      final amount = TimeAssistant.durationHour(sleepData[i]);
+      final amount = TimeAssistant.durationHour(dataList[i]);
       sum += amount;
 
       if (i == len - 1 ||
-          TimeAssistant.dateWithoutTime(sleepData[i].end) !=
-              TimeAssistant.dateWithoutTime(sleepData[i + 1].end)) {
+          TimeAssistant.dateWithoutTime(dataList[i].end) !=
+              TimeAssistant.dateWithoutTime(dataList[i + 1].end)) {
         maxResult = max(maxResult, sum);
         if (sum > 0.0) {
           minResult = min(minResult, sum);
