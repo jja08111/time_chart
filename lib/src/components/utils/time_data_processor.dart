@@ -1,8 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import '../../../time_chart.dart';
 import '../view_mode.dart';
-import '../../time_chart.dart';
+import '../../chart.dart';
 import 'time_assistant.dart' as TimeAssistant;
 
 /// 0

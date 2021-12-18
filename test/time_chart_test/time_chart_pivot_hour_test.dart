@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:time_chart/src/chart.dart';
 import 'package:time_chart/time_chart.dart';
 
 import '../utils/chart_state_utils.dart';
