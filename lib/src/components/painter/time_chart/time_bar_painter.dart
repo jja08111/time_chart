@@ -191,7 +191,7 @@ class TimeBarPainter extends ChartEngine {
     // 1부터 시작한다.
     int dayCounter = max(1, 1 + dayFromScrollOffset - ChartEngine.toleranceDay);
     // 만약 첫 데이터의 값이 다음으로 초과하는 경우 한 칸 띄워서 시작한다.
-    if (timeAssistant.isInRangePivotHours(sleepData.first, bottomHour)) {
+    if (timeAssistant.isInRangeHour(sleepData.first, bottomHour)) {
       dayCounter += 1;
     }
 
