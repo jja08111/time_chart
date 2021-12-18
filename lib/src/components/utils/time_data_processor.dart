@@ -48,6 +48,7 @@ abstract class TimeDataProcessor {
 
   bool get firstDataHasChanged => _firstDataHasChanged;
 
+  //TODO: [sleepData]변수명 바꾸기
   void processData(List<DateTimeRange> sleepData, ViewMode viewMode,
       ChartType chartType, DateTime pivotEnd) {
     _initProcessData(sleepData, viewMode, pivotEnd);
@@ -155,7 +156,7 @@ abstract class TimeDataProcessor {
   /// 맞춘다. 예를 들어 [ViewMode.weekly]인 경우는 길이가 7이고 [ViewMode.monthly]인
   /// 경우는 길이가 31로 제한하여 가공한다.
   void _initProcessData(
-      List<DateTimeRange> sleepData, ViewMode viewMode, DateTime pivotHi) {
+      List<DateTimeRange> dataList, ViewMode viewMode, DateTime pivotHi) {
     final pivotLo =
         pivotHi.add(Duration(days: -getViewModeLimitDay(viewMode) - 2));
 
@@ -165,13 +166,13 @@ abstract class TimeDataProcessor {
     _firstDataHasChanged = false;
 
     DateTime postEndTime = TimeAssistant.dateWithoutTime(
-        sleepData.first.end.add(_onePostDayDuration));
-    for (int i = 0; i < sleepData.length; ++i) {
+        dataList.first.end.add(_onePostDayDuration));
+    for (int i = 0; i < dataList.length; ++i) {
       if (i > 0) {
-        assert(sleepData[i - 1].end.isAfter(sleepData[i].end),
+        assert(dataList[i - 1].end.isAfter(dataList[i].end),
             'The data list is reversed or not sorted. Check the data parameter. The first data must be oldest data.');
       }
-      final currentTime = TimeAssistant.dateWithoutTime(sleepData[i].end);
+      final currentTime = TimeAssistant.dateWithoutTime(dataList[i].end);
       // 이전 데이터와 날짜가 다른 경우
       if (currentTime != postEndTime) {
         _increaseDayCount();
@@ -185,10 +186,10 @@ abstract class TimeDataProcessor {
         }
       }
       postEndTime = currentTime;
-      _processedSleepData.add(sleepData[i]);
+      _processedSleepData.add(dataList[i]);
 
       if (pivotLo.isBefore(currentTime) && currentTime.isBefore(pivotHi)) {
-        _pivotList.add(sleepData[i]);
+        _pivotList.add(dataList[i]);
       }
     }
   }
