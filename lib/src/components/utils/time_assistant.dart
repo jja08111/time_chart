@@ -85,9 +85,8 @@ bool isDirUpward(int beforeTop, int beforeBottom, int top, int bottom) {
 /// [range]안에 [hour]가 포함되면 `true`를 반환한다.
 bool isInRangeHour(DateTimeRange range, int hour) {
   DateTime time =
-  DateTime(range.start.year, range.start.month, range.start.day, hour);
+      DateTime(range.start.year, range.start.month, range.start.day, hour);
 
-  if (range.start.isBefore(time) && time.isBefore(range.end))
-    return true;
+  if (range.start.isBefore(time) && time.isBefore(range.end)) return true;
   return false;
 }
