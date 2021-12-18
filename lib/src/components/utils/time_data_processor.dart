@@ -256,8 +256,7 @@ abstract class TimeDataProcessor {
   /// [rangeList]를 반환한다.
   ///
   /// 항상 [rangeList]의 값들 중 서로 겹쳐지는 값은 존재하지 않는다.
-  List<_TimePair> _mergeRange(
-      _TimePair sleepPair, List<_TimePair> rangeList) {
+  List<_TimePair> _mergeRange(_TimePair sleepPair, List<_TimePair> rangeList) {
     int loIdx = -1;
     int hiIdx = -1;
 
