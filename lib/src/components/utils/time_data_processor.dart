@@ -11,30 +11,6 @@ const double _kMinHour = 0.0;
 /// 24
 const double _kMaxHour = 24.0;
 
-class _SleepPair implements Comparable {
-  /// 정수로 이루어진 수면 시작 시간과 기상시간을 가진 클래스를 생성한다.
-  const _SleepPair(this._sleepTime, this._wakeUp);
-
-  final double _sleepTime;
-  final double _wakeUp;
-
-  double get sleepTime => _sleepTime;
-
-  double get wakeUp => _wakeUp;
-
-  bool inRange(double a) => _sleepTime <= a && a <= _wakeUp;
-
-  @override
-  int compareTo(other) {
-    if (this._sleepTime < other.sleepTime) return -1;
-    if (this._sleepTime > other.sleepTime) return 1;
-    return 0;
-  }
-
-  @override
-  String toString() => 'startTime: $sleepTime, wakeUp: $wakeUp';
-}
-
 /// 데이터를 적절히 가공하는 클래스이다.
 ///
 /// 이 클래스는 빈 날짜를 수면량이 0인 데이터로 채우고 [topHour]와 [bottomHour]를
@@ -90,8 +66,8 @@ abstract class TimeDataProcessor {
   void _generatePivotHours() {
     final sleepPair = _getPivotHours(_pivotList);
     if (sleepPair == null) return;
-    final sleepTime = sleepPair.sleepTime;
-    final wakeUp = sleepPair.wakeUp;
+    final sleepTime = sleepPair.startTime;
+    final wakeUp = sleepPair.endTime;
     // 아래와 같이 범위가 형성된 경우를 고려한다.
     // |##|
     // |##| -> wakeUp
@@ -219,20 +195,20 @@ abstract class TimeDataProcessor {
   ///
   /// 수면하지 않은 구간이 가장 넓은 부분이 선택되며, 선택된 값의 취침 시간이
   /// [topHour], 기상 시간이 [bottomHour]가 된다.
-  _SleepPair? _getPivotHours(List<DateTimeRange> sleepData) {
-    final List<_SleepPair> rangeList = _getSortedRangeListFrom(sleepData);
+  _TimePair? _getPivotHours(List<DateTimeRange> sleepData) {
+    final List<_TimePair> rangeList = _getSortedRangeListFrom(sleepData);
     if (rangeList.isEmpty) return null;
 
     // 빈 공간 중 범위가 가장 넓은 부분을 찾는다.
     final len = rangeList.length;
-    _SleepPair resultPair =
-        _SleepPair(rangeList[0].sleepTime, rangeList[0].wakeUp);
+    _TimePair resultPair =
+        _TimePair(rangeList[0].startTime, rangeList[0].endTime);
     double maxInterval = 0.0;
 
     for (int i = 0; i < len; ++i) {
       final lo = i, hi = (i + 1) % len;
-      final wakeUp = rangeList[lo].wakeUp;
-      final sleepTime = rangeList[hi].sleepTime;
+      final wakeUp = rangeList[lo].endTime;
+      final sleepTime = rangeList[hi].startTime;
 
       double interval = sleepTime - wakeUp;
       if (interval < 0) {
@@ -241,7 +217,7 @@ abstract class TimeDataProcessor {
 
       if (maxInterval < interval) {
         maxInterval = interval;
-        resultPair = _SleepPair(sleepTime, wakeUp);
+        resultPair = _TimePair(sleepTime, wakeUp);
       }
     }
     //print(resultPair);
@@ -250,18 +226,18 @@ abstract class TimeDataProcessor {
 
   /// [sleepAmountList]과 [wakeUpTimeList]를 이용하여 수면한 범위들을 구한다.
   /// 이 값들은 오름차순으로 정렬되어 있다.
-  List<_SleepPair> _getSortedRangeListFrom(List<DateTimeRange> sleepData) {
-    List<_SleepPair> rangeList = [];
+  List<_TimePair> _getSortedRangeListFrom(List<DateTimeRange> sleepData) {
+    List<_TimePair> rangeList = [];
 
     for (int i = 0; i < sleepData.length; ++i) {
-      final curSleepPair = _SleepPair(
+      final curSleepPair = _TimePair(
           TimeAssistant.dateTimeToDouble(sleepData[i].start),
           TimeAssistant.dateTimeToDouble(sleepData[i].end));
 
       // 23시 ~ 6시와 같은 0시를 사이에 둔 경우 0시를 기준으로 두 범위로 나눈다.
-      if (curSleepPair.sleepTime > curSleepPair.wakeUp) {
-        final frontPair = _SleepPair(_kMinHour, curSleepPair.wakeUp);
-        final backPair = _SleepPair(curSleepPair.sleepTime, _kMaxHour);
+      if (curSleepPair.startTime > curSleepPair.endTime) {
+        final frontPair = _TimePair(_kMinHour, curSleepPair.endTime);
+        final backPair = _TimePair(curSleepPair.startTime, _kMaxHour);
 
         rangeList = _mergeRange(frontPair, rangeList);
         rangeList = _mergeRange(backPair, rangeList);
@@ -278,26 +254,26 @@ abstract class TimeDataProcessor {
   /// [rangeList]를 반환한다.
   ///
   /// 항상 [rangeList]의 값들 중 서로 겹쳐지는 값은 존재하지 않는다.
-  List<_SleepPair> _mergeRange(
-      _SleepPair sleepPair, List<_SleepPair> rangeList) {
+  List<_TimePair> _mergeRange(
+      _TimePair sleepPair, List<_TimePair> rangeList) {
     int loIdx = -1;
     int hiIdx = -1;
 
     // 먼저 [sleepPair]의 안에 포함되는 목록을 제거한다.
     for (int i = 0; i < rangeList.length; ++i) {
       final curPair = rangeList[i];
-      if (sleepPair.inRange(curPair.sleepTime) &&
-          sleepPair.inRange(curPair.wakeUp)) rangeList.removeAt(i--);
+      if (sleepPair.inRange(curPair.startTime) &&
+          sleepPair.inRange(curPair.endTime)) rangeList.removeAt(i--);
     }
 
     for (int i = 0; i < rangeList.length; ++i) {
-      final _SleepPair curSleepPair =
-          _SleepPair(rangeList[i].sleepTime, rangeList[i].wakeUp);
+      final _TimePair curSleepPair =
+          _TimePair(rangeList[i].startTime, rangeList[i].endTime);
 
-      if (loIdx == -1 && curSleepPair.inRange(sleepPair.sleepTime)) {
+      if (loIdx == -1 && curSleepPair.inRange(sleepPair.startTime)) {
         loIdx = i;
       }
-      if (hiIdx == -1 && curSleepPair.inRange(sleepPair.wakeUp)) {
+      if (hiIdx == -1 && curSleepPair.inRange(sleepPair.endTime)) {
         hiIdx = i;
       }
       if (loIdx != -1 && hiIdx != -1) {
@@ -305,9 +281,9 @@ abstract class TimeDataProcessor {
       }
     }
 
-    final newSleepPair = _SleepPair(
-        loIdx == -1 ? sleepPair.sleepTime : rangeList[loIdx].sleepTime,
-        hiIdx == -1 ? sleepPair.wakeUp : rangeList[hiIdx].wakeUp);
+    final newSleepPair = _TimePair(
+        loIdx == -1 ? sleepPair.startTime : rangeList[loIdx].startTime,
+        hiIdx == -1 ? sleepPair.endTime : rangeList[hiIdx].endTime);
 
     // 겹치는 부분을 제거한다.
     // 1. 이미 존재하는 것에 완전히 포함되는 경우
@@ -324,8 +300,8 @@ abstract class TimeDataProcessor {
 
     for (int i = 0; i < rangeList.length; ++i) {
       final curSleepPair = rangeList[i];
-      if (newSleepPair.inRange(curSleepPair.sleepTime) &&
-          newSleepPair.inRange(curSleepPair.wakeUp)) {
+      if (newSleepPair.inRange(curSleepPair.startTime) &&
+          newSleepPair.inRange(curSleepPair.endTime)) {
         rangeList.remove(curSleepPair);
       }
     }
@@ -371,4 +347,28 @@ abstract class TimeDataProcessor {
     if (c <= 0) return 24.0 + c;
     return c;
   }
+}
+
+class _TimePair implements Comparable {
+  /// 정수로 이루어진 수면 시작 시간과 기상시간을 가진 클래스를 생성한다.
+  const _TimePair(this._startTime, this._endTime);
+
+  final double _startTime;
+  final double _endTime;
+
+  double get startTime => _startTime;
+
+  double get endTime => _endTime;
+
+  bool inRange(double a) => _startTime <= a && a <= _endTime;
+
+  @override
+  int compareTo(other) {
+    if (this._startTime < other.startTime) return -1;
+    if (this._startTime > other.startTime) return 1;
+    return 0;
+  }
+
+  @override
+  String toString() => 'startTime: $startTime, wakeUp: $endTime';
 }
