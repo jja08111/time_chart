@@ -86,6 +86,8 @@ bool isDirUpward(int beforeTop, int beforeBottom, int top, int bottom) {
 bool isInRangeHour(DateTimeRange range, int hour) {
   DateTime time =
       DateTime(range.start.year, range.start.month, range.start.day, hour);
+  // 두 시간 사이에 위치 할 수 있도록 한다.
+  if (time.isBefore(range.start)) time = time.add(const Duration(days: 1));
 
   if (range.start.isBefore(time) && time.isBefore(range.end)) return true;
   return false;
