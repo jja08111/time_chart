@@ -43,6 +43,10 @@ class TooltipOverlay extends StatelessWidget {
   ///
   /// 만약 수정된 시간이면 하루 이전으로 변경해야 한다.
   DateTimeRange _getActualDateTime(DateTimeRange timeRange) {
+    // bottomHour가 0시라면 전혀 수정된 값이 존재하지 않는다. TimeDataProcessor _isNextDay()
+    // 함수에서 확인할 수 있다.
+    if (bottomHour == 0) return timeRange;
+
     final oneBeforeDay = const Duration(days: -1);
     final endTime = timeRange.end;
 

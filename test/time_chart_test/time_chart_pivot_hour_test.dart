@@ -162,5 +162,25 @@ void main() {
       expect(chartState.topHour, pivotHour);
       expect(chartState.bottomHour, pivotHour);
     });
+
+    testWidgets(
+        'all data is not changed to next day if the bottom pivot hour is 12 AM',
+        (tester) async {
+      final rowData = DateTimeRange(
+        start: DateTime(2021, 12, 18, 22, 12),
+        end: DateTime(2021, 12, 18, 23, 30),
+      );
+      await tester.pumpWidget(MaterialApp(
+        home: TimeChart(
+          data: [
+            rowData,
+          ],
+          viewMode: ViewMode.weekly,
+        ),
+      ));
+      final ChartState chartState = getChartState(tester);
+
+      expect(chartState.processedSleepData.first.end, rowData.end);
+    });
   });
 }

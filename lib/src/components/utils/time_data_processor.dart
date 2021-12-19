@@ -106,6 +106,8 @@ mixin TimeDataProcessor {
   }
 
   bool _isNextDayTime(double timeDouble) {
+    // 제일 아래의 시간이 0시인 경우 해당 블럭은 무조건 해당 시간으로 표시하여야 한다.
+    if (bottomHour == 0) return false;
     return bottomHour! < timeDouble;
   }
 
