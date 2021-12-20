@@ -6,6 +6,13 @@ bool areSameDate(DateTime a, DateTime b) {
   return a.year == b.year && a.month == b.month && a.day == b.day;
 }
 
+int getDateOnlyDifference(DateTime a, DateTime b) {
+  DateTime dateA = DateTime(a.year, a.month, a.day);
+  DateTime dateB = DateTime(b.year, b.month, b.day);
+
+  return dateA.difference(dateB).inDays;
+}
+
 DateTime dateWithoutTime(DateTime dateTime) {
   return DateTime(dateTime.year, dateTime.month, dateTime.day);
 }

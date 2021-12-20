@@ -89,30 +89,10 @@ mixin TimeDataProcessor {
     }
   }
 
-  void _fillEmptyDay() {
-    for (int i = 0; i < _processedSleepData.length; ++i) {
-      // 이미 [initProcessData]에서 빈 공간을 채워 넣었기 때문에 현재 발생한 빈 공간은
-      // 2칸을 넘을 수 없다.
-      final beforeEndTime = _processedSleepData[i].end;
-      if (i > 0 &&
-          TimeAssistant.hasEmptyDayBetween(
-              _processedSleepData[i - 1].end, beforeEndTime)) {
-        final postDate = beforeEndTime.add(_oneAfterDayDuration);
-        _processedSleepData.insert(
-            i, DateTimeRange(start: postDate, end: postDate));
-        ++i;
-      }
-    }
-  }
-
   bool _isNextDayTime(double timeDouble) {
     // 제일 아래의 시간이 0시인 경우 해당 블럭은 무조건 해당 시간으로 표시하여야 한다.
     if (bottomHour == 0) return false;
     return bottomHour! < timeDouble;
-  }
-
-  void _increaseDayCount() {
-    _dayCount = _dayCount! + 1;
   }
 
   /// 첫 입력으로 들어온 데이터를 이용 가능하게 초기 가공해준다.
@@ -140,15 +120,11 @@ mixin TimeDataProcessor {
       final currentTime = TimeAssistant.dateWithoutTime(dataList[i].end);
       // 이전 데이터와 날짜가 다른 경우
       if (currentTime != postEndTime) {
-        _increaseDayCount();
+        final difference =
+            TimeAssistant.getDateOnlyDifference(postEndTime, currentTime);
+        _dayCount = _dayCount! + difference;
         // 하루 이상 차이나는 경우
-        while (currentTime != postEndTime.add(_oneBeforeDayDuration)) {
-          postEndTime = postEndTime.add(_oneBeforeDayDuration);
-          // 빈 데이터를 넣는다.
-          _processedSleepData
-              .add(DateTimeRange(start: postEndTime, end: postEndTime));
-          _increaseDayCount();
-        }
+        postEndTime = postEndTime.add(Duration(days: -difference));
       }
       postEndTime = currentTime;
       _processedSleepData.add(dataList[i]);
@@ -179,13 +155,12 @@ mixin TimeDataProcessor {
         );
 
         if (i == 0) {
-          _increaseDayCount();
+          _dayCount = _dayCount! + 1;
           _firstDataHasChanged = true;
         } // 7일 전부 채워진 상태에서 마지막 날이 다음 칸으로 넘어간 경우
 
       }
     }
-    _fillEmptyDay();
   }
 
   /// 시간 그래프의 기준이 될 값들을 구한다.

@@ -297,8 +297,6 @@ abstract class ChartEngine extends CustomPainter {
   }
 
   int _compareDateWithOutTime(DateTime a, DateTime b) {
-    if (areSameDate(a, b)) return 0;
-    if (a.isBefore(b)) return 1;
-    return -1;
+    return getDateOnlyDifference(b, a);
   }
 }

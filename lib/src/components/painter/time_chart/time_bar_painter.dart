@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:touchable/touchable.dart';
 import '../../utils/time_assistant.dart' as timeAssistant;
@@ -188,17 +186,17 @@ class TimeBarPainter extends ChartEngine {
     final DateTime startDateTime =
         sleepData.first.end.add(Duration(days: -dayFromScrollOffset));
     final int startIndex = indexOf(startDateTime, sleepData);
-    // 1부터 시작한다.
-    int dayCounter = max(1, 1 + dayFromScrollOffset - ChartEngine.toleranceDay);
-    // 만약 첫 데이터의 값이 다음으로 초과하는 경우 한 칸 띄워서 시작한다.
-    if (timeAssistant.isInRangeHour(sleepData.first, bottomHour)) {
-      dayCounter += 1;
-    }
 
     for (int index = startIndex; index < length; index++) {
       final wakeUpTimeDouble =
           timeAssistant.dateTimeToDouble(sleepData[index].end);
       final sleepAmountDouble = timeAssistant.durationHour(sleepData[index]);
+      final barPosition = 1 +
+          timeAssistant.getDateOnlyDifference(
+              sleepData.first.end, sleepData[index].end);
+
+      if (barPosition - dayFromScrollOffset >
+          viewLimitDay + ChartEngine.toleranceDay * 2) break;
 
       // 좌측 라벨이 아래로 갈수록 시간이 흐르는 것을 표현하기 위해
       // 큰 시간 값과 현재 시간의 차를 구한다.
@@ -215,20 +213,7 @@ class TimeBarPainter extends ChartEngine {
 
       final double bottom = height - normalizedBottom * height;
       final double top = height - normalizedTop * height;
-      final double right = size.width - intervalOfBars * dayCounter;
-
-      // [weekdays]가 달라야 왼쪽으로 한 칸 이동한다.
-      if (index + 1 < length &&
-          !timeAssistant.areSameDate(
-              sleepData[index].end, sleepData[index + 1].end)) {
-        ++dayCounter;
-      }
-
-      if ((dayCounter - 1 - (ChartEngine.toleranceDay * 2)) -
-              dayFromScrollOffset >
-          viewLimitDay) {
-        break;
-      }
+      final double right = size.width - intervalOfBars * barPosition;
 
       // 그릴 필요가 없는 경우 넘어간다
       if (top == bottom ||
