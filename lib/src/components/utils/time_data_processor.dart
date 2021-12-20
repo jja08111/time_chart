@@ -45,7 +45,7 @@ mixin TimeDataProcessor {
 
   bool get firstDataHasChanged => _firstDataHasChanged;
 
-  void processData(Chart chart, pivotEnd) {
+  void processData(Chart chart, DateTime pivotEnd) {
     _initProcessData(chart.data, chart.viewMode, pivotEnd);
     switch (chart.chartType) {
       case ChartType.time:
