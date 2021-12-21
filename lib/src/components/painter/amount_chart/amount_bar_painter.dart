@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:touchable/touchable.dart';
-import '../../utils/time_assistant.dart' as timeAssistant;
+import '../../utils/time_assistant.dart';
 import '../../view_mode.dart';
 import '../chart_engine.dart';
 
@@ -131,18 +131,17 @@ class AmountBarPainter extends ChartEngine {
     double amountSum = 0;
 
     for (int index = startIndex; index < length; index++) {
-      final int barPosition = 1 + timeAssistant.getDateOnlyDifference(
-          sleepData.first.end, sleepData[index].end);
+      final int barPosition =
+          1 + sleepData.first.end.differenceDateInDay(sleepData[index].end);
 
       if (barPosition - dayFromScrollOffset >
           viewLimitDay + ChartEngine.toleranceDay * 2) break;
 
-      amountSum += timeAssistant.durationHour(sleepData[index]);
+      amountSum += sleepData[index].durationInHours;
 
       // 날짜가 다르거나 마지막 데이터면 오른쪽으로 한 칸 이동하여 그린다. 그 외에는 계속 sum 한다.
       if (index == length - 1 ||
-          timeAssistant.getDateOnlyDifference(
-                  sleepData[index].end, sleepData[index + 1].end) >
+          sleepData[index].end.differenceDateInDay(sleepData[index + 1].end) >
               0) {
         final double normalizedTop =
             max(0, amountSum - bottomHour!) / (topHour! - bottomHour!);

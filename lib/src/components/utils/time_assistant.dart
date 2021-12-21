@@ -2,46 +2,10 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-bool areSameDate(DateTime a, DateTime b) {
-  return a.year == b.year && a.month == b.month && a.day == b.day;
-}
-
-int getDateOnlyDifference(DateTime a, DateTime b) {
-  DateTime dateA = DateTime(a.year, a.month, a.day);
-  DateTime dateB = DateTime(b.year, b.month, b.day);
-
-  return dateA.difference(dateB).inDays;
-}
-
-DateTime dateWithoutTime(DateTime dateTime) {
-  return DateTime(dateTime.year, dateTime.month, dateTime.day);
-}
-
-double dateTimeToDouble(DateTime time) {
-  return time.hour.toDouble() + time.minute.toDouble() / 60;
-}
-
 /// 지난달이 몇달인지 구한다.
 int getPreviousMonthFrom(int month) {
   if (month == 1) return 12;
   return month - 1;
-}
-
-/// 두 날짜 사이에 한 날이 비는 경우 true, 붙은 날짜인 경우 false 반환
-///
-/// a가 나중에 발생한 시간이다.
-bool hasEmptyDayBetween(DateTime a, DateTime b) {
-  DateTime after = a, before = b;
-  if (a.isBefore(b)) {
-    after = b;
-    before = a;
-  }
-  if (after.day == before.add(const Duration(days: 2)).day) return true;
-  return false;
-}
-
-double durationHour(DateTimeRange range) {
-  return range.duration.inMinutes / 60;
 }
 
 /// [a]시에서 [b]시로 흐른 시간을 구한다.
@@ -98,4 +62,35 @@ bool isInRangeHour(DateTimeRange range, int hour) {
 
   if (range.start.isBefore(time) && time.isBefore(range.end)) return true;
   return false;
+}
+
+extension DateTimeUtils on DateTime {
+  /// Return `true` if [other] has same date without time.
+  bool isSameDateWith(DateTime other) {
+    return this.year == other.year &&
+        this.month == other.month &&
+        this.day == other.day;
+  }
+
+  /// Return day that date difference with [other].
+  int differenceDateInDay(DateTime other) {
+    DateTime thisDate = DateTime(this.year, this.month, this.day);
+    DateTime otherDate = DateTime(other.year, other.month, other.day);
+
+    return thisDate.difference(otherDate).inDays;
+  }
+
+  DateTime dateWithoutTime() {
+    return DateTime(this.year, this.month, this.day);
+  }
+
+  double toDouble() {
+    return this.hour.toDouble() + this.minute.toDouble() / 60;
+  }
+}
+
+extension DateTimeRangeUtils on DateTimeRange {
+  double get durationInHours {
+    return this.duration.inMinutes / 60;
+  }
 }

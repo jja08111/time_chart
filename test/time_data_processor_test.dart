@@ -5,7 +5,12 @@ import 'package:time_chart/src/components/utils/time_assistant.dart';
 import 'package:time_chart/src/components/utils/time_data_processor.dart';
 import 'package:time_chart/time_chart.dart';
 
-class _MockTimeDataProcessor with TimeDataProcessor {}
+class _MockTimeDataProcessor with TimeDataProcessor {
+  void process(List<DateTimeRange> data, {int defaultPivotHour = 18}) {
+    processData(_getChart(data, defaultPivotHour: defaultPivotHour),
+        data.first.end.add(const Duration(days: 1)).dateWithoutTime());
+  }
+}
 
 Chart _getChart(List<DateTimeRange> data, {int defaultPivotHour = 18}) {
   return Chart(
@@ -39,8 +44,7 @@ void main() {
           end: DateTime(2021, 2, 22, 9, 12),
         ),
       ];
-      processor.processData(_getChart(data),
-          dateWithoutTime(data.first.end.add(const Duration(days: 1))));
+      processor.process(data);
 
       expect(processor.topHour, 22);
       expect(processor.bottomHour, 10);
@@ -66,8 +70,7 @@ void main() {
           end: DateTime(2021, 2, 2, 3, 30),
         ),
       ];
-      processor.processData(_getChart(data),
-          dateWithoutTime(data.first.end.add(const Duration(days: 1))));
+      processor.process(data);
 
       expect(processor.topHour, 11);
       expect(processor.bottomHour, 9);
@@ -94,8 +97,7 @@ void main() {
           end: DateTime(2021, 2, 2, 3, 30),
         ),
       ];
-      processor.processData(_getChart(data),
-          dateWithoutTime(data.first.end.add(const Duration(days: 1))));
+      processor.process(data);
 
       expect(processor.topHour, 11);
       expect(processor.bottomHour, 9);
@@ -124,8 +126,7 @@ void main() {
       ];
       final chart = _getChart(data);
 
-      processor.processData(
-          chart, dateWithoutTime(data.first.end.add(const Duration(days: 1))));
+      processor.process(data);
 
       expect(processor.topHour, chart.defaultPivotHour);
       expect(processor.bottomHour, chart.defaultPivotHour);
@@ -143,8 +144,7 @@ void main() {
       ];
       final chart = _getChart(data);
 
-      processor.processData(
-          chart, dateWithoutTime(data.first.end.add(const Duration(days: 1))));
+      processor.process(data);
 
       expect(processor.topHour, chart.defaultPivotHour);
       expect(processor.bottomHour, chart.defaultPivotHour);
@@ -161,8 +161,7 @@ void main() {
           end: DateTime(2021, 12, 18, 2, 30),
         ),
       ];
-      processor.processData(_getChart(data, defaultPivotHour: pivotHour),
-          dateWithoutTime(data.first.end.add(const Duration(days: 1))));
+      processor.process(data, defaultPivotHour: pivotHour);
 
       expect(processor.topHour, pivotHour);
       expect(processor.bottomHour, pivotHour);
@@ -177,8 +176,7 @@ void main() {
         end: DateTime(2021, 12, 18, 23, 30),
       );
 
-      processor.processData(_getChart([data]),
-          dateWithoutTime(data.end.add(const Duration(days: 1))));
+      processor.process([data]);
 
       expect(processor.processedSleepData.first.end, data.end);
     });

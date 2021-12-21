@@ -132,7 +132,7 @@ class ChartState extends State<Chart>
     _addScrollNotifier();
 
     processData(widget,
-        dateWithoutTime(widget.data.first.end.add(const Duration(days: 1))));
+        widget.data.first.end.add(const Duration(days: 1)).dateWithoutTime());
   }
 
   @override
@@ -329,7 +329,7 @@ class ChartState extends State<Chart>
 
     final block =
         getCurrentBlockIndex(_barController.position, _blockWidth!).toInt();
-    final pivotEnd = dateWithoutTime(widget.data.first.end).add(
+    final pivotEnd = widget.data.first.end.dateWithoutTime().add(
         Duration(days: -block + (block > 0 && firstDataHasChanged ? 2 : 1)));
 
     processData(widget, pivotEnd);

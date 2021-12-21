@@ -188,12 +188,10 @@ class TimeBarPainter extends ChartEngine {
     final int startIndex = indexOf(startDateTime, sleepData);
 
     for (int index = startIndex; index < length; index++) {
-      final wakeUpTimeDouble =
-          timeAssistant.dateTimeToDouble(sleepData[index].end);
-      final sleepAmountDouble = timeAssistant.durationHour(sleepData[index]);
-      final barPosition = 1 +
-          timeAssistant.getDateOnlyDifference(
-              sleepData.first.end, sleepData[index].end);
+      final wakeUpTimeDouble = sleepData[index].end.toDouble();
+      final sleepAmountDouble = sleepData[index].durationInHours;
+      final barPosition =
+          1 + sleepData.first.end.differenceDateInDay(sleepData[index].end);
 
       if (barPosition - dayFromScrollOffset >
           viewLimitDay + ChartEngine.toleranceDay * 2) break;

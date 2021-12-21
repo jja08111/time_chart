@@ -109,18 +109,17 @@ mixin TimeDataProcessor {
     _dayCount = 0;
     _firstDataHasChanged = false;
 
-    DateTime postEndTime = TimeAssistant.dateWithoutTime(
-        dataList.first.end.add(_oneAfterDayDuration));
+    DateTime postEndTime =
+        dataList.first.end.add(_oneAfterDayDuration).dateWithoutTime();
     for (int i = 0; i < dataList.length; ++i) {
       if (i > 0) {
         assert(dataList[i - 1].end.isAfter(dataList[i].end),
             'The data list is reversed or not sorted. Check the data parameter. The first data must be oldest data.');
       }
-      final currentTime = TimeAssistant.dateWithoutTime(dataList[i].end);
+      final currentTime = dataList[i].end.dateWithoutTime();
       // 이전 데이터와 날짜가 다른 경우
       if (currentTime != postEndTime) {
-        final difference =
-            TimeAssistant.getDateOnlyDifference(postEndTime, currentTime);
+        final difference = postEndTime.differenceDateInDay(currentTime);
         _dayCount = _dayCount! + difference;
         // 하루 이상 차이나는 경우
         postEndTime = postEndTime.add(Duration(days: -difference));
@@ -140,8 +139,8 @@ mixin TimeDataProcessor {
     for (int i = 0; i < len; ++i) {
       final DateTime startTime = _processedSleepData[i].start;
       final DateTime endTime = _processedSleepData[i].end;
-      final double startTimeDouble = TimeAssistant.dateTimeToDouble(startTime);
-      final double endTimeDouble = TimeAssistant.dateTimeToDouble(endTime);
+      final double startTimeDouble = startTime.toDouble();
+      final double endTimeDouble = endTime.toDouble();
 
       if (_isNextDayTime(startTimeDouble) && _isNextDayTime(endTimeDouble)) {
         _processedSleepData.removeAt(i);
@@ -201,9 +200,8 @@ mixin TimeDataProcessor {
     List<_TimePair> rangeList = [];
 
     for (int i = 0; i < dataList.length; ++i) {
-      final curSleepPair = _TimePair(
-          TimeAssistant.dateTimeToDouble(dataList[i].start),
-          TimeAssistant.dateTimeToDouble(dataList[i].end));
+      final curSleepPair =
+          _TimePair(dataList[i].start.toDouble(), dataList[i].end.toDouble());
 
       // 23시 ~ 6시와 같은 0시를 사이에 둔 경우 0시를 기준으로 두 범위로 나눈다.
       if (curSleepPair.startTime > curSleepPair.endTime) {
@@ -289,12 +287,12 @@ mixin TimeDataProcessor {
     double sum = 0.0;
 
     for (int i = 0; i < len; ++i) {
-      final amount = TimeAssistant.durationHour(dataList[i]);
+      final amount = dataList[i].durationInHours;
       sum += amount;
 
       if (i == len - 1 ||
-          TimeAssistant.dateWithoutTime(dataList[i].end) !=
-              TimeAssistant.dateWithoutTime(dataList[i + 1].end)) {
+          dataList[i].end.dateWithoutTime() !=
+              dataList[i + 1].end.dateWithoutTime()) {
         maxResult = max(maxResult, sum);
         if (sum > 0.0) {
           minResult = min(minResult, sum);
