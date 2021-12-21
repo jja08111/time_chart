@@ -18,7 +18,6 @@ const double _kMaxHour = 24.0;
 /// 계산한다.
 mixin TimeDataProcessor {
   static const Duration _oneAfterDayDuration = const Duration(days: 1);
-  static const Duration _oneBeforeDayDuration = const Duration(days: -1);
 
   List<DateTimeRange> _processedSleepData = [];
 
