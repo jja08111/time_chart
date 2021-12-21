@@ -22,7 +22,7 @@ double dateTimeToDouble(DateTime time) {
 }
 
 /// 지난달이 몇달인지 구한다.
-int getLastMonthFrom(int month) {
+int getPreviousMonthFrom(int month) {
   if (month == 1) return 12;
   return month - 1;
 }
