@@ -5,7 +5,6 @@ import 'package:time_chart/time_chart.dart';
 
 void main() => runApp(MyApp());
 
-// ignore: must_be_immutable
 class MyApp extends StatelessWidget {
   // Data must be sorted.
   final smallDataList = [
@@ -57,12 +56,11 @@ class MyApp extends StatelessWidget {
     return list;
   }
 
-  late List<DateTimeRange> bigDataList = [];
+  late final List<DateTimeRange> bigDataList = getRandomSampleDataList();
 
   @override
   Widget build(BuildContext context) {
     final sizedBox = const SizedBox(height: 16);
-    if (bigDataList.isEmpty) bigDataList = getRandomSampleDataList();
 
     return MaterialApp(
       home: Scaffold(

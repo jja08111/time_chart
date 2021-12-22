@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:touchable/touchable.dart';
-import '../../utils/time_assistant.dart' as timeAssistant;
+import '../../utils/time_assistant.dart';
 import '../../view_mode.dart';
 import '../chart_engine.dart';
 
@@ -41,7 +41,7 @@ class AmountBarPainter extends ChartEngine {
         scrollController: scrollController,
         scrollDirection: AxisDirection.left);
     final paint = Paint()
-      ..color = barColor ?? Theme.of(context).accentColor
+      ..color = barColor ?? Theme.of(context).colorScheme.secondary
       ..style = PaintingStyle.fill
       ..strokeCap = StrokeCap.round;
 
@@ -123,35 +123,31 @@ class AmountBarPainter extends ChartEngine {
     final double intervalOfBars = size.width / dayCount;
     final int length = sleepData.length;
     final int viewLimitDay = getViewModeLimitDay(viewMode);
-    final scrollOffsetToDayCount = currentScrollOffsetToDay;
+    final dayFromScrollOffset = getDayFromScrollOffset();
     final DateTime startDateTime =
-        sleepData.first.end.add(Duration(days: -scrollOffsetToDayCount));
+        sleepData.first.end.add(Duration(days: -dayFromScrollOffset));
     final int startIndex = indexOf(startDateTime, sleepData);
 
     double amountSum = 0;
-    // 1부터 시작
-    int dayCounter =
-        max(1, 1 + scrollOffsetToDayCount - ChartEngine.toleranceDay);
 
     for (int index = startIndex; index < length; index++) {
-      amountSum += timeAssistant.durationHour(sleepData[index]);
+      final int barPosition =
+          1 + sleepData.first.end.differenceDateInDay(sleepData[index].end);
 
-      // [labels]가 다르면 오른쪽으로 한 칸 이동하여 그린다. 그 외에는 계속 sum 한다.
+      if (barPosition - dayFromScrollOffset >
+          viewLimitDay + ChartEngine.toleranceDay * 2) break;
+
+      amountSum += sleepData[index].durationInHours;
+
+      // 날짜가 다르거나 마지막 데이터면 오른쪽으로 한 칸 이동하여 그린다. 그 외에는 계속 sum 한다.
       if (index == length - 1 ||
-          sleepData[index].end.day != sleepData[index + 1].end.day) {
+          sleepData[index].end.differenceDateInDay(sleepData[index + 1].end) >
+              0) {
         final double normalizedTop =
             max(0, amountSum - bottomHour!) / (topHour! - bottomHour!);
 
         final double dy = size.height - normalizedTop * size.height;
-        final double dx = size.width - intervalOfBars * dayCounter;
-
-        dayCounter++;
-
-        if ((dayCounter - 1 - (ChartEngine.toleranceDay * 2)) -
-                scrollOffsetToDayCount >
-            viewLimitDay) {
-          break;
-        }
+        final double dx = size.width - intervalOfBars * barPosition;
 
         coordinates
             .add(OffsetWithAmountDate(dx, dy, amountSum, sleepData[index].end));

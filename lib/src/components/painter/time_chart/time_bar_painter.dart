@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:touchable/touchable.dart';
 import '../../utils/time_assistant.dart' as timeAssistant;
@@ -17,14 +15,12 @@ class TimeBarPainter extends ChartEngine {
     required this.bottomHour,
     required int? dayCount,
     required ViewMode viewMode,
-    required bool isFirstDataChanged,
     this.barColor,
   }) : super(
           scrollController: scrollController,
           dayCount: dayCount,
           viewMode: viewMode,
           firstValueDateTime: sleepData.first.end,
-          isLastDataChanged: isFirstDataChanged,
           context: context,
           repaint: scrollOffsetNotifier,
         );
@@ -105,7 +101,7 @@ class TimeBarPainter extends ChartEngine {
         scrollController: scrollController,
         scrollDirection: AxisDirection.left);
     final paint = Paint()
-      ..color = barColor ?? Theme.of(context).accentColor
+      ..color = barColor ?? Theme.of(context).colorScheme.secondary
       ..style = PaintingStyle.fill
       ..strokeCap = StrokeCap.round;
     final maxBottom = size.height;
@@ -186,18 +182,19 @@ class TimeBarPainter extends ChartEngine {
     final double height = size.height;
     final int viewLimitDay = getViewModeLimitDay(viewMode);
 
-    final scrollOffsetToDayCount = currentScrollOffsetToDay;
+    final dayFromScrollOffset = getDayFromScrollOffset();
     final DateTime startDateTime =
-        sleepData.first.end.add(Duration(days: -scrollOffsetToDayCount));
+        sleepData.first.end.add(Duration(days: -dayFromScrollOffset));
     final int startIndex = indexOf(startDateTime, sleepData);
-    // 1부터 시작한다.
-    int dayCounter =
-        max(1, 1 + scrollOffsetToDayCount - ChartEngine.toleranceDay);
 
     for (int index = startIndex; index < length; index++) {
-      final wakeUpTimeDouble =
-          timeAssistant.dateTimeToDouble(sleepData[index].end);
-      final sleepAmountDouble = timeAssistant.durationHour(sleepData[index]);
+      final wakeUpTimeDouble = sleepData[index].end.toDouble();
+      final sleepAmountDouble = sleepData[index].durationInHours;
+      final barPosition =
+          1 + sleepData.first.end.differenceDateInDay(sleepData[index].end);
+
+      if (barPosition - dayFromScrollOffset >
+          viewLimitDay + ChartEngine.toleranceDay * 2) break;
 
       // 좌측 라벨이 아래로 갈수록 시간이 흐르는 것을 표현하기 위해
       // 큰 시간 값과 현재 시간의 차를 구한다.
@@ -214,20 +211,7 @@ class TimeBarPainter extends ChartEngine {
 
       final double bottom = height - normalizedBottom * height;
       final double top = height - normalizedTop * height;
-      final double right = size.width - intervalOfBars * dayCounter;
-
-      // [weekdays]가 달라야 왼쪽으로 한 칸 이동한다.
-      if (index + 1 < length &&
-          !timeAssistant.areSameDate(
-              sleepData[index].end, sleepData[index + 1].end)) {
-        ++dayCounter;
-      }
-
-      if ((dayCounter - 1 - (ChartEngine.toleranceDay * 2)) -
-              scrollOffsetToDayCount >
-          viewLimitDay) {
-        break;
-      }
+      final double right = size.width - intervalOfBars * barPosition;
 
       // 그릴 필요가 없는 경우 넘어간다
       if (top == bottom ||

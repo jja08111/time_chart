@@ -57,7 +57,6 @@ abstract class ChartEngine extends CustomPainter {
   ChartEngine({
     this.scrollController,
     int? dayCount,
-    bool isLastDataChanged = false,
     required this.viewMode,
     this.firstValueDateTime,
     required this.context,
@@ -80,7 +79,7 @@ abstract class ChartEngine extends CustomPainter {
 
   final BuildContext context;
 
-  int get currentScrollOffsetToDay {
+  int getDayFromScrollOffset() {
     if (!scrollController!.hasClients) return 0;
     return (scrollController!.offset / blockWidth!).floor();
   }
@@ -174,16 +173,17 @@ abstract class ChartEngine extends CustomPainter {
   }) {
     final weekday = getShortWeekdayList(context);
     final viewModeLimitDay = getViewModeLimitDay(viewMode);
-    final scrollOffsetToDay = currentScrollOffsetToDay - toleranceDay;
+    final dayFromScrollOffset = getDayFromScrollOffset() - toleranceDay;
+
     DateTime currentDate =
-        firstValueDateTime!.add(Duration(days: -scrollOffsetToDay));
+        firstValueDateTime!.add(Duration(days: -dayFromScrollOffset));
 
     void turnOneBeforeDay() {
       currentDate = currentDate.add(const Duration(days: -1));
     }
 
-    for (int i = scrollOffsetToDay;
-        i <= scrollOffsetToDay + viewModeLimitDay + toleranceDay * 2;
+    for (int i = dayFromScrollOffset;
+        i <= dayFromScrollOffset + viewModeLimitDay + toleranceDay * 2;
         i++) {
       late String text;
       bool isDashed = true;
@@ -297,8 +297,6 @@ abstract class ChartEngine extends CustomPainter {
   }
 
   int _compareDateWithOutTime(DateTime a, DateTime b) {
-    if (areSameDate(a, b)) return 0;
-    if (a.isBefore(b)) return 1;
-    return -1;
+    return b.differenceDateInDay(a);
   }
 }

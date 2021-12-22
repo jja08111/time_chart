@@ -35,7 +35,7 @@ class TimeYLabelPainter extends ChartEngine {
 
   static const double _tolerance = 6.0;
 
-  bool visible(double posY, {bool onTolerance = false}) {
+  bool isVisible(double posY, {bool onTolerance = false}) {
     final actualPosY = posY + topPosition;
     final tolerance = onTolerance ? _tolerance : 0;
     return -tolerance <= actualPosY &&
@@ -43,8 +43,8 @@ class TimeYLabelPainter extends ChartEngine {
   }
 
   void _drawLabelAndLine(Canvas canvas, Size size, double posY, int? time) {
-    if (visible(posY)) drawHorizontalLine(canvas, size, posY);
-    if (visible(posY, onTolerance: true))
+    if (isVisible(posY)) drawHorizontalLine(canvas, size, posY);
+    if (isVisible(posY, onTolerance: true))
       drawYText(canvas, size, translations!.formatHourOnly(time!), posY);
   }
 

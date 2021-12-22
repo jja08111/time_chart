@@ -2,10 +2,10 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
+import '../../../time_chart.dart';
 import 'tooltip_shape_border.dart';
 import 'tooltip_size.dart';
 import '../translations/translations.dart';
-import '../../time_chart.dart';
 
 const double kTooltipArrowWidth = 8.0;
 const double kTooltipArrowHeight = 16.0;
@@ -43,14 +43,18 @@ class TooltipOverlay extends StatelessWidget {
   ///
   /// 만약 수정된 시간이면 하루 이전으로 변경해야 한다.
   DateTimeRange _getActualDateTime(DateTimeRange timeRange) {
-    final oneBeforeDay = const Duration(days: -1);
-    final wakeUp = timeRange.end;
+    // bottomHour가 0시라면 전혀 수정된 값이 존재하지 않는다. TimeDataProcessor _isNextDay()
+    // 함수에서 확인할 수 있다.
+    if (bottomHour == 0) return timeRange;
 
-    return (wakeUp.hour == bottomHour && wakeUp.minute > 0) ||
-            bottomHour! < wakeUp.hour
+    final oneBeforeDay = const Duration(days: -1);
+    final endTime = timeRange.end;
+
+    return (endTime.hour == bottomHour && endTime.minute > 0) ||
+            bottomHour! < endTime.hour
         ? DateTimeRange(
             start: timeRange.start.add(oneBeforeDay),
-            end: wakeUp.add(oneBeforeDay))
+            end: endTime.add(oneBeforeDay))
         : timeRange;
   }
 
@@ -61,7 +65,6 @@ class TooltipOverlay extends StatelessWidget {
       case ChartType.time:
         child = _TimeTooltipOverlay(
           timeRange: _getActualDateTime(timeRange!),
-          bottomHour: bottomHour!,
           start: start,
           end: end,
         );
@@ -100,13 +103,11 @@ class _TimeTooltipOverlay extends StatelessWidget {
   const _TimeTooltipOverlay({
     Key? key,
     required this.timeRange,
-    required this.bottomHour,
     required this.start,
     required this.end,
   }) : super(key: key);
 
   final DateTimeRange timeRange;
-  final int bottomHour;
   final String start;
   final String end;
 
