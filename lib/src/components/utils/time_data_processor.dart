@@ -114,7 +114,7 @@ mixin TimeDataProcessor {
     for (int i = 0; i < dataList.length; ++i) {
       if (i > 0) {
         assert(dataList[i - 1].end.isAfter(dataList[i].end),
-            'The data list is reversed or not sorted. Check the data parameter. The first data must be oldest data.');
+            'The data list is reversed or not sorted. Check the data parameter. The first data must be newest data.');
       }
       final currentTime = dataList[i].end.dateWithoutTime();
       // 이전 데이터와 날짜가 다른 경우
