@@ -22,7 +22,7 @@ Add it to your package's pubspec.yaml file
 
 ```yml
 dependencies:
-  time_chart: ^0.3.0
+  time_chart: ^0.3.0+1
 ```
 
 ### 2 - Install it
