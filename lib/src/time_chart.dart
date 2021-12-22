@@ -20,7 +20,7 @@ class TimeChart extends StatelessWidget {
     this.tooltipStart = "START",
     this.tooltipEnd = "END",
     this.activeTooltip = true,
-    required this.viewMode,
+    this.viewMode = ViewMode.weekly,
     this.defaultPivotHour = 0,
   })  : assert(0 <= defaultPivotHour && defaultPivotHour < 24),
         super(key: key);
