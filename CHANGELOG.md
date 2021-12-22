@@ -1,3 +1,6 @@
+## 0.3.0+1
+* [Update] Updated path_drawing package version to 1.0.0
+
 ## 0.3.0
 * [Update] Added a `defaultPivotHour` parameter.
 * [Update] Change to use default value of `viewMode`.
