@@ -180,5 +180,28 @@ void main() {
 
       expect(processor.processedData.first.end, data.end);
     });
+
+    testWidgets(
+        'data that is in between the bottom hour and 12 AM will be changed to the next day',
+        (tester) async {
+      final _MockTimeDataProcessor processor = _MockTimeDataProcessor();
+      final data = [
+        DateTimeRange(
+          start: DateTime(2021, 12, 18, 22, 10),
+          end: DateTime(2021, 12, 18, 23, 20),
+        ),
+        DateTimeRange(
+          start: DateTime(2021, 12, 18, 2, 12),
+          end: DateTime(2021, 12, 18, 8, 30),
+        )
+      ];
+
+      processor.process(data);
+
+      expect(
+        processor.processedData.first.end,
+        data.first.end.add(const Duration(days: 1)),
+      );
+    });
   });
 }
