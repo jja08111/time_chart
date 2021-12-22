@@ -1,3 +1,8 @@
+## 0.3.0
+* [Update] Added a `defaultPivotHour` parameter.
+* [Update] Change to use default value of `viewMode`.
+* [Bug] Fixed and simplified TimeDataProcessor.
+
 ## 0.2.10
 * [Bug] Fixed max scroll position bug in scroll physics.
 

@@ -22,7 +22,7 @@ Add it to your package's pubspec.yaml file
 
 ```yml
 dependencies:
-  time_chart: ^0.2.10
+  time_chart: ^0.3.0
 ```
 
 ### 2 - Install it
@@ -36,7 +36,7 @@ flutter packages get
 ### 3 - Usage
 
 Just input your `DateTimeRange` list to `data:` argument. *The list must be sorted.* First data is
-latest, last data is oldest. And set the `ViewMode`.
+latest, last data is oldest.
 
 
 
