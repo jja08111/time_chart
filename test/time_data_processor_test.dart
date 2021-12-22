@@ -178,7 +178,7 @@ void main() {
 
       processor.process([data]);
 
-      expect(processor.processedSleepData.first.end, data.end);
+      expect(processor.processedData.first.end, data.end);
     });
   });
 }

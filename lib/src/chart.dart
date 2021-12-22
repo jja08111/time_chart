@@ -574,7 +574,7 @@ class ChartState extends State<Chart>
           scrollOffsetNotifier: _scrollOffsetNotifier,
           context: context,
           viewMode: widget.viewMode,
-          firstValueDateTime: processedSleepData.first.end,
+          firstValueDateTime: processedData.first.end,
           dayCount: dayCount,
           firstDataHasChanged: firstDataHasChanged,
         );
@@ -584,7 +584,7 @@ class ChartState extends State<Chart>
           scrollOffsetNotifier: _scrollOffsetNotifier,
           context: context,
           viewMode: widget.viewMode,
-          firstValueDateTime: processedSleepData.first.end,
+          firstValueDateTime: processedData.first.end,
           dayCount: dayCount,
         );
     }
@@ -598,7 +598,7 @@ class ChartState extends State<Chart>
           scrollOffsetNotifier: _scrollOffsetNotifier,
           context: context,
           tooltipCallback: _tooltipCallback,
-          sleepData: processedSleepData,
+          sleepData: processedData,
           barColor: widget.barColor,
           topHour: topHour!,
           bottomHour: bottomHour!,
@@ -610,7 +610,7 @@ class ChartState extends State<Chart>
           scrollController: _barController,
           scrollOffsetNotifier: _scrollOffsetNotifier,
           context: context,
-          sleepData: processedSleepData,
+          sleepData: processedData,
           barColor: widget.barColor,
           topHour: topHour,
           bottomHour: bottomHour,

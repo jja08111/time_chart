@@ -19,9 +19,9 @@ const double _kMaxHour = 24.0;
 mixin TimeDataProcessor {
   static const Duration _oneAfterDayDuration = const Duration(days: 1);
 
-  List<DateTimeRange> _processedSleepData = [];
+  List<DateTimeRange> _processedData = [];
 
-  List<DateTimeRange> get processedSleepData => _processedSleepData;
+  List<DateTimeRange> get processedData => _processedData;
 
   List<DateTimeRange> _pivotList = [];
 
@@ -104,7 +104,7 @@ mixin TimeDataProcessor {
     final pivotLo =
         pivotHi.add(Duration(days: -getViewModeLimitDay(viewMode) - 2));
 
-    _processedSleepData.clear();
+    _processedData.clear();
     _pivotList.clear();
     _dayCount = 0;
     _firstDataHasChanged = false;
@@ -125,7 +125,7 @@ mixin TimeDataProcessor {
         postEndTime = postEndTime.add(Duration(days: -difference));
       }
       postEndTime = currentTime;
-      _processedSleepData.add(dataList[i]);
+      _processedData.add(dataList[i]);
 
       if (pivotLo.isBefore(currentTime) && currentTime.isBefore(pivotHi)) {
         _pivotList.add(dataList[i]);
@@ -135,16 +135,16 @@ mixin TimeDataProcessor {
 
   /// 종료 시간이 [bottomHour]와 24시 사이에 존재하는 경우 해당 데이터를 다음날로 가공한다.
   void _secondProcessData() {
-    final len = _processedSleepData.length;
+    final len = _processedData.length;
     for (int i = 0; i < len; ++i) {
-      final DateTime startTime = _processedSleepData[i].start;
-      final DateTime endTime = _processedSleepData[i].end;
+      final DateTime startTime = _processedData[i].start;
+      final DateTime endTime = _processedData[i].end;
       final double startTimeDouble = startTime.toDouble();
       final double endTimeDouble = endTime.toDouble();
 
       if (_isNextDayTime(startTimeDouble) && _isNextDayTime(endTimeDouble)) {
-        _processedSleepData.removeAt(i);
-        _processedSleepData.insert(
+        _processedData.removeAt(i);
+        _processedData.insert(
           i,
           DateTimeRange(
             start: startTime.add(_oneAfterDayDuration),
