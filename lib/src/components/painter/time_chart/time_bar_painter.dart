@@ -10,7 +10,7 @@ class TimeBarPainter extends ChartEngine {
     required this.scrollOffsetNotifier,
     required this.tooltipCallback,
     required this.context,
-    required this.sleepData,
+    required this.dataList,
     required this.topHour,
     required this.bottomHour,
     required int? dayCount,
@@ -20,7 +20,8 @@ class TimeBarPainter extends ChartEngine {
           scrollController: scrollController,
           dayCount: dayCount,
           viewMode: viewMode,
-          firstValueDateTime: sleepData.first.end,
+          firstValueDateTime:
+              dataList.isEmpty ? DateTime.now() : dataList.first.end,
           context: context,
           repaint: scrollOffsetNotifier,
         );
@@ -33,7 +34,7 @@ class TimeBarPainter extends ChartEngine {
   /// 수면 데이터이다.
   ///
   /// 데이터가 없는 날에는 범위가 0인 데이터가 이미 계산되어 들어가있다.
-  final List<DateTimeRange> sleepData;
+  final List<DateTimeRange> dataList;
   final int topHour;
   final int bottomHour;
 
@@ -174,24 +175,26 @@ class TimeBarPainter extends ChartEngine {
   List<OffsetRange> generateCoordinates(Size size) {
     List<OffsetRange> coordinates = [];
 
+    if (dataList.isEmpty) return [];
+
     final double intervalOfBars = size.width / dayCount;
     // 제일 아래에 붙은 바가 정각이 아닌 경우 올려 바를 그린다.
     final int pivotBottom = _convertUsing(topHour, bottomHour);
     final int pivotHeight = pivotBottom > topHour ? pivotBottom - topHour : 24;
-    final int length = sleepData.length;
+    final int length = dataList.length;
     final double height = size.height;
     final int viewLimitDay = getViewModeLimitDay(viewMode);
 
     final dayFromScrollOffset = getDayFromScrollOffset();
     final DateTime startDateTime =
-        sleepData.first.end.add(Duration(days: -dayFromScrollOffset));
-    final int startIndex = indexOf(startDateTime, sleepData);
+        dataList.first.end.add(Duration(days: -dayFromScrollOffset));
+    final int startIndex = indexOf(startDateTime, dataList);
 
     for (int index = startIndex; index < length; index++) {
-      final wakeUpTimeDouble = sleepData[index].end.toDouble();
-      final sleepAmountDouble = sleepData[index].durationInHours;
+      final wakeUpTimeDouble = dataList[index].end.toDouble();
+      final sleepAmountDouble = dataList[index].durationInHours;
       final barPosition =
-          1 + sleepData.first.end.differenceDateInDay(sleepData[index].end);
+          1 + dataList.first.end.differenceDateInDay(dataList[index].end);
 
       if (barPosition - dayFromScrollOffset >
           viewLimitDay + ChartEngine.toleranceDay * 2) break;
@@ -218,13 +221,13 @@ class TimeBarPainter extends ChartEngine {
           _outRangedPivotHour(
               wakeUpTimeDouble - sleepAmountDouble, wakeUpTimeDouble)) continue;
 
-      coordinates.add(OffsetRange(right, top, bottom, sleepData[index]));
+      coordinates.add(OffsetRange(right, top, bottom, dataList[index]));
     }
     return coordinates;
   }
 
   @override
   bool shouldRepaint(TimeBarPainter old) {
-    return old.sleepData != sleepData;
+    return old.dataList != dataList;
   }
 }

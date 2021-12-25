@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import '../../../time_chart.dart';
-import '../view_mode.dart';
 import '../../chart.dart';
 import 'time_assistant.dart' as TimeAssistant;
 
@@ -45,6 +44,11 @@ mixin TimeDataProcessor {
   bool get firstDataHasChanged => _firstDataHasChanged;
 
   void processData(Chart chart, DateTime pivotEnd) {
+    if (chart.data.isEmpty) {
+      _handleEmptyData(chart, pivotEnd);
+      return;
+    }
+
     _initProcessData(chart.data, chart.viewMode, pivotEnd);
     switch (chart.chartType) {
       case ChartType.time:
@@ -56,6 +60,19 @@ mixin TimeDataProcessor {
       case ChartType.amount:
         _calcAmountPivotHeights(chart.data);
     }
+  }
+
+  void _handleEmptyData(Chart chart, DateTime pivotEnd) {
+    switch (chart.chartType) {
+      case ChartType.time:
+        _topHour = chart.defaultPivotHour;
+        _bottomHour = _topHour! + 8;
+        break;
+      case ChartType.amount:
+        _topHour = 8;
+        _bottomHour = 0;
+    }
+    _dayCount = 0;
   }
 
   void _generatePivotHours(int defaultPivotHour) {

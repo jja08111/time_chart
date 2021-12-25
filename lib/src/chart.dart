@@ -22,7 +22,6 @@ import 'components/painter/amount_chart/amount_bar_painter.dart';
 import 'components/painter/time_chart/time_bar_painter.dart';
 import 'components/tooltip/tooltip_overlay.dart';
 import 'components/tooltip/tooltip_size.dart';
-import 'components/view_mode.dart';
 import 'components/translations/translations.dart';
 import 'components/utils/context_utils.dart';
 
@@ -131,8 +130,10 @@ class ChartState extends State<Chart>
 
     _addScrollNotifier();
 
-    processData(widget,
-        widget.data.first.end.add(const Duration(days: 1)).dateWithoutTime());
+    final pivotEnd = widget.data.isNotEmpty
+        ? widget.data.first.end.add(const Duration(days: 1)).dateWithoutTime()
+        : DateTime.now();
+    processData(widget, pivotEnd);
   }
 
   @override
@@ -329,8 +330,10 @@ class ChartState extends State<Chart>
 
     final block =
         getCurrentBlockIndex(_barController.position, _blockWidth!).toInt();
-    final pivotEnd = widget.data.first.end.dateWithoutTime().add(
-        Duration(days: -block + (block > 0 && firstDataHasChanged ? 2 : 1)));
+    final pivotEnd = widget.data.isNotEmpty
+        ? widget.data.first.end.dateWithoutTime().add(
+            Duration(days: -block + (block > 0 && firstDataHasChanged ? 2 : 1)))
+        : DateTime.now();
 
     processData(widget, pivotEnd);
 
@@ -487,7 +490,7 @@ class ChartState extends State<Chart>
   }) {
     return NotificationListener<OverscrollIndicatorNotification>(
       onNotification: (OverscrollIndicatorNotification overScroll) {
-        overScroll.disallowGlow();
+        overScroll.disallowIndicator();
         return false;
       },
       child: MySingleChildScrollView(
@@ -574,7 +577,8 @@ class ChartState extends State<Chart>
           scrollOffsetNotifier: _scrollOffsetNotifier,
           context: context,
           viewMode: widget.viewMode,
-          firstValueDateTime: processedData.first.end,
+          firstValueDateTime:
+              processedData.isEmpty ? DateTime.now() : processedData.first.end,
           dayCount: dayCount,
           firstDataHasChanged: firstDataHasChanged,
         );
@@ -584,7 +588,8 @@ class ChartState extends State<Chart>
           scrollOffsetNotifier: _scrollOffsetNotifier,
           context: context,
           viewMode: widget.viewMode,
-          firstValueDateTime: processedData.first.end,
+          firstValueDateTime:
+              processedData.isEmpty ? DateTime.now() : processedData.first.end,
           dayCount: dayCount,
         );
     }
@@ -598,7 +603,7 @@ class ChartState extends State<Chart>
           scrollOffsetNotifier: _scrollOffsetNotifier,
           context: context,
           tooltipCallback: _tooltipCallback,
-          sleepData: processedData,
+          dataList: processedData,
           barColor: widget.barColor,
           topHour: topHour!,
           bottomHour: bottomHour!,
@@ -610,7 +615,7 @@ class ChartState extends State<Chart>
           scrollController: _barController,
           scrollOffsetNotifier: _scrollOffsetNotifier,
           context: context,
-          sleepData: processedData,
+          dataList: processedData,
           barColor: widget.barColor,
           topHour: topHour,
           bottomHour: bottomHour,

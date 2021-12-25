@@ -86,8 +86,8 @@ class TimeChart extends StatelessWidget {
   /// There is two type [ViewMode.weekly] and [ViewMode.monthly].
   final ViewMode viewMode;
 
-  /// The hour is used as a pivot if the data time range is fully visible when
-  /// the type is the [ChartType.time].
+  /// The hour is used as a pivot if the data time range is fully visible or
+  /// there is no data when the type is the [ChartType.time].
   ///
   /// For example, this value will be used when you use the data like below.
   /// ```dart
@@ -96,6 +96,9 @@ class TimeChart extends StatelessWidget {
   ///       end: DateTime(2021, 12, 18, 2, 30),
   /// )];
   /// ```
+  ///
+  /// If there is no data when the type is the [ChartType.amount], 8 Hours is
+  /// used as a top hour, not this value.
   final int defaultPivotHour;
 
   @override

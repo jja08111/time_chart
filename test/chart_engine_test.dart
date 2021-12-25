@@ -1,9 +1,6 @@
 import 'dart:math';
-import 'dart:ui';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/rendering/custom_paint.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:time_chart/src/components/painter/chart_engine.dart';
 import 'package:time_chart/time_chart.dart';

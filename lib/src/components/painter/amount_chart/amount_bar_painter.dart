@@ -12,7 +12,7 @@ class AmountBarPainter extends ChartEngine {
     required this.scrollOffsetNotifier,
     required this.tooltipCallback,
     required this.context,
-    required this.sleepData,
+    required this.dataList,
     required this.topHour,
     required this.bottomHour,
     required int? dayCount,
@@ -22,7 +22,8 @@ class AmountBarPainter extends ChartEngine {
           scrollController: scrollController,
           dayCount: dayCount,
           viewMode: viewMode,
-          firstValueDateTime: sleepData.first.end,
+          firstValueDateTime:
+              dataList.isEmpty ? DateTime.now() : dataList.first.end,
           context: context,
           repaint: scrollOffsetNotifier,
         );
@@ -31,7 +32,7 @@ class AmountBarPainter extends ChartEngine {
   final TooltipCallback tooltipCallback;
   final BuildContext context;
   final Color? barColor;
-  final List<DateTimeRange> sleepData;
+  final List<DateTimeRange> dataList;
   final int? topHour;
   final int? bottomHour;
 
@@ -120,28 +121,30 @@ class AmountBarPainter extends ChartEngine {
   List<OffsetWithAmountDate> generateCoordinates(Size size) {
     List<OffsetWithAmountDate> coordinates = [];
 
+    if (dataList.isEmpty) return [];
+
     final double intervalOfBars = size.width / dayCount;
-    final int length = sleepData.length;
+    final int length = dataList.length;
     final int viewLimitDay = getViewModeLimitDay(viewMode);
     final dayFromScrollOffset = getDayFromScrollOffset();
     final DateTime startDateTime =
-        sleepData.first.end.add(Duration(days: -dayFromScrollOffset));
-    final int startIndex = indexOf(startDateTime, sleepData);
+        dataList.first.end.add(Duration(days: -dayFromScrollOffset));
+    final int startIndex = indexOf(startDateTime, dataList);
 
     double amountSum = 0;
 
     for (int index = startIndex; index < length; index++) {
       final int barPosition =
-          1 + sleepData.first.end.differenceDateInDay(sleepData[index].end);
+          1 + dataList.first.end.differenceDateInDay(dataList[index].end);
 
       if (barPosition - dayFromScrollOffset >
           viewLimitDay + ChartEngine.toleranceDay * 2) break;
 
-      amountSum += sleepData[index].durationInHours;
+      amountSum += dataList[index].durationInHours;
 
       // 날짜가 다르거나 마지막 데이터면 오른쪽으로 한 칸 이동하여 그린다. 그 외에는 계속 sum 한다.
       if (index == length - 1 ||
-          sleepData[index].end.differenceDateInDay(sleepData[index + 1].end) >
+          dataList[index].end.differenceDateInDay(dataList[index + 1].end) >
               0) {
         final double normalizedTop =
             max(0, amountSum - bottomHour!) / (topHour! - bottomHour!);
@@ -150,7 +153,7 @@ class AmountBarPainter extends ChartEngine {
         final double dx = size.width - intervalOfBars * barPosition;
 
         coordinates
-            .add(OffsetWithAmountDate(dx, dy, amountSum, sleepData[index].end));
+            .add(OffsetWithAmountDate(dx, dy, amountSum, dataList[index].end));
 
         amountSum = 0;
       }
@@ -161,7 +164,7 @@ class AmountBarPainter extends ChartEngine {
 
   @override
   bool shouldRepaint(AmountBarPainter old) {
-    return old.sleepData != sleepData;
+    return old.dataList != dataList;
   }
 
   @override
