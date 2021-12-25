@@ -130,8 +130,10 @@ class ChartState extends State<Chart>
 
     _addScrollNotifier();
 
-    processData(widget,
-        widget.data.first.end.add(const Duration(days: 1)).dateWithoutTime());
+    final pivotEnd = widget.data.isNotEmpty
+        ? widget.data.first.end.add(const Duration(days: 1)).dateWithoutTime()
+        : DateTime.now();
+    processData(widget, pivotEnd);
   }
 
   @override
@@ -328,8 +330,10 @@ class ChartState extends State<Chart>
 
     final block =
         getCurrentBlockIndex(_barController.position, _blockWidth!).toInt();
-    final pivotEnd = widget.data.first.end.dateWithoutTime().add(
-        Duration(days: -block + (block > 0 && firstDataHasChanged ? 2 : 1)));
+    final pivotEnd = widget.data.isNotEmpty
+        ? widget.data.first.end.dateWithoutTime().add(
+            Duration(days: -block + (block > 0 && firstDataHasChanged ? 2 : 1)))
+        : DateTime.now();
 
     processData(widget, pivotEnd);
 
@@ -573,7 +577,8 @@ class ChartState extends State<Chart>
           scrollOffsetNotifier: _scrollOffsetNotifier,
           context: context,
           viewMode: widget.viewMode,
-          firstValueDateTime: processedData.first.end,
+          firstValueDateTime:
+              processedData.isEmpty ? DateTime.now() : processedData.first.end,
           dayCount: dayCount,
           firstDataHasChanged: firstDataHasChanged,
         );
@@ -583,7 +588,8 @@ class ChartState extends State<Chart>
           scrollOffsetNotifier: _scrollOffsetNotifier,
           context: context,
           viewMode: widget.viewMode,
-          firstValueDateTime: processedData.first.end,
+          firstValueDateTime:
+              processedData.isEmpty ? DateTime.now() : processedData.first.end,
           dayCount: dayCount,
         );
     }
@@ -597,7 +603,7 @@ class ChartState extends State<Chart>
           scrollOffsetNotifier: _scrollOffsetNotifier,
           context: context,
           tooltipCallback: _tooltipCallback,
-          sleepData: processedData,
+          dataList: processedData,
           barColor: widget.barColor,
           topHour: topHour!,
           bottomHour: bottomHour!,
@@ -609,7 +615,7 @@ class ChartState extends State<Chart>
           scrollController: _barController,
           scrollOffsetNotifier: _scrollOffsetNotifier,
           context: context,
-          sleepData: processedData,
+          dataList: processedData,
           barColor: widget.barColor,
           topHour: topHour,
           bottomHour: bottomHour,

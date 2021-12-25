@@ -22,7 +22,8 @@ class AmountBarPainter extends ChartEngine {
           scrollController: scrollController,
           dayCount: dayCount,
           viewMode: viewMode,
-          firstValueDateTime: dataList.first.end,
+          firstValueDateTime:
+              dataList.isEmpty ? DateTime.now() : dataList.first.end,
           context: context,
           repaint: scrollOffsetNotifier,
         );
@@ -119,6 +120,8 @@ class AmountBarPainter extends ChartEngine {
   @override
   List<OffsetWithAmountDate> generateCoordinates(Size size) {
     List<OffsetWithAmountDate> coordinates = [];
+
+    if (dataList.isEmpty) return [];
 
     final double intervalOfBars = size.width / dayCount;
     final int length = dataList.length;

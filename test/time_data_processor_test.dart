@@ -6,15 +6,32 @@ import 'package:time_chart/src/components/utils/time_data_processor.dart';
 import 'package:time_chart/time_chart.dart';
 
 class _MockTimeDataProcessor with TimeDataProcessor {
-  void process(List<DateTimeRange> data, {int defaultPivotHour = 18}) {
-    processData(_getChart(data, defaultPivotHour: defaultPivotHour),
-        data.first.end.add(const Duration(days: 1)).dateWithoutTime());
+  void process(
+    List<DateTimeRange> data, {
+    int defaultPivotHour = 18,
+    ChartType chartType = ChartType.time,
+  }) {
+    final pivotEnd = data.isEmpty
+        ? DateTime.now()
+        : data.first.end.add(const Duration(days: 1)).dateWithoutTime();
+    processData(
+      _getChart(
+        data,
+        defaultPivotHour: defaultPivotHour,
+        chartType: chartType,
+      ),
+      pivotEnd,
+    );
   }
 }
 
-Chart _getChart(List<DateTimeRange> data, {int defaultPivotHour = 18}) {
+Chart _getChart(
+  List<DateTimeRange> data, {
+  int defaultPivotHour = 18,
+  ChartType chartType = ChartType.time,
+}) {
   return Chart(
-    chartType: ChartType.time,
+    chartType: chartType,
     width: 300,
     height: 400,
     data: data,
@@ -201,6 +218,40 @@ void main() {
       expect(
         processor.processedData.first.end,
         data.first.end.add(const Duration(days: 1)),
+      );
+    });
+
+    testWidgets('show empty graph if there is no data when chart type is time',
+        (tester) async {
+      const pivotHour = 18;
+      final _MockTimeDataProcessor processor = _MockTimeDataProcessor();
+      final List<DateTimeRange> data = [];
+
+      processor.process(data, defaultPivotHour: pivotHour);
+
+      expect(
+        processor.topHour,
+        pivotHour,
+        reason: 'default pivot hour is used as `topHour` if there is no data',
+      );
+    });
+
+    testWidgets(
+        'show empty graph if there is no data when chart type is amount',
+        (tester) async {
+      final _MockTimeDataProcessor processor = _MockTimeDataProcessor();
+      final List<DateTimeRange> data = [];
+
+      processor.process(
+        data,
+        chartType: ChartType.amount,
+      );
+
+      expect(
+        processor.topHour,
+        8,
+        reason:
+            '8 Hours is used as `topHour` if there is no data when the type is amount',
       );
     });
   });
