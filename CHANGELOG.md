@@ -1,3 +1,6 @@
+## 0.3.1
+* [Bug] Fixed a bug if the data list is empty.
+
 ## 0.3.0+1
 * [Update] Updated path_drawing package version to 1.0.0
 
