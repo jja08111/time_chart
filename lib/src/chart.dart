@@ -22,7 +22,6 @@ import 'components/painter/amount_chart/amount_bar_painter.dart';
 import 'components/painter/time_chart/time_bar_painter.dart';
 import 'components/tooltip/tooltip_overlay.dart';
 import 'components/tooltip/tooltip_size.dart';
-import 'components/view_mode.dart';
 import 'components/translations/translations.dart';
 import 'components/utils/context_utils.dart';
 
@@ -487,7 +486,7 @@ class ChartState extends State<Chart>
   }) {
     return NotificationListener<OverscrollIndicatorNotification>(
       onNotification: (OverscrollIndicatorNotification overScroll) {
-        overScroll.disallowGlow();
+        overScroll.disallowIndicator();
         return false;
       },
       child: MySingleChildScrollView(
