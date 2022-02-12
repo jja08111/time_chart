@@ -34,8 +34,9 @@ class AmountYLabelPainter extends ChartEngine {
     for (int time = topHour!; time >= bottomHour!; --time) {
       drawYText(canvas, size,
           time == bottomHour ? '0 $hourSuffix' : '$time $hourSuffix', posY);
-      if (topHour! > time && time > bottomHour!)
+      if (topHour! > time && time > bottomHour!) {
         drawHorizontalLine(canvas, size, posY);
+      }
 
       posY += interval;
     }
@@ -49,7 +50,7 @@ class AmountYLabelPainter extends ChartEngine {
 
   @override
   bool shouldRepaint(covariant AmountYLabelPainter oldDelegate) {
-    return oldDelegate.topHour != this.topHour ||
-        oldDelegate.bottomHour != this.bottomHour;
+    return oldDelegate.topHour != topHour ||
+        oldDelegate.bottomHour != bottomHour;
   }
 }

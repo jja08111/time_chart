@@ -35,7 +35,9 @@ bool isDirUpward(int beforeTop, int beforeBottom, int top, int bottom) {
   }
 
   // 뒤에서부터 앞으로 이동하며 많이 겹치는 구간을 찾기 위해 가장 뒤로 이동한다.
-  while (bottom > beforeTop) goBack();
+  while (bottom > beforeTop) {
+    goBack();
+  }
   goFront();
 
   int upward = 0, downward = 0;
@@ -67,30 +69,28 @@ bool isInRangeHour(DateTimeRange range, int hour) {
 extension DateTimeUtils on DateTime {
   /// Return `true` if [other] has same date without time.
   bool isSameDateWith(DateTime other) {
-    return this.year == other.year &&
-        this.month == other.month &&
-        this.day == other.day;
+    return year == other.year && month == other.month && day == other.day;
   }
 
   /// Return day that date difference with [other].
   int differenceDateInDay(DateTime other) {
-    DateTime thisDate = DateTime(this.year, this.month, this.day);
+    DateTime thisDate = DateTime(year, month, day);
     DateTime otherDate = DateTime(other.year, other.month, other.day);
 
     return thisDate.difference(otherDate).inDays;
   }
 
   DateTime dateWithoutTime() {
-    return DateTime(this.year, this.month, this.day);
+    return DateTime(year, month, day);
   }
 
   double toDouble() {
-    return this.hour.toDouble() + this.minute.toDouble() / 60;
+    return hour.toDouble() + minute.toDouble() / 60;
   }
 }
 
 extension DateTimeRangeUtils on DateTimeRange {
   double get durationInHours {
-    return this.duration.inMinutes / 60;
+    return duration.inMinutes / 60;
   }
 }

@@ -13,7 +13,7 @@ class ScrollPhysicsState {
 }
 
 class CustomScrollPhysics extends ScrollPhysics {
-  CustomScrollPhysics({
+  const CustomScrollPhysics({
     required this.blockWidth,
     required this.viewMode,
     required this.scrollPhysicsState,
@@ -90,15 +90,17 @@ class CustomScrollPhysics extends ScrollPhysics {
     // If we're out of range and not headed back in range, defer to the parent
     // ballistics, which should put us back in range at a page boundary.
     if ((velocity <= 0.0 && position.pixels <= position.minScrollExtent) ||
-        (velocity >= 0.0 && position.pixels >= position.maxScrollExtent))
+        (velocity >= 0.0 && position.pixels >= position.maxScrollExtent)) {
       return super.createBallisticSimulation(position, velocity);
+    }
 
     final Tolerance tolerance = this.tolerance;
     final double target =
         _getTargetPixels(position as ScrollPosition, tolerance, velocity);
-    if (target != position.pixels)
+    if (target != position.pixels) {
       return ScrollSpringSimulation(spring, position.pixels, target, velocity,
           tolerance: tolerance);
+    }
     return null;
   }
 

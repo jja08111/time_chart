@@ -26,7 +26,7 @@ import 'components/translations/translations.dart';
 import 'components/utils/context_utils.dart';
 
 class Chart extends StatefulWidget {
-  Chart({
+  const Chart({
     Key? key,
     required this.chartType,
     required this.width,
@@ -67,8 +67,7 @@ class ChartState extends State<Chart>
   static const Duration _tooltipFadeOutDuration = Duration(milliseconds: 75);
 
   CustomScrollPhysics? _scrollPhysics;
-  LinkedScrollControllerGroup _scrollControllerGroup =
-      LinkedScrollControllerGroup();
+  final _scrollControllerGroup = LinkedScrollControllerGroup();
   late ScrollController _barController;
   late ScrollController _xLabelController;
 
@@ -192,8 +191,9 @@ class ChartState extends State<Chart>
     // 현재 보이는 그래프의 범위를 벗어난 바의 툴팁은 무시한다.
     final viewRange = _blockWidth! * getViewModeLimitDay(widget.viewMode);
     final actualPosition = position.maxScrollExtent - position.pixels;
-    if (rect.left < actualPosition || actualPosition + viewRange < rect.left)
+    if (rect.left < actualPosition || actualPosition + viewRange < rect.left) {
       return;
+    }
 
     // 현재 보이는 툴팁이 다시 호출되면 무시한다.
     if ((_tooltipHideTimer?.isActive ?? false) &&
@@ -391,12 +391,11 @@ class ChartState extends State<Chart>
       _blockWidth! * max(dayCount!, viewModeLimitDay),
       double.infinity,
     );
-    if (_scrollPhysics == null)
-      _scrollPhysics = CustomScrollPhysics(
-        blockWidth: _blockWidth!,
-        viewMode: widget.viewMode,
-        scrollPhysicsState: ScrollPhysicsState(dayCount: dayCount!),
-      );
+    _scrollPhysics ??= CustomScrollPhysics(
+      blockWidth: _blockWidth!,
+      viewMode: widget.viewMode,
+      scrollPhysicsState: ScrollPhysicsState(dayCount: dayCount!),
+    );
     return GestureDetector(
       onPanDown: _handlePanDown,
       child: Stack(
@@ -430,9 +429,7 @@ class ChartState extends State<Chart>
                   height: widget.height,
                 ),
                 const Positioned.fill(
-                  child: const CustomPaint(
-                    painter: const BorderLinePainter(),
-                  ),
+                  child: CustomPaint(painter: BorderLinePainter()),
                 ),
                 Positioned.fill(
                   child: NotificationListener<ScrollNotification>(
@@ -538,9 +535,11 @@ class ChartState extends State<Chart>
             height: _heightAnimation.value - bottomPadding,
             width: width,
             alignment: Alignment.center,
-            child: child != null
-                ? child
-                : builder!(context, topPosition - kTimeChartTopPadding),
+            child: child ??
+                builder!(
+                  context,
+                  topPosition - kTimeChartTopPadding,
+                ),
           ),
         );
       },

@@ -9,7 +9,7 @@ import '../utils/chart_state_utils.dart';
 void main() {
   group('Time chart scrolling test', () {
     testWidgets('scroll weekly time chart', (tester) async {
-      tester.binding.window.physicalSizeTestValue = Size(400, 800);
+      tester.binding.window.physicalSizeTestValue = const Size(400, 800);
 
       await tester.runAsync(() async {
         await tester.pumpWidget(MaterialApp(
@@ -59,7 +59,7 @@ void main() {
         expect(chartState.topHour, 20);
         expect(chartState.bottomHour, 14);
 
-        await tester.drag(scrollViewFinder.last, Offset(500, 0));
+        await tester.drag(scrollViewFinder.last, const Offset(500, 0));
         await tester.pump();
         // waiting for changing pivot hours
         await Future.delayed(const Duration(seconds: 3));

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:touchable/touchable.dart';
-import '../../utils/time_assistant.dart' as timeAssistant;
+import '../../utils/time_assistant.dart' as time_assistant;
 import '../chart_engine.dart';
 import '../../view_mode.dart';
 
@@ -9,7 +9,7 @@ class TimeBarPainter extends ChartEngine {
     required ScrollController scrollController,
     required this.scrollOffsetNotifier,
     required this.tooltipCallback,
-    required this.context,
+    required BuildContext context,
     required this.dataList,
     required this.topHour,
     required this.bottomHour,
@@ -28,7 +28,6 @@ class TimeBarPainter extends ChartEngine {
 
   final ValueNotifier<double> scrollOffsetNotifier;
   final TooltipCallback tooltipCallback;
-  final BuildContext context;
   final Color? barColor;
 
   /// 수면 데이터이다.
@@ -46,7 +45,7 @@ class TimeBarPainter extends ChartEngine {
     Radius topRadius, [
     Radius bottomRadius = Radius.zero,
   ]) {
-    final callback = (_) => tooltipCallback(
+    callback(_) => tooltipCallback(
           range: data,
           position: scrollController!.position,
           rect: rect,
@@ -90,10 +89,11 @@ class TimeBarPainter extends ChartEngine {
       bottom,
     );
 
-    if (topOverflow)
+    if (topOverflow) {
       _drawRRect(canvas, paint, data, newRect, barRadius);
-    else
+    } else {
       _drawRRect(canvas, paint, data, newRect, Radius.zero, barRadius);
+    }
   }
 
   @override
@@ -227,8 +227,8 @@ class TimeBarPainter extends ChartEngine {
   }
 
   @override
-  bool shouldRepaint(TimeBarPainter old) {
-    return old.dataList != dataList;
+  bool shouldRepaint(TimeBarPainter oldDelegate) {
+    return oldDelegate.dataList != dataList;
   }
 }
 

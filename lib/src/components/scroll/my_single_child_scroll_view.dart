@@ -362,8 +362,9 @@ class _RenderSingleChildViewport extends RenderBox
   RevealedOffset getOffsetToReveal(RenderObject target, double alignment,
       {Rect? rect}) {
     rect ??= target.paintBounds;
-    if (target is! RenderBox)
+    if (target is! RenderBox) {
       return RevealedOffset(offset: offset.pixels, rect: rect);
+    }
 
     final RenderBox targetBox = target;
     final Matrix4 transform = targetBox.getTransformTo(this);

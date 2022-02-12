@@ -45,7 +45,7 @@ class TooltipOverlay extends StatelessWidget {
     // 함수에서 확인할 수 있다.
     if (bottomHour == 0) return timeRange;
 
-    final oneBeforeDay = const Duration(days: -1);
+    const oneBeforeDay = Duration(days: -1);
     final endTime = timeRange.end;
 
     return (endTime.hour == bottomHour && endTime.minute > 0) ||
@@ -82,11 +82,11 @@ class TooltipOverlay extends StatelessWidget {
         decoration: ShapeDecoration(
           color: backgroundColor ?? themeData.dialogBackgroundColor,
           shape: TooltipShapeBorder(direction: direction),
-          shadows: [
-            const BoxShadow(
+          shadows: const [
+            BoxShadow(
               color: Colors.black45,
               blurRadius: 4.0,
-              offset: const Offset(2, 2),
+              offset: Offset(2, 2),
             ),
           ],
         ),
@@ -152,7 +152,7 @@ class _TimeTooltipOverlay extends StatelessWidget {
             _timeTile(context, _sleepTime),
           ],
         ),
-        Expanded(child: const Divider()),
+        const Expanded(child: Divider()),
         Text(end, style: bodyTextStyle, textScaleFactor: 1.0),
         Row(
           mainAxisSize: MainAxisSize.min,
@@ -174,7 +174,7 @@ class _TimeTooltipOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = kTimeTooltipSize;
+    const size = kTimeTooltipSize;
     return SizedBox(
       width: size.width,
       height: size.height,
@@ -281,7 +281,7 @@ class _AmountTooltipOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = kAmountTooltipSize;
+    const size = kAmountTooltipSize;
     return SizedBox(
       width: size.width,
       height: size.height,

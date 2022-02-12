@@ -44,11 +44,12 @@ class Translations {
 
     String result;
     if (range.start.day != range.end.day) {
-      if (range.start.month != range.end.month)
+      if (range.start.month != range.end.month) {
         result = '$sleepTimeMonth ${range.start.day}$daySuffix - '
             '$wakeUpMonth ${range.end.day}$daySuffix';
-      else
+      } else {
         result = '$wakeUpMonth ${range.start.day} - ${range.end.day}$daySuffix';
+      }
     } else {
       result = '$wakeUpMonth ${range.end.day}$daySuffix';
     }
@@ -90,10 +91,11 @@ class Translations {
   String formatHourOnly(int hour) {
     final date = DateTime(1, 1, 1, hour);
     String format;
-    if (isAHMM)
+    if (isAHMM) {
       format = 'a h시';
-    else
+    } else {
       format = 'h a';
+    }
     return dateFormat(format, date);
   }
 }

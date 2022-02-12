@@ -6,6 +6,8 @@ import 'package:time_chart/time_chart.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
+  MyApp({Key? key}) : super(key: key);
+
   // Data must be sorted.
   final smallDataList = [
     DateTimeRange(
@@ -60,7 +62,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final sizedBox = const SizedBox(height: 16);
+    const sizedBox = SizedBox(height: 16);
 
     return MaterialApp(
       home: Scaffold(
