@@ -42,15 +42,6 @@ class OffsetRange {
   OffsetRange(this.dx, this.topY, this.bottomY, this.data);
 }
 
-class OffsetWithAmountDate {
-  double dx;
-  double dy;
-  double amount;
-  DateTime dateTime;
-
-  OffsetWithAmountDate(this.dx, this.dy, this.amount, this.dateTime);
-}
-
 abstract class ChartEngine extends CustomPainter {
   static const int toleranceDay = 1;
 
