@@ -233,10 +233,10 @@ class TimeBarPainter extends ChartEngine {
 }
 
 class _TimeBarItem {
-  double dx;
-  double topY;
-  double bottomY;
-  DateTimeRange data;
+  final double dx;
+  final double topY;
+  final double bottomY;
+  final DateTimeRange data;
 
   _TimeBarItem(this.dx, this.topY, this.bottomY, this.data);
 }

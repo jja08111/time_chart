@@ -171,10 +171,10 @@ class AmountBarPainter extends ChartEngine {
 }
 
 class _AmountBarItem {
-  double dx;
-  double dy;
-  double amount;
-  DateTime dateTime;
+  final double dx;
+  final double dy;
+  final double amount;
+  final DateTime dateTime;
 
   _AmountBarItem(this.dx, this.dy, this.amount, this.dateTime);
 }
