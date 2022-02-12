@@ -45,9 +45,8 @@ abstract class ChartEngine extends CustomPainter {
     Listenable? repaint,
   })  : dayCount = math.max(dayCount ?? getViewModeLimitDay(viewMode),
             viewMode == ViewMode.weekly ? kWeeklyDayCount : kMonthlyDayCount),
-        super(repaint: repaint) {
-    _translations = Translations(context);
-  }
+        _translations = Translations(context),
+        super(repaint: repaint);
 
   final ScrollController? scrollController;
 
@@ -60,6 +59,8 @@ abstract class ChartEngine extends CustomPainter {
   final DateTime? firstValueDateTime;
 
   final BuildContext context;
+
+  final Translations _translations;
 
   int getDayFromScrollOffset() {
     if (!scrollController!.hasClients) return 0;
@@ -88,7 +89,6 @@ abstract class ChartEngine extends CustomPainter {
   double _barWidth = 0.0;
   double _paddingForAlignedBar = 0.0;
   double? _blockWidth;
-  Translations? _translations;
 
   /// 각 바의 위치와 크기를 생성하는 함수이다.
   List<dynamic> generateCoordinates(Size size);
