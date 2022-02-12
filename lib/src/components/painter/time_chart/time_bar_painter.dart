@@ -108,7 +108,7 @@ class TimeBarPainter extends ChartEngine {
     final maxBottom = size.height;
 
     for (int index = 0; index < coordinates.length; index++) {
-      final OffsetRange offsetRange = coordinates[index];
+      final TimeBarItem offsetRange = coordinates[index];
 
       final double left = paddingForAlignedBar + offsetRange.dx;
       final double right = paddingForAlignedBar + offsetRange.dx + barWidth;
@@ -172,8 +172,8 @@ class TimeBarPainter extends ChartEngine {
   }
 
   @override
-  List<OffsetRange> generateCoordinates(Size size) {
-    List<OffsetRange> coordinates = [];
+  List<TimeBarItem> generateCoordinates(Size size) {
+    List<TimeBarItem> coordinates = [];
 
     if (dataList.isEmpty) return [];
 
@@ -221,7 +221,7 @@ class TimeBarPainter extends ChartEngine {
           _outRangedPivotHour(
               wakeUpTimeDouble - sleepAmountDouble, wakeUpTimeDouble)) continue;
 
-      coordinates.add(OffsetRange(right, top, bottom, dataList[index]));
+      coordinates.add(TimeBarItem(right, top, bottom, dataList[index]));
     }
     return coordinates;
   }
@@ -230,4 +230,13 @@ class TimeBarPainter extends ChartEngine {
   bool shouldRepaint(TimeBarPainter old) {
     return old.dataList != dataList;
   }
+}
+
+class TimeBarItem {
+  double dx;
+  double topY;
+  double bottomY;
+  DateTimeRange data;
+
+  TimeBarItem(this.dx, this.topY, this.bottomY, this.data);
 }

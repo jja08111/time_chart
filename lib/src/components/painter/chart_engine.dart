@@ -33,15 +33,6 @@ const Color kLineColor2 = Color(0x77757575);
 const Color kLineColor3 = Color(0xAA757575);
 const Color kTextColor = Color(0xFF757575);
 
-class OffsetRange {
-  double dx;
-  double topY;
-  double bottomY;
-  DateTimeRange data;
-
-  OffsetRange(this.dx, this.topY, this.bottomY, this.data);
-}
-
 abstract class ChartEngine extends CustomPainter {
   static const int toleranceDay = 1;
 
