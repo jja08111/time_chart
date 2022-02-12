@@ -108,7 +108,7 @@ class TimeBarPainter extends ChartEngine {
     final maxBottom = size.height;
 
     for (int index = 0; index < coordinates.length; index++) {
-      final TimeBarItem offsetRange = coordinates[index];
+      final _TimeBarItem offsetRange = coordinates[index];
 
       final double left = paddingForAlignedBar + offsetRange.dx;
       final double right = paddingForAlignedBar + offsetRange.dx + barWidth;
@@ -172,8 +172,8 @@ class TimeBarPainter extends ChartEngine {
   }
 
   @override
-  List<TimeBarItem> generateCoordinates(Size size) {
-    List<TimeBarItem> coordinates = [];
+  List<_TimeBarItem> generateCoordinates(Size size) {
+    List<_TimeBarItem> coordinates = [];
 
     if (dataList.isEmpty) return [];
 
@@ -221,7 +221,7 @@ class TimeBarPainter extends ChartEngine {
           _outRangedPivotHour(
               wakeUpTimeDouble - sleepAmountDouble, wakeUpTimeDouble)) continue;
 
-      coordinates.add(TimeBarItem(right, top, bottom, dataList[index]));
+      coordinates.add(_TimeBarItem(right, top, bottom, dataList[index]));
     }
     return coordinates;
   }
@@ -232,11 +232,11 @@ class TimeBarPainter extends ChartEngine {
   }
 }
 
-class TimeBarItem {
+class _TimeBarItem {
   double dx;
   double topY;
   double bottomY;
   DateTimeRange data;
 
-  TimeBarItem(this.dx, this.topY, this.bottomY, this.data);
+  _TimeBarItem(this.dx, this.topY, this.bottomY, this.data);
 }

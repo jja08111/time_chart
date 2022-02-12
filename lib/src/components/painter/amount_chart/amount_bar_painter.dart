@@ -47,7 +47,7 @@ class AmountBarPainter extends ChartEngine {
       ..strokeCap = StrokeCap.round;
 
     for (int index = 0; index < coordinates.length; index++) {
-      final AmountBarItem offsetWithAmount = coordinates[index];
+      final _AmountBarItem offsetWithAmount = coordinates[index];
 
       final double left = paddingForAlignedBar + offsetWithAmount.dx;
       final double right =
@@ -118,8 +118,8 @@ class AmountBarPainter extends ChartEngine {
   }
 
   @override
-  List<AmountBarItem> generateCoordinates(Size size) {
-    List<AmountBarItem> coordinates = [];
+  List<_AmountBarItem> generateCoordinates(Size size) {
+    List<_AmountBarItem> coordinates = [];
 
     if (dataList.isEmpty) return [];
 
@@ -152,7 +152,7 @@ class AmountBarPainter extends ChartEngine {
         final double dy = size.height - normalizedTop * size.height;
         final double dx = size.width - intervalOfBars * barPosition;
 
-        coordinates.add(AmountBarItem(dx, dy, amountSum, dataList[index].end));
+        coordinates.add(_AmountBarItem(dx, dy, amountSum, dataList[index].end));
 
         amountSum = 0;
       }
@@ -170,11 +170,11 @@ class AmountBarPainter extends ChartEngine {
   void drawYLabels(Canvas canvas, Size size) {}
 }
 
-class AmountBarItem {
+class _AmountBarItem {
   double dx;
   double dy;
   double amount;
   DateTime dateTime;
 
-  AmountBarItem(this.dx, this.dy, this.amount, this.dateTime);
+  _AmountBarItem(this.dx, this.dy, this.amount, this.dateTime);
 }
