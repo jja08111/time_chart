@@ -7,7 +7,7 @@ import 'components/view_mode.dart';
 const double kTimeChartTopPadding = 4.0;
 
 class TimeChart extends StatelessWidget {
-  TimeChart({
+  const TimeChart({
     Key? key,
     this.chartType = ChartType.time,
     this.width,

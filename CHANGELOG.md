@@ -1,3 +1,6 @@
+## 0.3.2
+* [Update] Lint code and migrate example app.
+
 ## 0.3.1
 * [Bug] Fixed a bug if the data list is empty.
 

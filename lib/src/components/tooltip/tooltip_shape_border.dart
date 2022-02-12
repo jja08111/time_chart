@@ -9,7 +9,7 @@ class TooltipShapeBorder extends ShapeBorder {
   final double arrowArc;
   final double radius;
 
-  TooltipShapeBorder({
+  const TooltipShapeBorder({
     required this.direction,
     this.radius = 6.0,
     this.arrowWidth = kTooltipArrowWidth,

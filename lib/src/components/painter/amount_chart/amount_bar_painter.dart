@@ -11,7 +11,7 @@ class AmountBarPainter extends ChartEngine {
     required ScrollController scrollController,
     required this.scrollOffsetNotifier,
     required this.tooltipCallback,
-    required this.context,
+    required BuildContext context,
     required this.dataList,
     required this.topHour,
     required this.bottomHour,
@@ -30,7 +30,6 @@ class AmountBarPainter extends ChartEngine {
 
   final ValueNotifier<double> scrollOffsetNotifier;
   final TooltipCallback tooltipCallback;
-  final BuildContext context;
   final Color? barColor;
   final List<DateTimeRange> dataList;
   final int? topHour;
@@ -47,7 +46,7 @@ class AmountBarPainter extends ChartEngine {
       ..strokeCap = StrokeCap.round;
 
     for (int index = 0; index < coordinates.length; index++) {
-      final OffsetWithAmountDate offsetWithAmount = coordinates[index];
+      final _AmountBarItem offsetWithAmount = coordinates[index];
 
       final double left = paddingForAlignedBar + offsetWithAmount.dx;
       final double right =
@@ -61,7 +60,7 @@ class AmountBarPainter extends ChartEngine {
         topRight: barRadius,
       );
 
-      final callback = (_) => tooltipCallback(
+      callback(_) => tooltipCallback(
             amount: offsetWithAmount.amount,
             amountDate: offsetWithAmount.dateTime,
             position: scrollController!.position,
@@ -82,44 +81,9 @@ class AmountBarPainter extends ChartEngine {
     //}
   }
 
-  @deprecated
-  void drawBrokeBarLine(Canvas canvas, Size size) {
-    late double strokeWidth;
-    switch (viewMode) {
-      case ViewMode.weekly:
-        strokeWidth = 8.0;
-        break;
-      case ViewMode.monthly:
-        strokeWidth = 4.0;
-    }
-
-    final Paint paint = Paint()
-      ..color = Theme.of(context).backgroundColor
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.square
-      ..strokeWidth = strokeWidth;
-    final Path path = Path();
-    final double interval = size.width / 7;
-    final timeDiff = 2 * (topHour! - bottomHour!);
-    final double posY = size.height * (timeDiff - 1) / timeDiff;
-    double posX = 0;
-
-    for (int i = 0; i < kWeeklyDayCount; ++i) {
-      path.moveTo(posX, posY);
-
-      path.quadraticBezierTo(
-          posX + interval / 4, posY - 8, posX + interval / 2, posY);
-      path.quadraticBezierTo(
-          posX + (3 * interval) / 4, posY + 8, posX + interval, posY);
-      canvas.drawPath(path, paint);
-
-      posX += interval;
-    }
-  }
-
   @override
-  List<OffsetWithAmountDate> generateCoordinates(Size size) {
-    List<OffsetWithAmountDate> coordinates = [];
+  List<_AmountBarItem> generateCoordinates(Size size) {
+    List<_AmountBarItem> coordinates = [];
 
     if (dataList.isEmpty) return [];
 
@@ -152,8 +116,7 @@ class AmountBarPainter extends ChartEngine {
         final double dy = size.height - normalizedTop * size.height;
         final double dx = size.width - intervalOfBars * barPosition;
 
-        coordinates
-            .add(OffsetWithAmountDate(dx, dy, amountSum, dataList[index].end));
+        coordinates.add(_AmountBarItem(dx, dy, amountSum, dataList[index].end));
 
         amountSum = 0;
       }
@@ -163,10 +126,19 @@ class AmountBarPainter extends ChartEngine {
   }
 
   @override
-  bool shouldRepaint(AmountBarPainter old) {
-    return old.dataList != dataList;
+  bool shouldRepaint(AmountBarPainter oldDelegate) {
+    return oldDelegate.dataList != dataList;
   }
 
   @override
   void drawYLabels(Canvas canvas, Size size) {}
+}
+
+class _AmountBarItem {
+  final double dx;
+  final double dy;
+  final double amount;
+  final DateTime dateTime;
+
+  _AmountBarItem(this.dx, this.dy, this.amount, this.dateTime);
 }

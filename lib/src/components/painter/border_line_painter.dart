@@ -23,8 +23,8 @@ class BorderLinePainter extends CustomPainter {
       ..strokeWidth = kLineStrokeWidth;
 
     final maxHeight = size.height - kXLabelHeight;
-    canvas.drawLine(Offset(0.0, 0.0), Offset(size.width, 0.0), topPaint);
-    canvas.drawLine(Offset(0.0, 0.0), Offset(0.0, maxHeight), leftPaint);
+    canvas.drawLine(const Offset(0.0, 0.0), Offset(size.width, 0.0), topPaint);
+    canvas.drawLine(const Offset(0.0, 0.0), Offset(0.0, maxHeight), leftPaint);
     canvas.drawLine(
         Offset(0.0, maxHeight), Offset(size.width, maxHeight), bottomPaint);
   }

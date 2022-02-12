@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import '../../../time_chart.dart';
 import '../../chart.dart';
-import 'time_assistant.dart' as TimeAssistant;
+import 'time_assistant.dart' as time_assistant;
 
 /// 0
 const double _kMinHour = 0.0;
@@ -16,13 +16,13 @@ const double _kMaxHour = 24.0;
 /// 이 클래스는 빈 날짜를 수면량이 0인 데이터로 채우고 [topHour]와 [bottomHour]를
 /// 계산한다.
 mixin TimeDataProcessor {
-  static const Duration _oneAfterDayDuration = const Duration(days: 1);
+  static const Duration _oneAfterDayDuration = Duration(days: 1);
 
-  List<DateTimeRange> _processedData = [];
+  final List<DateTimeRange> _processedData = [];
 
   List<DateTimeRange> get processedData => _processedData;
 
-  List<DateTimeRange> _pivotList = [];
+  final List<DateTimeRange> _pivotList = [];
 
   int? _topHour;
 
@@ -296,7 +296,7 @@ mixin TimeDataProcessor {
   }
 
   void _calcAmountPivotHeights(List<DateTimeRange> dataList) {
-    final double infinity = 10000.0;
+    const double infinity = 10000.0;
     final int len = dataList.length;
 
     double maxResult = 0.0;
@@ -349,8 +349,8 @@ class _TimePair implements Comparable {
 
   @override
   int compareTo(other) {
-    if (this._startTime < other.startTime) return -1;
-    if (this._startTime > other.startTime) return 1;
+    if (_startTime < other.startTime) return -1;
+    if (_startTime > other.startTime) return 1;
     return 0;
   }
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:touchable/touchable.dart';
-import '../../utils/time_assistant.dart' as timeAssistant;
+import '../../utils/time_assistant.dart' as time_assistant;
 import '../chart_engine.dart';
 import '../../view_mode.dart';
 
@@ -9,7 +9,7 @@ class TimeBarPainter extends ChartEngine {
     required ScrollController scrollController,
     required this.scrollOffsetNotifier,
     required this.tooltipCallback,
-    required this.context,
+    required BuildContext context,
     required this.dataList,
     required this.topHour,
     required this.bottomHour,
@@ -28,7 +28,6 @@ class TimeBarPainter extends ChartEngine {
 
   final ValueNotifier<double> scrollOffsetNotifier;
   final TooltipCallback tooltipCallback;
-  final BuildContext context;
   final Color? barColor;
 
   /// 수면 데이터이다.
@@ -46,7 +45,7 @@ class TimeBarPainter extends ChartEngine {
     Radius topRadius, [
     Radius bottomRadius = Radius.zero,
   ]) {
-    final callback = (_) => tooltipCallback(
+    callback(_) => tooltipCallback(
           range: data,
           position: scrollController!.position,
           rect: rect,
@@ -90,10 +89,11 @@ class TimeBarPainter extends ChartEngine {
       bottom,
     );
 
-    if (topOverflow)
+    if (topOverflow) {
       _drawRRect(canvas, paint, data, newRect, barRadius);
-    else
+    } else {
       _drawRRect(canvas, paint, data, newRect, Radius.zero, barRadius);
+    }
   }
 
   @override
@@ -108,7 +108,7 @@ class TimeBarPainter extends ChartEngine {
     final maxBottom = size.height;
 
     for (int index = 0; index < coordinates.length; index++) {
-      final OffsetRange offsetRange = coordinates[index];
+      final _TimeBarItem offsetRange = coordinates[index];
 
       final double left = paddingForAlignedBar + offsetRange.dx;
       final double right = paddingForAlignedBar + offsetRange.dx + barWidth;
@@ -172,8 +172,8 @@ class TimeBarPainter extends ChartEngine {
   }
 
   @override
-  List<OffsetRange> generateCoordinates(Size size) {
-    List<OffsetRange> coordinates = [];
+  List<_TimeBarItem> generateCoordinates(Size size) {
+    List<_TimeBarItem> coordinates = [];
 
     if (dataList.isEmpty) return [];
 
@@ -221,13 +221,22 @@ class TimeBarPainter extends ChartEngine {
           _outRangedPivotHour(
               wakeUpTimeDouble - sleepAmountDouble, wakeUpTimeDouble)) continue;
 
-      coordinates.add(OffsetRange(right, top, bottom, dataList[index]));
+      coordinates.add(_TimeBarItem(right, top, bottom, dataList[index]));
     }
     return coordinates;
   }
 
   @override
-  bool shouldRepaint(TimeBarPainter old) {
-    return old.dataList != dataList;
+  bool shouldRepaint(TimeBarPainter oldDelegate) {
+    return oldDelegate.dataList != dataList;
   }
+}
+
+class _TimeBarItem {
+  final double dx;
+  final double topY;
+  final double bottomY;
+  final DateTimeRange data;
+
+  _TimeBarItem(this.dx, this.topY, this.bottomY, this.data);
 }

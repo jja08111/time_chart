@@ -12,14 +12,14 @@ void main() {
       Builder(
         builder: (BuildContext context) {
           chartEngineMock = ChartEngineMock(context, ViewMode.weekly);
-          return Placeholder();
+          return const Placeholder();
         },
       ),
     );
     final List<DateTimeRange> dateTimeList = [];
     final startDateTime = DateTime(2021, 1, 1, 0, 0);
     final random = Random();
-    final count = 1000;
+    const count = 1000;
     // The list must be in descending order.
     for (int i = count; i >= 0; --i) {
       final hour = random.nextInt(3);
@@ -42,28 +42,28 @@ void main() {
     );
     expect(
       chartEngineMock!.indexOf(
-        startDateTime.add(Duration(days: 3)),
+        startDateTime.add(const Duration(days: 3)),
         dateTimeList,
       ),
       count - 3 - ChartEngine.toleranceDay,
     );
     expect(
       chartEngineMock!.indexOf(
-        startDateTime.add(Duration(days: 500)),
+        startDateTime.add(const Duration(days: 500)),
         dateTimeList,
       ),
       count - 500 - ChartEngine.toleranceDay,
     );
     expect(
       chartEngineMock!.indexOf(
-        startDateTime.add(Duration(days: 777)),
+        startDateTime.add(const Duration(days: 777)),
         dateTimeList,
       ),
       count - 777 - ChartEngine.toleranceDay,
     );
     expect(
       chartEngineMock!.indexOf(
-        startDateTime.add(Duration(days: count)),
+        startDateTime.add(const Duration(days: count)),
         dateTimeList,
       ),
       0, // did not subtract toleranceDay because index cannot be negative.

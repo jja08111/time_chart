@@ -43,8 +43,9 @@ class TimeYLabelPainter extends ChartEngine {
 
   void _drawLabelAndLine(Canvas canvas, Size size, double posY, int? time) {
     if (isVisible(posY)) drawHorizontalLine(canvas, size, posY);
-    if (isVisible(posY, onTolerance: true))
+    if (isVisible(posY, onTolerance: true)) {
       drawYText(canvas, size, translations!.formatHourOnly(time!), posY);
+    }
   }
 
   @override
@@ -73,10 +74,11 @@ class TimeYLabelPainter extends ChartEngine {
 
       // 맨 아래에 도달한 경우
       if (time == bottomHour! % 24) {
-        if (sameTopBottomHour)
+        if (sameTopBottomHour) {
           sameTopBottomHour = false;
-        else
+        } else {
           break;
+        }
       }
 
       time = (time + 2) % 24;
@@ -99,7 +101,7 @@ class TimeYLabelPainter extends ChartEngine {
 
   @override
   bool shouldRepaint(covariant TimeYLabelPainter oldDelegate) {
-    return oldDelegate.topHour != this.topHour ||
-        oldDelegate.bottomHour != this.bottomHour;
+    return oldDelegate.topHour != topHour ||
+        oldDelegate.bottomHour != bottomHour;
   }
 }
