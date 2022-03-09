@@ -13,56 +13,63 @@ const double _kMaxHour = 24.0;
 
 /// 데이터를 적절히 가공하는 믹스인이다.
 ///
-/// 이 클래스는 빈 날짜를 수면량이 0인 데이터로 채우고 [topHour]와 [bottomHour]를
-/// 계산한다.
+/// 이 믹스인은 [topHour]와 [bottomHour] 등을 계산하기 위해 사용한다.
+///
+/// 위의 두 기준 시간을 구하는 알고리즘은 다음과 같다.
+/// 1. 주어진 데이터들에서 현재 차트에 표시되어야 하는 데이터만 고른다. 즉, 차트의 오른쪽 시간과 왼쪽 시간에
+///    포함되는 데이터만 고른다. 이때 좌, 우로 하루씩 허용오차를 두어 차트가 잘못 그려지는 것을 방지한다.
+/// 2. 선택된 데이터를 이용하여 기준 값들을 먼저 구해본다. 기준 값은 데이터에서 가장 공백이 큰 시간 범위를
+///    찾아 반환한다.
+/// 3. 구해진 기준 값 중 [bottomHour]과 24시 사이에 있는 데이터들에 각각 하루 씩 더한다.
+///
+/// 위와 같은 과정을 지나면 [_processedData]에는 기준 시간에 맞게 수정된 데이터들이 들어있다.
 mixin TimeDataProcessor {
-  static const Duration _oneAfterDayDuration = Duration(days: 1);
+  static const Duration _oneDayDuration = Duration(days: 1);
 
+  /// 현재 [Chart]의 상태에 맞게 가공된 데이터를 반환한다.
+  ///
+  /// [bottomHour]와 24시 사이에 있는 데이터들을 다음날로 넘어가 있다.
+  List<DateTimeRange> get processedData => _processedData;
   final List<DateTimeRange> _processedData = [];
 
-  List<DateTimeRange> get processedData => _processedData;
-
-  final List<DateTimeRange> _pivotList = [];
-
-  int? _topHour;
+  final List<DateTimeRange> _inRangeDataList = [];
 
   int? get topHour => _topHour;
-
-  int? _bottomHour;
+  int? _topHour;
 
   int? get bottomHour => _bottomHour;
-
-  int? _dayCount;
+  int? _bottomHour;
 
   int? get dayCount => _dayCount;
+  int? _dayCount;
 
-  /// 첫 데이터가 다음날로 넘겨진 경우 `true` 이다.
+  /// 첫 데이터가 [bottomHour]에 의해 다음날로 넘겨진 경우 `true` 이다.
   ///
   /// 이때 [dayCount]가 7 이상이어야 한다.
-  bool _firstDataHasChanged = false;
-
   bool get firstDataHasChanged => _firstDataHasChanged;
+  bool _firstDataHasChanged = false;
 
   void processData(Chart chart, DateTime pivotEnd) {
     if (chart.data.isEmpty) {
-      _handleEmptyData(chart, pivotEnd);
+      _handleEmptyData(chart);
       return;
     }
 
-    _initProcessData(chart.data, chart.viewMode, pivotEnd);
+    _processedData.clear();
+    _processedData.addAll(List.from(chart.data));
+
+    _generateInitPivotList(chart.data, chart.viewMode, pivotEnd);
     switch (chart.chartType) {
       case ChartType.time:
-        _generatePivotHours(chart.defaultPivotHour);
-        _secondProcessData();
-        // 가공 후 다시 기준 값을 구한다.
-        _generatePivotHours(chart.defaultPivotHour);
+        _setPivotHours(chart.defaultPivotHour);
+        _processDataUsingBottomHour();
         break;
       case ChartType.amount:
         _calcAmountPivotHeights(chart.data);
     }
   }
 
-  void _handleEmptyData(Chart chart, DateTime pivotEnd) {
+  void _handleEmptyData(Chart chart) {
     switch (chart.chartType) {
       case ChartType.time:
         _topHour = chart.defaultPivotHour;
@@ -75,24 +82,26 @@ mixin TimeDataProcessor {
     _dayCount = 0;
   }
 
-  void _generatePivotHours(int defaultPivotHour) {
-    final sleepPair = _getPivotHours(_pivotList);
-    if (sleepPair == null) return;
-    final sleepTime = sleepPair.startTime;
-    final wakeUp = sleepPair.endTime;
+  void _setPivotHours(int defaultPivotHour) {
+    final timePair = _getPivotHoursFrom(_inRangeDataList);
+    if (timePair == null) return;
+    final startTime = timePair.startTime;
+    final endTime = timePair.endTime;
+
     // 아래와 같이 범위가 형성된 경우를 고려한다.
     // |##|
-    // |##| -> wakeUp
+    // |##| -> endTime
     //
-    // |##| -> sleepTime
+    // |##| -> startTime
     // |##|
-    if (sleepTime.floor() == wakeUp.floor() && wakeUp < sleepTime) {
-      _topHour = sleepTime.floor();
-      _bottomHour = sleepTime.floor();
+    if (startTime.floor() == endTime.floor() && endTime < startTime) {
+      _topHour = startTime.floor();
+      _bottomHour = startTime.floor();
       return;
     }
-    _topHour = sleepTime.floor();
-    _bottomHour = wakeUp.ceil();
+
+    _topHour = startTime.floor();
+    _bottomHour = endTime.ceil();
     if (_topHour! % 2 != _bottomHour! % 2) {
       _topHour = hourDiffBetween(1, _topHour).toInt();
     }
@@ -111,23 +120,22 @@ mixin TimeDataProcessor {
     return bottomHour! < timeDouble;
   }
 
-  /// 첫 입력으로 들어온 데이터를 이용 가능하게 초기 가공해준다.
-  ///
-  /// 이때 데이터에서 빈 날짜를 0인 수면량으로 채우고 데이터 타입에 맞게 데이터 길이를
-  /// 맞춘다. 예를 들어 [ViewMode.weekly]인 경우는 길이가 7이고 [ViewMode.monthly]인
-  /// 경우는 길이가 31로 제한하여 가공한다.
-  void _initProcessData(
-      List<DateTimeRange> dataList, ViewMode viewMode, DateTime pivotHi) {
+  /// 입력으로 들어온 [dataList]에서 [pivotHi]를 끝 날짜로 하여 [viewMode]의 제한 일 수에 포함된
+  /// [_inRangeDataList]를 만든다.
+  void _generateInitPivotList(
+    List<DateTimeRange> dataList,
+    ViewMode viewMode,
+    DateTime pivotHi,
+  ) {
     final pivotLo =
         pivotHi.add(Duration(days: -getViewModeLimitDay(viewMode) - 2));
 
-    _processedData.clear();
-    _pivotList.clear();
+    _inRangeDataList.clear();
     _dayCount = 0;
     _firstDataHasChanged = false;
 
     DateTime postEndTime =
-        dataList.first.end.add(_oneAfterDayDuration).dateWithoutTime();
+        dataList.first.end.add(_oneDayDuration).dateWithoutTime();
     for (int i = 0; i < dataList.length; ++i) {
       if (i > 0) {
         assert(dataList[i - 1].end.isAfter(dataList[i].end),
@@ -142,16 +150,15 @@ mixin TimeDataProcessor {
         postEndTime = postEndTime.add(Duration(days: -difference));
       }
       postEndTime = currentTime;
-      _processedData.add(dataList[i]);
 
       if (pivotLo.isBefore(currentTime) && currentTime.isBefore(pivotHi)) {
-        _pivotList.add(dataList[i]);
+        _inRangeDataList.add(dataList[i]);
       }
     }
   }
 
   /// 종료 시간이 [bottomHour]와 24시 사이에 존재하는 경우 해당 데이터를 다음날로 가공한다.
-  void _secondProcessData() {
+  void _processDataUsingBottomHour() {
     final len = _processedData.length;
     for (int i = 0; i < len; ++i) {
       final DateTime startTime = _processedData[i].start;
@@ -164,16 +171,15 @@ mixin TimeDataProcessor {
         _processedData.insert(
           i,
           DateTimeRange(
-            start: startTime.add(_oneAfterDayDuration),
-            end: endTime.add(_oneAfterDayDuration),
+            start: startTime.add(_oneDayDuration),
+            end: endTime.add(_oneDayDuration),
           ),
         );
 
         if (i == 0) {
           _dayCount = _dayCount! + 1;
           _firstDataHasChanged = true;
-        } // 7일 전부 채워진 상태에서 마지막 날이 다음 칸으로 넘어간 경우
-
+        }
       }
     }
   }
@@ -182,7 +188,7 @@ mixin TimeDataProcessor {
   ///
   /// 시간 데이터가 비어 있는 구간 중 가장 넓은 부분이 선택되며, 선택된 값의 시작 시간이
   /// [topHour], 종료 시간이 [bottomHour]가 된다.
-  _TimePair? _getPivotHours(List<DateTimeRange> dataList) {
+  _TimePair? _getPivotHoursFrom(List<DateTimeRange> dataList) {
     final List<_TimePair> rangeList = _getSortedRangeListFrom(dataList);
     if (rangeList.isEmpty) return null;
 
