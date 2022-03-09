@@ -328,11 +328,12 @@ class ChartState extends State<Chart>
     final beforeTopHour = topHour;
     final beforeBottomHour = bottomHour;
 
-    final block =
+    final blockIndex =
         getCurrentBlockIndex(_barController.position, _blockWidth!).toInt();
+    final scrollPositionDuration = Duration(
+        days: -blockIndex + (blockIndex > 0 && firstDataHasChanged ? 2 : 1));
     final pivotEnd = widget.data.isNotEmpty
-        ? widget.data.first.end.dateWithoutTime().add(
-            Duration(days: -block + (block > 0 && firstDataHasChanged ? 2 : 1)))
+        ? widget.data.first.end.dateWithoutTime().add(scrollPositionDuration)
         : DateTime.now();
 
     processData(widget, pivotEnd);
@@ -348,12 +349,12 @@ class ChartState extends State<Chart>
       _scrollPhysics!.setDayCount(dayCount!);
     }
 
-    _heightAnimation(beforeTopHour!, beforeBottomHour!);
+    _runHeightAnimation(beforeTopHour!, beforeBottomHour!);
   }
 
   double get heightWithoutLabel => widget.height - kXLabelHeight;
 
-  void _heightAnimation(int beforeTopHour, int beforeBottomHour) {
+  void _runHeightAnimation(int beforeTopHour, int beforeBottomHour) {
     final beforeDiff =
         hourDiffBetween(beforeTopHour, beforeBottomHour).toDouble();
     final currentDiff = hourDiffBetween(topHour, bottomHour).toDouble();
@@ -434,7 +435,7 @@ class ChartState extends State<Chart>
                 Positioned.fill(
                   child: NotificationListener<ScrollNotification>(
                     onNotification: _handleScrollNotification,
-                    child: _horizontalScrollView(
+                    child: _buildHorizontalScrollView(
                       key: key,
                       controller: _xLabelController,
                       child: CustomPaint(
@@ -461,7 +462,7 @@ class ChartState extends State<Chart>
                 _buildAnimatedBox(
                   bottomPadding: kXLabelHeight,
                   width: totalWidth - yLabelWidth,
-                  child: _horizontalScrollView(
+                  child: _buildHorizontalScrollView(
                     key: key,
                     controller: _barController,
                     child: CanvasTouchDetector(
@@ -480,7 +481,7 @@ class ChartState extends State<Chart>
     );
   }
 
-  Widget _horizontalScrollView({
+  Widget _buildHorizontalScrollView({
     required Widget child,
     required Key key,
     required ScrollController? controller,
@@ -569,6 +570,8 @@ class ChartState extends State<Chart>
   }
 
   CustomPainter _buildXLabelPainter(BuildContext context) {
+    final firstValueDateTime =
+        processedData.isEmpty ? DateTime.now() : processedData.first.end;
     switch (widget.chartType) {
       case ChartType.time:
         return TimeXLabelPainter(
@@ -576,8 +579,7 @@ class ChartState extends State<Chart>
           scrollOffsetNotifier: _scrollOffsetNotifier,
           context: context,
           viewMode: widget.viewMode,
-          firstValueDateTime:
-              processedData.isEmpty ? DateTime.now() : processedData.first.end,
+          firstValueDateTime: firstValueDateTime,
           dayCount: dayCount,
           firstDataHasChanged: firstDataHasChanged,
         );
@@ -587,8 +589,7 @@ class ChartState extends State<Chart>
           scrollOffsetNotifier: _scrollOffsetNotifier,
           context: context,
           viewMode: widget.viewMode,
-          firstValueDateTime:
-              processedData.isEmpty ? DateTime.now() : processedData.first.end,
+          firstValueDateTime: firstValueDateTime,
           dayCount: dayCount,
         );
     }
