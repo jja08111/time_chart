@@ -36,7 +36,7 @@ mixin TimeDataProcessor {
 
   int? get dayCount => _dayCount;
 
-  /// 첫 데이터가 다음날로 넘겨진 경우 true 이다.
+  /// 첫 데이터가 다음날로 넘겨진 경우 `true` 이다.
   ///
   /// 이때 [dayCount]가 7 이상이어야 한다.
   bool _firstDataHasChanged = false;
@@ -325,8 +325,8 @@ mixin TimeDataProcessor {
   /// [b]에서 [a]로 흐른 시간을 구한다. 예를 들어 5시에서 3시로 흐른 시간은 22시간이고,
   /// 16시에서 19시로 흐른 시간은 3시간이다.
   ///
-  /// 이를 역으로 이용하여 기상시간에서 취침시간을 구할 수 있다.
-  /// [b]에 수면량을 넣고 [a]에 기상 시간을 넣으면 취침시간이 반환된다.
+  /// 이를 역으로 이용하여 끝 시간으로부터 시작 시간을 구할 수 있다.
+  /// [b]에 총 시간 크기를 넣고 [a]에 끝 시간을 넣으면 시작 시간이 반환된다.
   dynamic hourDiffBetween(dynamic a, dynamic b) {
     final c = b - a;
     if (c <= 0) return 24.0 + c;
@@ -335,7 +335,7 @@ mixin TimeDataProcessor {
 }
 
 class _TimePair implements Comparable {
-  /// 정수로 이루어진 수면 시작 시간과 기상시간을 가진 클래스를 생성한다.
+  /// 정수로 이루어진 시작 시간과 끝 시간을 가진 클래스를 생성한다.
   const _TimePair(this._startTime, this._endTime);
 
   final double _startTime;

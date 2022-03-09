@@ -3,7 +3,7 @@ import 'chart.dart';
 import 'components/chart_type.dart';
 import 'components/view_mode.dart';
 
-/// 최상단에 그려진 것들이 잘리지 않기 위해 필요한 상단 패딩값이다.
+/// The padding to prevent cut off the top of the chart.
 const double kTimeChartTopPadding = 4.0;
 
 class TimeChart extends StatelessWidget {
@@ -49,6 +49,10 @@ class TimeChart extends StatelessWidget {
   ///
   /// The first index is the latest data, The end data is the oldest data.
   /// It must be sorted because of correctly painting the chart.
+  ///
+  /// ```dart
+  /// assert(data[0].isAfter(data[1])); // true
+  /// ```
   final List<DateTimeRange> data;
 
   /// The size animation duration of time chart when is changed pivot hours.
@@ -99,6 +103,8 @@ class TimeChart extends StatelessWidget {
   ///
   /// If there is no data when the type is the [ChartType.amount], 8 Hours is
   /// used as a top hour, not this value.
+  ///
+  /// It must be in the range of 0 to 23.
   final int defaultPivotHour;
 
   @override
