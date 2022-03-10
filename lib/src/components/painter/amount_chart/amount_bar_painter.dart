@@ -36,6 +36,12 @@ class AmountBarPainter extends ChartEngine<_AmountBarItem> {
   final int? bottomHour;
 
   @override
+  void paint(Canvas canvas, Size size) {
+    setDefaultValue(size);
+    drawBar(canvas, size, generateCoordinates(size));
+  }
+
+  @override
   void drawBar(Canvas canvas, Size size, List<_AmountBarItem> coordinates) {
     final touchyCanvas = TouchyCanvas(context, canvas,
         scrollController: scrollController,

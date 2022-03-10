@@ -117,16 +117,6 @@ abstract class ChartEngine<T> extends CustomPainter {
     );
   }
 
-  @override
-  void paint(Canvas canvas, Size size) {
-    setDefaultValue(size);
-
-    List<T> coordinates = generateCoordinates(size);
-
-    drawYLabels(canvas, size);
-    drawBar(canvas, size, coordinates);
-  }
-
   void setRightMargin() {
     final TextPainter tp = TextPainter(
       text: TextSpan(

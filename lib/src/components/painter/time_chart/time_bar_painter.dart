@@ -33,6 +33,12 @@ class TimeBarPainter extends ChartEngine<_TimeBarItem> {
   final int topHour;
   final int bottomHour;
 
+  @override
+  void paint(Canvas canvas, Size size) {
+    setDefaultValue(size);
+    drawBar(canvas, size, generateCoordinates(size));
+  }
+
   void _drawRRect(
     TouchyCanvas canvas,
     Paint paint,
