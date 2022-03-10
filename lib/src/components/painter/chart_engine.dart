@@ -33,7 +33,7 @@ const Color kLineColor2 = Color(0x77757575);
 const Color kLineColor3 = Color(0xAA757575);
 const Color kTextColor = Color(0xFF757575);
 
-abstract class ChartEngine extends CustomPainter {
+abstract class ChartEngine<T> extends CustomPainter {
   static const int toleranceDay = 1;
 
   ChartEngine({
@@ -91,7 +91,7 @@ abstract class ChartEngine extends CustomPainter {
   double? _blockWidth;
 
   /// 각 바의 위치와 크기를 생성하는 함수이다.
-  List<dynamic> generateCoordinates(Size size);
+  List<T> generateCoordinates(Size size);
 
   /// 그래프의 Y 축 레이블을 그린다.
   void drawYLabels(Canvas canvas, Size size);
@@ -122,7 +122,7 @@ abstract class ChartEngine extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     setDefaultValue(size);
 
-    List<dynamic> coordinates = generateCoordinates(size);
+    List<T> coordinates = generateCoordinates(size);
 
     drawYLabels(canvas, size);
     drawBar(canvas, size, coordinates);
