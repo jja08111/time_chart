@@ -98,7 +98,7 @@ extension DateTimeRangeUtils on DateTimeRange {
 extension DateTimeRangeListUtils on List<DateTimeRange> {
   /// 이진 탐색을 하며 [targetDate] 날짜를 초과하며 가장 최근의 날짜를 가진 데이터의 인덱스를 반환한다.
   ///
-  /// 이때 [dataList]의 값들은 첫 번째 인덱스가 늦은 날짜인 순으로 정렬되어 있어야 한다.
+  /// 이것을 호출 할때 리스트의 값들은 첫 번째 인덱스가 늦은 날짜인 순으로 정렬되어 있어야 한다.
   int getLowerBound(DateTime targetDate) {
     int min = 0;
     int max = length;
