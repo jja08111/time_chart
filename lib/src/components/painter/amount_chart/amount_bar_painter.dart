@@ -6,7 +6,7 @@ import '../../utils/time_assistant.dart';
 import '../../view_mode.dart';
 import '../chart_engine.dart';
 
-class AmountBarPainter extends ChartEngine {
+class AmountBarPainter extends ChartEngine<_AmountBarItem> {
   AmountBarPainter({
     required ScrollController scrollController,
     required this.scrollOffsetNotifier,
@@ -36,7 +36,7 @@ class AmountBarPainter extends ChartEngine {
   final int? bottomHour;
 
   @override
-  void drawBar(Canvas canvas, Size size, List<dynamic> coordinates) {
+  void drawBar(Canvas canvas, Size size, List<_AmountBarItem> coordinates) {
     final touchyCanvas = TouchyCanvas(context, canvas,
         scrollController: scrollController,
         scrollDirection: AxisDirection.left);

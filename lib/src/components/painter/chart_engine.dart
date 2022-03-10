@@ -96,7 +96,7 @@ abstract class ChartEngine<T> extends CustomPainter {
   void drawYLabels(Canvas canvas, Size size);
 
   /// 그래프의 바를 그린다.
-  void drawBar(Canvas canvas, Size size, List<dynamic> coordinates);
+  void drawBar(Canvas canvas, Size size, List<T> coordinates);
 
   /// Y 축의 텍스트 레이블을 그린다.
   void drawYText(Canvas canvas, Size size, String text, double y) {

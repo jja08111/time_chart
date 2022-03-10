@@ -4,7 +4,7 @@ import '../../utils/time_assistant.dart' as time_assistant;
 import '../chart_engine.dart';
 import '../../view_mode.dart';
 
-class TimeBarPainter extends ChartEngine {
+class TimeBarPainter extends ChartEngine<_TimeBarItem> {
   TimeBarPainter({
     required ScrollController scrollController,
     required this.scrollOffsetNotifier,
@@ -93,7 +93,7 @@ class TimeBarPainter extends ChartEngine {
   }
 
   @override
-  void drawBar(Canvas canvas, Size size, List<dynamic> coordinates) {
+  void drawBar(Canvas canvas, Size size, List<_TimeBarItem> coordinates) {
     final touchyCanvas = TouchyCanvas(context, canvas,
         scrollController: scrollController,
         scrollDirection: AxisDirection.left);
