@@ -29,10 +29,6 @@ class TimeBarPainter extends ChartEngine {
   final ValueNotifier<double> scrollOffsetNotifier;
   final TooltipCallback tooltipCallback;
   final Color? barColor;
-
-  /// 수면 데이터이다.
-  ///
-  /// 데이터가 없는 날에는 범위가 0인 데이터가 이미 계산되어 들어가있다.
   final List<DateTimeRange> dataList;
   final int topHour;
   final int bottomHour;
