@@ -2,7 +2,6 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:path_drawing/path_drawing.dart';
-import 'package:time_chart/src/components/utils/time_assistant.dart';
 import '../view_mode.dart';
 import '../translations/translations.dart';
 
@@ -247,38 +246,9 @@ abstract class ChartEngine<T> extends CustomPainter {
     return ret + (ret <= 0 ? 24 : 0);
   }
 
-  /// 이진 탐색을 하며 [targetDate]에 [toleranceDay]를 더한 날짜를 가진
-  /// (시간은 제외한) 값을 반환한다.
-  ///
-  /// 이때 [sleepDataList]의 값들은 빈 공백이 없이 전부 채워진 상태로 가공되어 있어야 한다.
-  int indexOf(DateTime targetDate, List<DateTimeRange> sleepDataList) {
-    targetDate = targetDate.add(const Duration(days: toleranceDay));
-    int min = 0;
-    int max = sleepDataList.length;
-    late int result;
-
-    while (min < max) {
-      result = min + ((max - min) >> 1);
-      final DateTimeRange element = sleepDataList[result];
-      final int comp = _compareDateWithOutTime(element.end, targetDate);
-      if (comp == 0) {
-        break;
-      }
-      if (comp < 0) {
-        min = result + 1;
-      } else {
-        max = result;
-      }
-    }
-    // 같은 날 중에 가장 최근 날짜 데이터로 고른다.
-    while (result - 1 >= 0 &&
-        sleepDataList[result - 1].end.day == sleepDataList[result].end.day) {
-      result--;
-    }
-    return result;
-  }
-
-  int _compareDateWithOutTime(DateTime a, DateTime b) {
-    return b.differenceDateInDay(a);
+  DateTime getBarRenderStartDateTime(List<DateTimeRange> dataList) {
+    return dataList.first.end.add(Duration(
+      days: -getDayFromScrollOffset() + ChartEngine.toleranceDay,
+    ));
   }
 }

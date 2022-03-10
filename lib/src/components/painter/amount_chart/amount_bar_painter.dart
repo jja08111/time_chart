@@ -91,9 +91,8 @@ class AmountBarPainter extends ChartEngine {
     final int length = dataList.length;
     final int viewLimitDay = getViewModeLimitDay(viewMode);
     final dayFromScrollOffset = getDayFromScrollOffset();
-    final DateTime startDateTime =
-        dataList.first.end.add(Duration(days: -dayFromScrollOffset));
-    final int startIndex = indexOf(startDateTime, dataList);
+    final DateTime startDateTime = getBarRenderStartDateTime(dataList);
+    final int startIndex = dataList.getLowerBound(startDateTime);
 
     double amountSum = 0;
 

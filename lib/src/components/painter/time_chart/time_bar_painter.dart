@@ -182,9 +182,8 @@ class TimeBarPainter extends ChartEngine {
     final int viewLimitDay = getViewModeLimitDay(viewMode);
 
     final dayFromScrollOffset = getDayFromScrollOffset();
-    final DateTime startDateTime =
-        dataList.first.end.add(Duration(days: -dayFromScrollOffset));
-    final int startIndex = indexOf(startDateTime, dataList);
+    final DateTime startDateTime = getBarRenderStartDateTime(dataList);
+    final int startIndex = dataList.getLowerBound(startDateTime);
 
     for (int index = startIndex; index < length; index++) {
       final wakeUpTimeDouble = dataList[index].end.toDouble();

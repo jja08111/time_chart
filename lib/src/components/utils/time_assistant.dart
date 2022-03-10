@@ -94,3 +94,34 @@ extension DateTimeRangeUtils on DateTimeRange {
     return duration.inMinutes / 60;
   }
 }
+
+extension DateTimeRangeListUtils on List<DateTimeRange> {
+  /// 이진 탐색을 하며 [targetDate] 날짜를 초과하며 가장 최근의 날짜를 가진 데이터의 인덱스를 반환한다.
+  ///
+  /// 이때 [dataList]의 값들은 첫 번째 인덱스가 늦은 날짜인 순으로 정렬되어 있어야 한다.
+  int getLowerBound(DateTime targetDate) {
+    int min = 0;
+    int max = length;
+    int result = -1;
+
+    while (min < max) {
+      result = min + ((max - min) >> 1);
+      final DateTimeRange element = this[result];
+      final int comp = targetDate.differenceDateInDay(element.end);
+      if (comp == 0) {
+        break;
+      }
+      if (comp < 0) {
+        min = result + 1;
+      } else {
+        max = result;
+      }
+    }
+    // 같은 날 중에 가장 최근 날짜 데이터로 고른다.
+    while (
+        result - 1 >= 0 && this[result - 1].end.day == this[result].end.day) {
+      result--;
+    }
+    return result;
+  }
+}
