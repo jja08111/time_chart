@@ -24,7 +24,6 @@ class AmountYLabelPainter extends ChartEngine {
   }
 
   // Y축 텍스트(레이블)을 그림. 최저값과 최고값을 Y축에 표시함.
-  @override
   void drawYLabels(Canvas canvas, Size size) {
     final hourSuffix = translations!.shortHour;
     final double interval =
@@ -41,12 +40,6 @@ class AmountYLabelPainter extends ChartEngine {
       posY += interval;
     }
   }
-
-  @override
-  void drawBar(Canvas canvas, Size size, List coordinates) {}
-
-  @override
-  List generateCoordinates(Size size) => [];
 
   @override
   bool shouldRepaint(covariant AmountYLabelPainter oldDelegate) {

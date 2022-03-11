@@ -6,7 +6,7 @@ import '../../utils/time_assistant.dart';
 import '../../view_mode.dart';
 import '../chart_engine.dart';
 
-class AmountBarPainter extends ChartEngine<_AmountBarItem> {
+class AmountBarPainter extends ChartEngine {
   AmountBarPainter({
     required ScrollController scrollController,
     required this.scrollOffsetNotifier,
@@ -41,7 +41,6 @@ class AmountBarPainter extends ChartEngine<_AmountBarItem> {
     drawBar(canvas, size, generateCoordinates(size));
   }
 
-  @override
   void drawBar(Canvas canvas, Size size, List<_AmountBarItem> coordinates) {
     final touchyCanvas = TouchyCanvas(context, canvas,
         scrollController: scrollController,
@@ -87,9 +86,8 @@ class AmountBarPainter extends ChartEngine<_AmountBarItem> {
     //}
   }
 
-  @override
   List<_AmountBarItem> generateCoordinates(Size size) {
-    List<_AmountBarItem> coordinates = [];
+    final List<_AmountBarItem> coordinates = [];
 
     if (dataList.isEmpty) return [];
 
@@ -134,9 +132,6 @@ class AmountBarPainter extends ChartEngine<_AmountBarItem> {
   bool shouldRepaint(AmountBarPainter oldDelegate) {
     return oldDelegate.dataList != dataList;
   }
-
-  @override
-  void drawYLabels(Canvas canvas, Size size) {}
 }
 
 class _AmountBarItem {

@@ -32,7 +32,7 @@ const Color kLineColor2 = Color(0x77757575);
 const Color kLineColor3 = Color(0xAA757575);
 const Color kTextColor = Color(0xFF757575);
 
-abstract class ChartEngine<T> extends CustomPainter {
+abstract class ChartEngine extends CustomPainter {
   static const int toleranceDay = 1;
 
   ChartEngine({
@@ -89,34 +89,6 @@ abstract class ChartEngine<T> extends CustomPainter {
   double _paddingForAlignedBar = 0.0;
   double? _blockWidth;
 
-  /// 각 바의 위치와 크기를 생성하는 함수이다.
-  List<T> generateCoordinates(Size size);
-
-  /// 그래프의 Y 축 레이블을 그린다.
-  void drawYLabels(Canvas canvas, Size size);
-
-  /// 그래프의 바를 그린다.
-  void drawBar(Canvas canvas, Size size, List<T> coordinates);
-
-  /// Y 축의 텍스트 레이블을 그린다.
-  void drawYText(Canvas canvas, Size size, String text, double y) {
-    TextSpan span = TextSpan(
-      text: text,
-      style: textTheme.bodyText2!.copyWith(color: kTextColor),
-    );
-
-    TextPainter tp = TextPainter(text: span, textDirection: TextDirection.ltr);
-    tp.layout();
-
-    tp.paint(
-      canvas,
-      Offset(
-        size.width - _rightMargin + kYLabelMargin,
-        y - textTheme.bodyText2!.fontSize! / 2,
-      ),
-    );
-  }
-
   void setRightMargin() {
     final TextPainter tp = TextPainter(
       text: TextSpan(
@@ -135,6 +107,25 @@ abstract class ChartEngine<T> extends CustomPainter {
     _barWidth = blockWidth! * kBarWidthRatio;
     // 바의 위치를 가운데로 정렬하기 위한 [padding]
     _paddingForAlignedBar = blockWidth! * kBarPaddingWidthRatio;
+  }
+
+  /// Y 축의 텍스트 레이블을 그린다.
+  void drawYText(Canvas canvas, Size size, String text, double y) {
+    TextSpan span = TextSpan(
+      text: text,
+      style: textTheme.bodyText2!.copyWith(color: kTextColor),
+    );
+
+    TextPainter tp = TextPainter(text: span, textDirection: TextDirection.ltr);
+    tp.layout();
+
+    tp.paint(
+      canvas,
+      Offset(
+        size.width - _rightMargin + kYLabelMargin,
+        y - textTheme.bodyText2!.fontSize! / 2,
+      ),
+    );
   }
 
   void drawXLabels(

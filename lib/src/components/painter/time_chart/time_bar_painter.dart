@@ -4,7 +4,7 @@ import '../../utils/time_assistant.dart' as time_assistant;
 import '../chart_engine.dart';
 import '../../view_mode.dart';
 
-class TimeBarPainter extends ChartEngine<_TimeBarItem> {
+class TimeBarPainter extends ChartEngine {
   TimeBarPainter({
     required ScrollController scrollController,
     required this.scrollOffsetNotifier,
@@ -98,7 +98,6 @@ class TimeBarPainter extends ChartEngine<_TimeBarItem> {
     }
   }
 
-  @override
   void drawBar(Canvas canvas, Size size, List<_TimeBarItem> coordinates) {
     final touchyCanvas = TouchyCanvas(context, canvas,
         scrollController: scrollController,
@@ -137,9 +136,6 @@ class TimeBarPainter extends ChartEngine<_TimeBarItem> {
     }
   }
 
-  @override
-  void drawYLabels(Canvas canvas, Size size) {}
-
   /// 기준 시간을 이용하여 시간을 변환한다.
   ///
   /// 기준 시간을 기준으로 다른 시간은 아래로 나열된다.
@@ -173,9 +169,8 @@ class TimeBarPainter extends ChartEngine<_TimeBarItem> {
     return false;
   }
 
-  @override
   List<_TimeBarItem> generateCoordinates(Size size) {
-    List<_TimeBarItem> coordinates = [];
+    final List<_TimeBarItem> coordinates = [];
 
     if (dataList.isEmpty) return [];
 
@@ -187,7 +182,7 @@ class TimeBarPainter extends ChartEngine<_TimeBarItem> {
     final double height = size.height;
     final int viewLimitDay = getViewModeLimitDay(viewMode);
 
-    final dayFromScrollOffset = getDayFromScrollOffset();
+    final int dayFromScrollOffset = getDayFromScrollOffset();
     final DateTime startDateTime = getBarRenderStartDateTime(dataList);
     final int startIndex = dataList.getLowerBound(startDateTime);
 

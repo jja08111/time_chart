@@ -48,7 +48,6 @@ class TimeYLabelPainter extends ChartEngine {
     }
   }
 
-  @override
   void drawYLabels(Canvas canvas, Size size) {
     final double bottomY = size.height - kXLabelHeight;
     // 맨 위부터 2시간 단위로 시간을 그린다.
@@ -92,12 +91,6 @@ class TimeYLabelPainter extends ChartEngine {
       _drawLabelAndLine(canvas, size, posY, time);
     }
   }
-
-  @override
-  void drawBar(Canvas canvas, Size size, List coordinates) {}
-
-  @override
-  List generateCoordinates(Size size) => [];
 
   @override
   bool shouldRepaint(covariant TimeYLabelPainter oldDelegate) {

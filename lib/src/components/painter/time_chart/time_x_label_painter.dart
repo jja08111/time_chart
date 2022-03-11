@@ -31,15 +31,6 @@ class TimeXLabelPainter extends ChartEngine {
   }
 
   @override
-  List generateCoordinates(Size size) => [];
-
-  @override
-  void drawYLabels(Canvas canvas, Size size) {}
-
-  @override
-  void drawBar(Canvas canvas, Size size, List coordinates) {}
-
-  @override
   bool shouldRepaint(covariant TimeXLabelPainter oldDelegate) {
     return true;
   }
