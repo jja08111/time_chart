@@ -1,46 +1,38 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:time_chart/src/components/painter/bar_painter.dart';
 import 'package:touchable/touchable.dart';
 import '../../utils/time_assistant.dart';
 import '../../view_mode.dart';
 import '../chart_engine.dart';
 
-class AmountBarPainter extends ChartEngine {
+class AmountBarPainter extends BarPainter<_AmountBarItem> {
   AmountBarPainter({
     required ScrollController scrollController,
-    required this.scrollOffsetNotifier,
-    required this.tooltipCallback,
+    required ValueNotifier<double> scrollOffsetNotifier,
+    required TooltipCallback tooltipCallback,
     required BuildContext context,
-    required this.dataList,
-    required this.topHour,
-    required this.bottomHour,
+    required List<DateTimeRange> dataList,
+    required int topHour,
+    required int bottomHour,
     required int? dayCount,
     required ViewMode viewMode,
-    this.barColor,
+    Color? barColor,
   }) : super(
           scrollController: scrollController,
+          scrollOffsetNotifier: scrollOffsetNotifier,
+          tooltipCallback: tooltipCallback,
+          context: context,
+          dataList: dataList,
+          topHour: topHour,
+          bottomHour: bottomHour,
           dayCount: dayCount,
           viewMode: viewMode,
-          firstValueDateTime:
-              dataList.isEmpty ? DateTime.now() : dataList.first.end,
-          context: context,
-          repaint: scrollOffsetNotifier,
+          barColor: barColor,
         );
 
-  final ValueNotifier<double> scrollOffsetNotifier;
-  final TooltipCallback tooltipCallback;
-  final Color? barColor;
-  final List<DateTimeRange> dataList;
-  final int? topHour;
-  final int? bottomHour;
-
   @override
-  void paint(Canvas canvas, Size size) {
-    setDefaultValue(size);
-    drawBar(canvas, size, generateCoordinates(size));
-  }
-
   void drawBar(Canvas canvas, Size size, List<_AmountBarItem> coordinates) {
     final touchyCanvas = TouchyCanvas(context, canvas,
         scrollController: scrollController,
@@ -86,6 +78,7 @@ class AmountBarPainter extends ChartEngine {
     //}
   }
 
+  @override
   List<_AmountBarItem> generateCoordinates(Size size) {
     final List<_AmountBarItem> coordinates = [];
 
@@ -114,7 +107,7 @@ class AmountBarPainter extends ChartEngine {
           dataList[index].end.differenceDateInDay(dataList[index + 1].end) >
               0) {
         final double normalizedTop =
-            max(0, amountSum - bottomHour!) / (topHour! - bottomHour!);
+            max(0, amountSum - bottomHour) / (topHour - bottomHour);
 
         final double dy = size.height - normalizedTop * size.height;
         final double dx = size.width - intervalOfBars * barPosition;
@@ -126,11 +119,6 @@ class AmountBarPainter extends ChartEngine {
     }
 
     return coordinates;
-  }
-
-  @override
-  bool shouldRepaint(AmountBarPainter oldDelegate) {
-    return oldDelegate.dataList != dataList;
   }
 }
 

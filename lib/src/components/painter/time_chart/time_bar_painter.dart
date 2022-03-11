@@ -1,43 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:time_chart/src/components/painter/bar_painter.dart';
 import 'package:touchable/touchable.dart';
 import '../../utils/time_assistant.dart' as time_assistant;
 import '../chart_engine.dart';
 import '../../view_mode.dart';
 
-class TimeBarPainter extends ChartEngine {
+class TimeBarPainter extends BarPainter<_TimeBarItem> {
   TimeBarPainter({
     required ScrollController scrollController,
-    required this.scrollOffsetNotifier,
-    required this.tooltipCallback,
+    required ValueNotifier<double> scrollOffsetNotifier,
+    required TooltipCallback tooltipCallback,
     required BuildContext context,
-    required this.dataList,
-    required this.topHour,
-    required this.bottomHour,
+    required List<DateTimeRange> dataList,
+    required int topHour,
+    required int bottomHour,
     required int? dayCount,
     required ViewMode viewMode,
-    this.barColor,
+    Color? barColor,
   }) : super(
           scrollController: scrollController,
+          scrollOffsetNotifier: scrollOffsetNotifier,
+          tooltipCallback: tooltipCallback,
+          context: context,
+          dataList: dataList,
+          topHour: topHour,
+          bottomHour: bottomHour,
           dayCount: dayCount,
           viewMode: viewMode,
-          firstValueDateTime:
-              dataList.isEmpty ? DateTime.now() : dataList.first.end,
-          context: context,
-          repaint: scrollOffsetNotifier,
+          barColor: barColor,
         );
-
-  final ValueNotifier<double> scrollOffsetNotifier;
-  final TooltipCallback tooltipCallback;
-  final Color? barColor;
-  final List<DateTimeRange> dataList;
-  final int topHour;
-  final int bottomHour;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    setDefaultValue(size);
-    drawBar(canvas, size, generateCoordinates(size));
-  }
 
   void _drawRRect(
     TouchyCanvas canvas,
@@ -98,6 +89,7 @@ class TimeBarPainter extends ChartEngine {
     }
   }
 
+  @override
   void drawBar(Canvas canvas, Size size, List<_TimeBarItem> coordinates) {
     final touchyCanvas = TouchyCanvas(context, canvas,
         scrollController: scrollController,
@@ -169,6 +161,7 @@ class TimeBarPainter extends ChartEngine {
     return false;
   }
 
+  @override
   List<_TimeBarItem> generateCoordinates(Size size) {
     final List<_TimeBarItem> coordinates = [];
 
@@ -220,11 +213,6 @@ class TimeBarPainter extends ChartEngine {
       coordinates.add(_TimeBarItem(right, top, bottom, dataList[index]));
     }
     return coordinates;
-  }
-
-  @override
-  bool shouldRepaint(TimeBarPainter oldDelegate) {
-    return oldDelegate.dataList != dataList;
   }
 }
 
