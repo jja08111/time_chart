@@ -74,8 +74,8 @@ extension DateTimeUtils on DateTime {
 
   /// Return day that date difference with [other].
   int differenceDateInDay(DateTime other) {
-    DateTime thisDate = DateTime(year, month, day);
-    DateTime otherDate = DateTime(other.year, other.month, other.day);
+    DateTime thisDate = dateWithoutTime();
+    DateTime otherDate = other.dateWithoutTime();
 
     return thisDate.difference(otherDate).inDays;
   }
