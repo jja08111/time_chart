@@ -11,6 +11,9 @@ const double _kMinHour = 0.0;
 /// 24
 const double _kMaxHour = 24.0;
 
+const String _kNotSortedDataErrorMessage =
+    'The data list is reversed or not sorted. Check the data parameter. The first data must be newest data.';
+
 /// 데이터를 적절히 가공하는 믹스인이다.
 ///
 /// 이 믹스인은 [topHour]와 [bottomHour] 등을 계산하기 위해 사용한다.
@@ -58,6 +61,8 @@ mixin TimeDataProcessor {
     _processedData.clear();
     _processedData.addAll(List.from(chart.data));
 
+    _firstDataHasChanged = false;
+    _countDays(chart.data);
     _generateInitPivotList(chart.data, chart.viewMode, pivotEnd);
     switch (chart.chartType) {
       case ChartType.time:
@@ -120,6 +125,18 @@ mixin TimeDataProcessor {
     return bottomHour! < timeDouble;
   }
 
+  void _countDays(List<DateTimeRange> dataList) {
+    assert(dataList.isNotEmpty);
+
+    final firstDateTime = dataList.first.end;
+    final lastDateTime = dataList.last.end;
+
+    if (dataList.length > 1) {
+      assert(firstDateTime.isAfter(lastDateTime), _kNotSortedDataErrorMessage);
+    }
+    _dayCount = firstDateTime.differenceDateInDay(lastDateTime) + 1;
+  }
+
   /// 입력으로 들어온 [dataList]에서 [pivotHi]를 끝 날짜로 하여 [viewMode]의 제한 일 수에 포함된
   /// [_inRangeDataList]를 만든다.
   void _generateInitPivotList(
@@ -131,21 +148,20 @@ mixin TimeDataProcessor {
         pivotHi.add(Duration(days: -getViewModeLimitDay(viewMode) - 2));
 
     _inRangeDataList.clear();
-    _dayCount = 0;
-    _firstDataHasChanged = false;
 
     DateTime postEndTime =
         dataList.first.end.add(_oneDayDuration).dateWithoutTime();
     for (int i = 0; i < dataList.length; ++i) {
       if (i > 0) {
-        assert(dataList[i - 1].end.isAfter(dataList[i].end),
-            'The data list is reversed or not sorted. Check the data parameter. The first data must be newest data.');
+        assert(
+          dataList[i - 1].end.isAfter(dataList[i].end),
+          _kNotSortedDataErrorMessage,
+        );
       }
       final currentTime = dataList[i].end.dateWithoutTime();
       // 이전 데이터와 날짜가 다른 경우
       if (currentTime != postEndTime) {
         final difference = postEndTime.differenceDateInDay(currentTime);
-        _dayCount = _dayCount! + difference;
         // 하루 이상 차이나는 경우
         postEndTime = postEndTime.add(Duration(days: -difference));
       }

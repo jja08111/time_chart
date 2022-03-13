@@ -254,5 +254,56 @@ void main() {
             '8 Hours is used as `topHour` if there is no data when the type is amount',
       );
     });
+
+    testWidgets('sets dayCount to 0 if data is empty', (tester) async {
+      final _MockTimeDataProcessor processor = _MockTimeDataProcessor();
+      final List<DateTimeRange> data = [];
+
+      processor.process(
+        data,
+        chartType: ChartType.amount,
+      );
+
+      expect(processor.dayCount!, equals(0));
+    });
+
+    testWidgets('sets dayCount correctly if chart has only one data',
+        (tester) async {
+      final _MockTimeDataProcessor processor = _MockTimeDataProcessor();
+      final data = [
+        DateTimeRange(
+          start: DateTime(2021, 12, 18, 22, 10),
+          end: DateTime(2021, 12, 18, 23, 20),
+        ),
+      ];
+
+      processor.process(
+        data,
+        chartType: ChartType.amount,
+      );
+
+      expect(processor.dayCount!, equals(1));
+    });
+
+    testWidgets('sets dayCount correctly if chart has data', (tester) async {
+      final _MockTimeDataProcessor processor = _MockTimeDataProcessor();
+      final data = [
+        DateTimeRange(
+          start: DateTime(2021, 12, 18, 22, 10),
+          end: DateTime(2021, 12, 18, 23, 20),
+        ),
+        DateTimeRange(
+          start: DateTime(2021, 12, 1, 2, 12),
+          end: DateTime(2021, 12, 1, 8, 30),
+        ),
+      ];
+
+      processor.process(
+        data,
+        chartType: ChartType.amount,
+      );
+
+      expect(processor.dayCount!, equals(18));
+    });
   });
 }
