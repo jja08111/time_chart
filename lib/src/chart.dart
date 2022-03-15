@@ -330,8 +330,10 @@ class ChartState extends State<Chart>
 
     final blockIndex =
         getCurrentBlockIndex(_barController.position, _blockWidth!).toInt();
+    final needsToAdaptScrollPosition = blockIndex > 0 && firstDataHasChanged;
     final scrollPositionDuration = Duration(
-        days: -blockIndex + (blockIndex > 0 && firstDataHasChanged ? 1 : 0));
+      days: -blockIndex + (needsToAdaptScrollPosition ? 1 : 0),
+    );
     final renderEndTime = widget.data.isNotEmpty
         ? widget.data.first.end.dateWithoutTime().add(scrollPositionDuration)
         : DateTime.now();
