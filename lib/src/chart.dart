@@ -129,10 +129,10 @@ class ChartState extends State<Chart>
 
     _addScrollNotifier();
 
-    final pivotEnd = widget.data.isNotEmpty
+    final renderEndTime = widget.data.isNotEmpty
         ? widget.data.first.end.add(const Duration(days: 1)).dateWithoutTime()
         : DateTime.now();
-    processData(widget, pivotEnd);
+    processData(widget, renderEndTime);
   }
 
   @override
@@ -332,11 +332,11 @@ class ChartState extends State<Chart>
         getCurrentBlockIndex(_barController.position, _blockWidth!).toInt();
     final scrollPositionDuration = Duration(
         days: -blockIndex + (blockIndex > 0 && firstDataHasChanged ? 2 : 1));
-    final pivotEnd = widget.data.isNotEmpty
+    final renderEndTime = widget.data.isNotEmpty
         ? widget.data.first.end.dateWithoutTime().add(scrollPositionDuration)
         : DateTime.now();
 
-    processData(widget, pivotEnd);
+    processData(widget, renderEndTime);
 
     if (topHour == beforeTopHour && bottomHour == beforeBottomHour) return;
 

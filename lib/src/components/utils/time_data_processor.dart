@@ -52,7 +52,7 @@ mixin TimeDataProcessor {
   bool get firstDataHasChanged => _firstDataHasChanged;
   bool _firstDataHasChanged = false;
 
-  void processData(Chart chart, DateTime pivotEnd) {
+  void processData(Chart chart, DateTime renderEndTime) {
     if (chart.data.isEmpty) {
       _handleEmptyData(chart);
       return;
@@ -63,7 +63,7 @@ mixin TimeDataProcessor {
 
     _firstDataHasChanged = false;
     _countDays(chart.data);
-    _generateInRangeDataList(chart.data, chart.viewMode, pivotEnd);
+    _generateInRangeDataList(chart.data, chart.viewMode, renderEndTime);
     switch (chart.chartType) {
       case ChartType.time:
         _setPivotHours(chart.defaultPivotHour);
@@ -137,15 +137,15 @@ mixin TimeDataProcessor {
     _dayCount = firstDateTime.differenceDateInDay(lastDateTime) + 1;
   }
 
-  /// 입력으로 들어온 [dataList]에서 [pivotHi]를 끝 날짜로 하여 [viewMode]의 제한 일 수에 포함된
+  /// 입력으로 들어온 [dataList]에서 [renderEndTime]부터 [viewMode]의 제한 일수 기간 동안 포함된
   /// [_inRangeDataList]를 만든다.
   void _generateInRangeDataList(
     List<DateTimeRange> dataList,
     ViewMode viewMode,
-    DateTime pivotHi,
+    DateTime renderEndTime,
   ) {
-    final pivotLo =
-        pivotHi.add(Duration(days: -getViewModeLimitDay(viewMode) - 2));
+    final renderStartTime =
+        renderEndTime.add(Duration(days: -getViewModeLimitDay(viewMode) - 2));
 
     _inRangeDataList.clear();
 
@@ -167,7 +167,8 @@ mixin TimeDataProcessor {
       }
       postEndTime = currentTime;
 
-      if (pivotLo.isBefore(currentTime) && currentTime.isBefore(pivotHi)) {
+      if (renderStartTime.isBefore(currentTime) &&
+          currentTime.isBefore(renderEndTime)) {
         _inRangeDataList.add(dataList[i]);
       }
     }
