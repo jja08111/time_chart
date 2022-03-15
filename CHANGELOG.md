@@ -1,3 +1,7 @@
+## 0.3.3
+* [Update] Clean and improve code.
+* [Update] Removed unnecessary data processing.
+
 ## 0.3.2
 * [Update] Lint code and migrate example app.
 
