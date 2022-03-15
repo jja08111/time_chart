@@ -363,7 +363,7 @@ mixin TimeDataProcessor {
 }
 
 class _TimePair implements Comparable {
-  /// 정수로 이루어진 시작 시간과 끝 시간을 가진 클래스를 생성한다.
+  /// [double] 타입으로 이루어진 시작 시간과 끝 시간을 가진 클래스를 생성한다.
   const _TimePair(this._startTime, this._endTime);
 
   final double _startTime;
