@@ -63,7 +63,7 @@ mixin TimeDataProcessor {
 
     _firstDataHasChanged = false;
     _countDays(chart.data);
-    _generateInitPivotList(chart.data, chart.viewMode, pivotEnd);
+    _generateInRangeDataList(chart.data, chart.viewMode, pivotEnd);
     switch (chart.chartType) {
       case ChartType.time:
         _setPivotHours(chart.defaultPivotHour);
@@ -139,7 +139,7 @@ mixin TimeDataProcessor {
 
   /// 입력으로 들어온 [dataList]에서 [pivotHi]를 끝 날짜로 하여 [viewMode]의 제한 일 수에 포함된
   /// [_inRangeDataList]를 만든다.
-  void _generateInitPivotList(
+  void _generateInRangeDataList(
     List<DateTimeRange> dataList,
     ViewMode viewMode,
     DateTime pivotHi,
