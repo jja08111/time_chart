@@ -130,7 +130,7 @@ class ChartState extends State<Chart>
     _addScrollNotifier();
 
     final renderEndTime = widget.data.isNotEmpty
-        ? widget.data.first.end.add(const Duration(days: 1)).dateWithoutTime()
+        ? widget.data.first.end.dateWithoutTime()
         : DateTime.now();
     processData(widget, renderEndTime);
   }
@@ -331,7 +331,7 @@ class ChartState extends State<Chart>
     final blockIndex =
         getCurrentBlockIndex(_barController.position, _blockWidth!).toInt();
     final scrollPositionDuration = Duration(
-        days: -blockIndex + (blockIndex > 0 && firstDataHasChanged ? 2 : 1));
+        days: -blockIndex + (blockIndex > 0 && firstDataHasChanged ? 1 : 0));
     final renderEndTime = widget.data.isNotEmpty
         ? widget.data.first.end.dateWithoutTime().add(scrollPositionDuration)
         : DateTime.now();

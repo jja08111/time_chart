@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:time_chart/src/components/painter/chart_engine.dart';
 import '../../../time_chart.dart';
 import '../../chart.dart';
 import 'time_assistant.dart' as time_assistant;
@@ -144,8 +145,12 @@ mixin TimeDataProcessor {
     ViewMode viewMode,
     DateTime renderEndTime,
   ) {
-    final renderStartTime =
-        renderEndTime.add(Duration(days: -getViewModeLimitDay(viewMode) - 2));
+    renderEndTime = renderEndTime.add(
+      const Duration(days: ChartEngine.toleranceDay),
+    );
+    final renderStartTime = renderEndTime.add(Duration(
+      days: -getViewModeLimitDay(viewMode) - 2 * ChartEngine.toleranceDay,
+    ));
 
     _inRangeDataList.clear();
 
