@@ -1,3 +1,6 @@
+## 0.3.4
+* [Bug] Fixed the incorrect GestureDetector arguments error.
+
 ## 0.3.3
 * [Update] Clean and improve code.
 * [Update] Removed unnecessary data processing.
