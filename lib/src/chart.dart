@@ -468,6 +468,11 @@ class ChartState extends State<Chart>
                     key: key,
                     controller: _barController,
                     child: CanvasTouchDetector(
+                      gesturesToOverride: const [
+                        GestureType.onTapUp,
+                        GestureType.onLongPressStart,
+                        GestureType.onLongPressMoveUpdate,
+                      ],
                       builder: (context) => CustomPaint(
                         size: innerSize,
                         painter: _buildBarPainter(context),
