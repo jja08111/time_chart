@@ -226,10 +226,4 @@ abstract class ChartEngine extends CustomPainter {
     var ret = pivot - duration;
     return ret + (ret <= 0 ? 24 : 0);
   }
-
-  DateTime getBarRenderStartDateTime(List<DateTimeRange> dataList) {
-    return dataList.first.end.add(Duration(
-      days: -getDayFromScrollOffset() + ChartEngine.toleranceDay,
-    ));
-  }
 }
