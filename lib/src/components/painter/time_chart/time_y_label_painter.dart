@@ -51,7 +51,7 @@ class TimeYLabelPainter extends ChartEngine {
   void drawYLabels(Canvas canvas, Size size) {
     final double bottomY = size.height - kXLabelHeight;
     // 맨 위부터 2시간 단위로 시간을 그린다.
-    final double gabY = bottomY / (getClockDiff(bottomHour, topHour)) * 2;
+    final double gabY = bottomY / bottomHour!.differenceAt(topHour!) * 2;
 
     // 모든 구간이 꽉 차서 모든 범위가 표시되어야 하는 경우 true 이다.
     bool sameTopBottomHour = topHour == (bottomHour! % 24);
@@ -96,5 +96,13 @@ class TimeYLabelPainter extends ChartEngine {
   bool shouldRepaint(covariant TimeYLabelPainter oldDelegate) {
     return oldDelegate.topHour != topHour ||
         oldDelegate.bottomHour != bottomHour;
+  }
+}
+
+extension on int {
+  /// [before]까지의 차이 시간을 반환한다.
+  int differenceAt(int before) {
+    var ret = this - before;
+    return ret + (ret <= 0 ? 24 : 0);
   }
 }

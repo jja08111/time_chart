@@ -220,10 +220,4 @@ abstract class ChartEngine extends CustomPainter {
       paint,
     );
   }
-
-  // pivot 에서 duration 만큼 이전으로 시간이 흐르면 나오는 시간
-  dynamic getClockDiff(var pivot, var duration) {
-    var ret = pivot - duration;
-    return ret + (ret <= 0 ? 24 : 0);
-  }
 }
