@@ -43,6 +43,13 @@ abstract class BarPainter<T> extends ChartEngine {
 
   List<T> generateCoordinates(Size size);
 
+  @protected
+  DateTime getBarRenderStartDateTime(List<DateTimeRange> dataList) {
+    return dataList.first.end.add(Duration(
+      days: -getDayFromScrollOffset() + ChartEngine.toleranceDay,
+    ));
+  }
+
   @override
   @nonVirtual
   bool shouldRepaint(BarPainter oldDelegate) {
