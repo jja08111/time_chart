@@ -125,7 +125,7 @@ class ChartState extends State<Chart>
     _beginHeight = widget.height;
     // Listen to global pointer events so that we can hide a tooltip immediately
     // if some other control is clicked on.
-    GestureBinding.instance!.pointerRouter.addGlobalRoute(_handlePointerEvent);
+    GestureBinding.instance.pointerRouter.addGlobalRoute(_handlePointerEvent);
 
     _addScrollNotifier();
 
@@ -143,7 +143,7 @@ class ChartState extends State<Chart>
     _sizeController.dispose();
     _tooltipController.dispose();
     _cancelTimer();
-    GestureBinding.instance!.pointerRouter
+    GestureBinding.instance.pointerRouter
         .removeGlobalRoute(_handlePointerEvent);
     super.dispose();
   }
@@ -151,7 +151,7 @@ class ChartState extends State<Chart>
   void _addScrollNotifier() {
     _scrollOffsetNotifier = ValueNotifier(0);
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       final minDifference = _blockWidth!;
 
       _scrollControllerGroup.addOffsetChangedListener(() {

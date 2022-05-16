@@ -1,3 +1,6 @@
+## 0.4.0
+* [Update] Migrate Flutter version to 3.0.0 
+
 ## 0.3.4
 * [Bug] Fixed the incorrect GestureDetector arguments error.
 
