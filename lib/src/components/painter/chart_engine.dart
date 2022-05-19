@@ -107,35 +107,4 @@ abstract class ChartEngine extends CustomPainter {
     // 바의 위치를 가운데로 정렬하기 위한 [padding]
     _paddingForAlignedBar = blockWidth! * kBarPaddingWidthRatio;
   }
-
-  /// Y 축의 텍스트 레이블을 그린다.
-  void drawYText(Canvas canvas, Size size, String text, double y) {
-    TextSpan span = TextSpan(
-      text: text,
-      style: textTheme.bodyText2!.copyWith(color: kTextColor),
-    );
-
-    TextPainter tp = TextPainter(text: span, textDirection: TextDirection.ltr);
-    tp.layout();
-
-    tp.paint(
-      canvas,
-      Offset(
-        size.width - _rightMargin + kYLabelMargin,
-        y - textTheme.bodyText2!.fontSize! / 2,
-      ),
-    );
-  }
-
-  /// 그래프의 수평선을 그린다
-  void drawHorizontalLine(Canvas canvas, Size size, double dy) {
-    Paint paint = Paint()
-      ..color = kLineColor1
-      ..strokeCap = StrokeCap.round
-      ..strokeWidth = kLineStrokeWidth;
-
-    canvas.drawLine(Offset(0, dy), Offset(size.width - rightMargin, dy), paint);
-  }
-
-
 }

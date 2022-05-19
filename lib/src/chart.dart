@@ -561,8 +561,8 @@ class ChartState extends State<Chart>
         return TimeYLabelPainter(
           context: context,
           viewMode: widget.viewMode,
-          topHour: topHour,
-          bottomHour: bottomHour,
+          topHour: topHour!,
+          bottomHour: bottomHour!,
           chartHeight: widget.height,
           topPosition: topPosition,
         );
@@ -570,8 +570,8 @@ class ChartState extends State<Chart>
         return AmountYLabelPainter(
           context: context,
           viewMode: widget.viewMode,
-          topHour: topHour,
-          bottomHour: bottomHour,
+          topHour: topHour!,
+          bottomHour: bottomHour!,
         );
     }
   }

@@ -1,23 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:time_chart/src/components/painter/y_label_painter.dart';
 
-import '../../view_mode.dart';
 import '../chart_engine.dart';
 
-class TimeYLabelPainter extends ChartEngine {
+class TimeYLabelPainter extends YLabelPainter {
+  static const double _tolerance = 6.0;
+
   TimeYLabelPainter({
-    required BuildContext context,
-    required ViewMode viewMode,
-    required this.topHour,
-    required this.bottomHour,
+    required super.context,
+    required super.viewMode,
+    required super.topHour,
+    required super.bottomHour,
     required this.chartHeight,
     required this.topPosition,
-  }) : super(
-          context: context,
-          viewMode: viewMode,
-        );
+  });
 
-  final int? topHour;
-  final int? bottomHour;
   final double chartHeight;
 
   /// 애니메이션시 위쪽이 얼마나 벗어났는지를 이용하여 추가적인 레이블을 그리거나
@@ -26,15 +23,7 @@ class TimeYLabelPainter extends ChartEngine {
   /// 음수인 경우 위로 벗어난 것이고 양수인 경우 아래로 이동한 것이다.
   final double topPosition;
 
-  @override
-  void paint(Canvas canvas, Size size) {
-    setRightMargin();
-    drawYLabels(canvas, size);
-  }
-
-  static const double _tolerance = 6.0;
-
-  bool isVisible(double posY, {bool onTolerance = false}) {
+  bool _isVisible(double posY, {bool onTolerance = false}) {
     final actualPosY = posY + topPosition;
     final tolerance = onTolerance ? _tolerance : 0;
     return -tolerance <= actualPosY &&
@@ -42,20 +31,21 @@ class TimeYLabelPainter extends ChartEngine {
   }
 
   void _drawLabelAndLine(Canvas canvas, Size size, double posY, int? time) {
-    if (isVisible(posY)) drawHorizontalLine(canvas, size, posY);
-    if (isVisible(posY, onTolerance: true)) {
+    if (_isVisible(posY)) drawHorizontalLine(canvas, size, posY);
+    if (_isVisible(posY, onTolerance: true)) {
       drawYText(canvas, size, translations!.formatHourOnly(time!), posY);
     }
   }
 
+  @override
   void drawYLabels(Canvas canvas, Size size) {
     final double bottomY = size.height - kXLabelHeight;
     // 맨 위부터 2시간 단위로 시간을 그린다.
-    final double gabY = bottomY / bottomHour!.differenceAt(topHour!) * 2;
+    final double gabY = bottomY / bottomHour.differenceAt(topHour) * 2;
 
     // 모든 구간이 꽉 차서 모든 범위가 표시되어야 하는 경우 true 이다.
-    bool sameTopBottomHour = topHour == (bottomHour! % 24);
-    int time = topHour!;
+    bool sameTopBottomHour = topHour == (bottomHour % 24);
+    int time = topHour;
     double posY = 0.0;
 
     // 애니메이션시 상단 부분 레이블과 라인이 비지 않도록 그려준다.
@@ -64,7 +54,7 @@ class TimeYLabelPainter extends ChartEngine {
       posY -= gabY;
       _drawLabelAndLine(canvas, size, posY, time);
     }
-    time = topHour!;
+    time = topHour;
     posY = 0.0;
 
     // 2칸 간격으로 좌측 레이블 표시
@@ -72,7 +62,7 @@ class TimeYLabelPainter extends ChartEngine {
       _drawLabelAndLine(canvas, size, posY, time);
 
       // 맨 아래에 도달한 경우
-      if (time == bottomHour! % 24) {
+      if (time == bottomHour % 24) {
         if (sameTopBottomHour) {
           sameTopBottomHour = false;
         } else {
@@ -90,12 +80,6 @@ class TimeYLabelPainter extends ChartEngine {
       posY += gabY;
       _drawLabelAndLine(canvas, size, posY, time);
     }
-  }
-
-  @override
-  bool shouldRepaint(covariant TimeYLabelPainter oldDelegate) {
-    return oldDelegate.topHour != topHour ||
-        oldDelegate.bottomHour != bottomHour;
   }
 }
 
