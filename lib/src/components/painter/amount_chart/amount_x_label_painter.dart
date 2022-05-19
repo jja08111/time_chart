@@ -1,35 +1,12 @@
-import 'package:flutter/material.dart';
+import 'package:time_chart/src/components/painter/x_label_painter.dart';
 
-import '../../view_mode.dart';
-import '../chart_engine.dart';
-
-class AmountXLabelPainter extends ChartEngine {
+class AmountXLabelPainter extends XLabelPainter {
   AmountXLabelPainter({
-    required ScrollController scrollController,
-    required this.scrollOffsetNotifier,
-    required BuildContext context,
-    required ViewMode viewMode,
-    required DateTime firstValueDateTime,
-    required int? dayCount,
-  }) : super(
-          scrollController: scrollController,
-          context: context,
-          viewMode: viewMode,
-          firstValueDateTime: firstValueDateTime,
-          dayCount: dayCount,
-          repaint: scrollOffsetNotifier,
-        );
-
-  final ValueNotifier<double> scrollOffsetNotifier;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    setDefaultValue(size);
-    drawXLabels(canvas, size);
-  }
-
-  @override
-  bool shouldRepaint(covariant AmountXLabelPainter oldDelegate) {
-    return true;
-  }
+    required super.viewMode,
+    required super.context,
+    required super.dayCount,
+    required super.firstValueDateTime,
+    required super.repaint,
+    required super.scrollController,
+  });
 }

@@ -583,7 +583,7 @@ class ChartState extends State<Chart>
       case ChartType.time:
         return TimeXLabelPainter(
           scrollController: _xLabelController,
-          scrollOffsetNotifier: _scrollOffsetNotifier,
+          repaint: _scrollOffsetNotifier,
           context: context,
           viewMode: widget.viewMode,
           firstValueDateTime: firstValueDateTime,
@@ -593,7 +593,7 @@ class ChartState extends State<Chart>
       case ChartType.amount:
         return AmountXLabelPainter(
           scrollController: _xLabelController,
-          scrollOffsetNotifier: _scrollOffsetNotifier,
+          repaint: _scrollOffsetNotifier,
           context: context,
           viewMode: widget.viewMode,
           firstValueDateTime: firstValueDateTime,
