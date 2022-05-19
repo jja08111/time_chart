@@ -175,7 +175,7 @@ class TimeBarPainter extends BarPainter<_TimeBarItem> {
     final double height = size.height;
     final int viewLimitDay = getViewModeLimitDay(viewMode);
 
-    final int dayFromScrollOffset = getDayFromScrollOffset();
+    final int dayFromScrollOffset = currentDayFromScrollOffset;
     final DateTime startDateTime = getBarRenderStartDateTime(dataList);
     final int startIndex = dataList.getLowerBound(startDateTime);
 

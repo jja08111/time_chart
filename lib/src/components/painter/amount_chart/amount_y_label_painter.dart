@@ -13,7 +13,7 @@ class AmountYLabelPainter extends YLabelPainter {
 
   @override
   void drawYLabels(Canvas canvas, Size size) {
-    final hourSuffix = translations!.shortHour;
+    final hourSuffix = translations.shortHour;
     final double interval =
         (size.height - kXLabelHeight) / (topHour - bottomHour);
     double posY = 0;

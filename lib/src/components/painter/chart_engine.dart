@@ -43,7 +43,7 @@ abstract class ChartEngine extends CustomPainter {
     Listenable? repaint,
   })  : dayCount = math.max(dayCount ?? getViewModeLimitDay(viewMode),
             viewMode == ViewMode.weekly ? kWeeklyDayCount : kMonthlyDayCount),
-        _translations = Translations(context),
+        translations = Translations(context),
         super(repaint: repaint);
 
   final ScrollController? scrollController;
@@ -58,14 +58,12 @@ abstract class ChartEngine extends CustomPainter {
 
   final BuildContext context;
 
-  final Translations _translations;
+  final Translations translations;
 
-  int getDayFromScrollOffset() {
+  int get currentDayFromScrollOffset {
     if (!scrollController!.hasClients) return 0;
     return (scrollController!.offset / blockWidth!).floor();
   }
-
-  Radius get barRadius => const Radius.circular(6.0);
 
   /// 전체 그래프의 오른쪽 레이블이 들어갈 간격의 크기이다.
   double get rightMargin => _rightMargin;
@@ -79,8 +77,6 @@ abstract class ChartEngine extends CustomPainter {
   /// (바와 바 사이의 여백의 너비 + 바의 너비) => 블럭 너비의 크기이다.
   double? get blockWidth => _blockWidth;
 
-  Translations? get translations => _translations;
-
   TextTheme get textTheme => Theme.of(context).textTheme;
 
   double _rightMargin = 0.0;
@@ -91,7 +87,7 @@ abstract class ChartEngine extends CustomPainter {
   void setRightMargin() {
     final TextPainter tp = TextPainter(
       text: TextSpan(
-        text: translations!.formatHourOnly(_kPivotYLabelHour),
+        text: translations.formatHourOnly(_kPivotYLabelHour),
         style: textTheme.bodyText2!.copyWith(color: kTextColor),
       ),
       textDirection: TextDirection.ltr,

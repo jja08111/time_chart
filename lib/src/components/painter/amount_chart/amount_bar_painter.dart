@@ -87,7 +87,7 @@ class AmountBarPainter extends BarPainter<_AmountBarItem> {
     final double intervalOfBars = size.width / dayCount;
     final int length = dataList.length;
     final int viewLimitDay = getViewModeLimitDay(viewMode);
-    final dayFromScrollOffset = getDayFromScrollOffset();
+    final dayFromScrollOffset = currentDayFromScrollOffset;
     final DateTime startDateTime = getBarRenderStartDateTime(dataList);
     final int startIndex = dataList.getLowerBound(startDateTime);
 

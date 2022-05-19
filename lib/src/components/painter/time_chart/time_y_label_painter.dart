@@ -33,7 +33,7 @@ class TimeYLabelPainter extends YLabelPainter {
   void _drawLabelAndLine(Canvas canvas, Size size, double posY, int? time) {
     if (_isVisible(posY)) drawHorizontalLine(canvas, size, posY);
     if (_isVisible(posY, onTolerance: true)) {
-      drawYText(canvas, size, translations!.formatHourOnly(time!), posY);
+      drawYText(canvas, size, translations.formatHourOnly(time!), posY);
     }
   }
 

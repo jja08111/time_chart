@@ -32,6 +32,8 @@ abstract class BarPainter<T> extends ChartEngine {
   final int topHour;
   final int bottomHour;
 
+  Radius get barRadius => const Radius.circular(6.0);
+
   @override
   @nonVirtual
   void paint(Canvas canvas, Size size) {
@@ -46,7 +48,7 @@ abstract class BarPainter<T> extends ChartEngine {
   @protected
   DateTime getBarRenderStartDateTime(List<DateTimeRange> dataList) {
     return dataList.first.end.add(Duration(
-      days: -getDayFromScrollOffset() + ChartEngine.toleranceDay,
+      days: -currentDayFromScrollOffset + ChartEngine.toleranceDay,
     ));
   }
 
