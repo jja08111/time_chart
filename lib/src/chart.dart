@@ -189,7 +189,7 @@ class ChartState extends State<Chart>
     if (!widget.activeTooltip) return;
 
     // 현재 보이는 그래프의 범위를 벗어난 바의 툴팁은 무시한다.
-    final viewRange = _blockWidth! * getViewModeLimitDay(widget.viewMode);
+    final viewRange = _blockWidth! * widget.viewMode.dayCount;
     final actualPosition = position.maxScrollExtent - position.pixels;
     if (rect.left < actualPosition || actualPosition + viewRange < rect.left) {
       return;
@@ -381,7 +381,7 @@ class ChartState extends State<Chart>
 
   @override
   Widget build(BuildContext context) {
-    final int viewModeLimitDay = getViewModeLimitDay(widget.viewMode);
+    final int viewModeLimitDay = widget.viewMode.dayCount;
     final key = ValueKey((topHour ?? 0) + (bottomHour ?? 1) * 100);
 
     final double outerHeight = kTimeChartTopPadding + widget.height;
@@ -561,8 +561,8 @@ class ChartState extends State<Chart>
         return TimeYLabelPainter(
           context: context,
           viewMode: widget.viewMode,
-          topHour: topHour,
-          bottomHour: bottomHour,
+          topHour: topHour!,
+          bottomHour: bottomHour!,
           chartHeight: widget.height,
           topPosition: topPosition,
         );
@@ -570,8 +570,8 @@ class ChartState extends State<Chart>
         return AmountYLabelPainter(
           context: context,
           viewMode: widget.viewMode,
-          topHour: topHour,
-          bottomHour: bottomHour,
+          topHour: topHour!,
+          bottomHour: bottomHour!,
         );
     }
   }
@@ -583,7 +583,7 @@ class ChartState extends State<Chart>
       case ChartType.time:
         return TimeXLabelPainter(
           scrollController: _xLabelController,
-          scrollOffsetNotifier: _scrollOffsetNotifier,
+          repaint: _scrollOffsetNotifier,
           context: context,
           viewMode: widget.viewMode,
           firstValueDateTime: firstValueDateTime,
@@ -593,7 +593,7 @@ class ChartState extends State<Chart>
       case ChartType.amount:
         return AmountXLabelPainter(
           scrollController: _xLabelController,
-          scrollOffsetNotifier: _scrollOffsetNotifier,
+          repaint: _scrollOffsetNotifier,
           context: context,
           viewMode: widget.viewMode,
           firstValueDateTime: firstValueDateTime,

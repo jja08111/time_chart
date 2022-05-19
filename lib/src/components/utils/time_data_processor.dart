@@ -149,7 +149,7 @@ mixin TimeDataProcessor {
       const Duration(days: ChartEngine.toleranceDay),
     );
     final renderStartTime = renderEndTime.add(Duration(
-      days: -getViewModeLimitDay(viewMode) - 2 * ChartEngine.toleranceDay,
+      days: -viewMode.dayCount - 2 * ChartEngine.toleranceDay,
     ));
 
     _inRangeDataList.clear();

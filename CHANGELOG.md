@@ -1,3 +1,7 @@
+## 0.5.0 
+* [Breaking] Replaced the `getViewModeLimitDay` function to the `dayCount` enum getter.
+* [Update] Refactor the `ChartEngine` class. 
+
 ## 0.4.0
 * [Update] Migrate Flutter version to 3.0.0 
 

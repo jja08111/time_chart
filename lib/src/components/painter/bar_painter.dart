@@ -3,6 +3,15 @@ import 'package:flutter/material.dart';
 import 'chart_engine.dart';
 import '../view_mode.dart';
 
+typedef TooltipCallback = void Function({
+  DateTimeRange? range,
+  double? amount,
+  DateTime? amountDate,
+  required ScrollPosition position,
+  required Rect rect,
+  required double barWidth,
+});
+
 abstract class BarPainter<T> extends ChartEngine {
   BarPainter({
     required ScrollController scrollController,
@@ -32,6 +41,8 @@ abstract class BarPainter<T> extends ChartEngine {
   final int topHour;
   final int bottomHour;
 
+  Radius get barRadius => const Radius.circular(6.0);
+
   @override
   @nonVirtual
   void paint(Canvas canvas, Size size) {
@@ -42,6 +53,13 @@ abstract class BarPainter<T> extends ChartEngine {
   void drawBar(Canvas canvas, Size size, List<T> coordinates);
 
   List<T> generateCoordinates(Size size);
+
+  @protected
+  DateTime getBarRenderStartDateTime(List<DateTimeRange> dataList) {
+    return dataList.first.end.add(Duration(
+      days: -currentDayFromScrollOffset + ChartEngine.toleranceDay,
+    ));
+  }
 
   @override
   @nonVirtual

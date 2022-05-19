@@ -1,37 +1,13 @@
-import 'package:flutter/material.dart';
+import 'package:time_chart/src/components/painter/x_label_painter.dart';
 
-import '../../view_mode.dart';
-import '../chart_engine.dart';
-
-class TimeXLabelPainter extends ChartEngine {
+class TimeXLabelPainter extends XLabelPainter {
   TimeXLabelPainter({
-    required ScrollController scrollController,
-    required this.scrollOffsetNotifier,
-    required BuildContext context,
-    required ViewMode viewMode,
-    required DateTime firstValueDateTime,
-    required int? dayCount,
-    required this.firstDataHasChanged,
-  }) : super(
-          scrollController: scrollController,
-          context: context,
-          viewMode: viewMode,
-          firstValueDateTime: firstValueDateTime,
-          dayCount: dayCount,
-          repaint: scrollOffsetNotifier,
-        );
-
-  final ValueNotifier<double> scrollOffsetNotifier;
-  final bool firstDataHasChanged;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    setDefaultValue(size);
-    drawXLabels(canvas, size, firstDataHasChanged: firstDataHasChanged);
-  }
-
-  @override
-  bool shouldRepaint(covariant TimeXLabelPainter oldDelegate) {
-    return true;
-  }
+    required super.viewMode,
+    required super.context,
+    required super.dayCount,
+    required super.firstValueDateTime,
+    required super.repaint,
+    required super.scrollController,
+    required super.firstDataHasChanged,
+  });
 }

@@ -1,13 +1,14 @@
 enum ViewMode {
   weekly,
-  monthly,
-}
+  monthly;
 
-int getViewModeLimitDay(ViewMode viewMode) {
-  switch (viewMode) {
-    case ViewMode.weekly:
-      return 7;
-    case ViewMode.monthly:
-      return 31;
+  /// Returns the count of blocks in the x-axis direction.
+  int get dayCount {
+    switch (this) {
+      case ViewMode.weekly:
+        return 7;
+      case ViewMode.monthly:
+        return 31;
+    }
   }
 }
