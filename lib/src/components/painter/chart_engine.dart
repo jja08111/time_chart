@@ -4,9 +4,6 @@ import 'package:flutter/material.dart';
 import '../view_mode.dart';
 import '../translations/translations.dart';
 
-const int kWeeklyDayCount = 7;
-const int kMonthlyDayCount = 31;
-
 const double kYLabelMargin = 12.0;
 const int _kPivotYLabelHour = 12;
 
@@ -32,8 +29,7 @@ abstract class ChartEngine extends CustomPainter {
     this.firstValueDateTime,
     required this.context,
     Listenable? repaint,
-  })  : dayCount = math.max(dayCount ?? viewMode.dayCount,
-            viewMode == ViewMode.weekly ? kWeeklyDayCount : kMonthlyDayCount),
+  })  : dayCount = math.max(dayCount ?? -1, viewMode.dayCount),
         translations = Translations(context),
         super(repaint: repaint);
 
