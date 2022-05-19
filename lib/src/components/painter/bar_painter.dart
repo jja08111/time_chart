@@ -3,6 +3,15 @@ import 'package:flutter/material.dart';
 import 'chart_engine.dart';
 import '../view_mode.dart';
 
+typedef TooltipCallback = void Function({
+  DateTimeRange? range,
+  double? amount,
+  DateTime? amountDate,
+  required ScrollPosition position,
+  required Rect rect,
+  required double barWidth,
+});
+
 abstract class BarPainter<T> extends ChartEngine {
   BarPainter({
     required ScrollController scrollController,

@@ -1,13 +1,13 @@
 enum ViewMode {
   weekly,
-  monthly,
-}
+  monthly;
 
-int getViewModeLimitDay(ViewMode viewMode) {
-  switch (viewMode) {
-    case ViewMode.weekly:
-      return 7;
-    case ViewMode.monthly:
-      return 31;
+  int get dayCount {
+    switch (this) {
+      case ViewMode.weekly:
+        return 7;
+      case ViewMode.monthly:
+        return 31;
+    }
   }
 }

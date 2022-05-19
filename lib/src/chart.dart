@@ -189,7 +189,7 @@ class ChartState extends State<Chart>
     if (!widget.activeTooltip) return;
 
     // 현재 보이는 그래프의 범위를 벗어난 바의 툴팁은 무시한다.
-    final viewRange = _blockWidth! * getViewModeLimitDay(widget.viewMode);
+    final viewRange = _blockWidth! * widget.viewMode.dayCount;
     final actualPosition = position.maxScrollExtent - position.pixels;
     if (rect.left < actualPosition || actualPosition + viewRange < rect.left) {
       return;
@@ -381,7 +381,7 @@ class ChartState extends State<Chart>
 
   @override
   Widget build(BuildContext context) {
-    final int viewModeLimitDay = getViewModeLimitDay(widget.viewMode);
+    final int viewModeLimitDay = widget.viewMode.dayCount;
     final key = ValueKey((topHour ?? 0) + (bottomHour ?? 1) * 100);
 
     final double outerHeight = kTimeChartTopPadding + widget.height;

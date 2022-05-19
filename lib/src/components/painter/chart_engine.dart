@@ -4,15 +4,6 @@ import 'package:flutter/material.dart';
 import '../view_mode.dart';
 import '../translations/translations.dart';
 
-typedef TooltipCallback = void Function({
-  DateTimeRange? range,
-  double? amount,
-  DateTime? amountDate,
-  required ScrollPosition position,
-  required Rect rect,
-  required double barWidth,
-});
-
 const int kWeeklyDayCount = 7;
 const int kMonthlyDayCount = 31;
 
@@ -41,7 +32,7 @@ abstract class ChartEngine extends CustomPainter {
     this.firstValueDateTime,
     required this.context,
     Listenable? repaint,
-  })  : dayCount = math.max(dayCount ?? getViewModeLimitDay(viewMode),
+  })  : dayCount = math.max(dayCount ?? viewMode.dayCount,
             viewMode == ViewMode.weekly ? kWeeklyDayCount : kMonthlyDayCount),
         translations = Translations(context),
         super(repaint: repaint);

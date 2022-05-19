@@ -31,7 +31,7 @@ abstract class XLabelPainter extends ChartEngine {
     bool firstDataHasChanged = false,
   }) {
     final weekday = getShortWeekdayList(context);
-    final viewModeLimitDay = getViewModeLimitDay(viewMode);
+    final viewModeLimitDay = viewMode.dayCount;
     final dayFromScrollOffset = currentDayFromScrollOffset - toleranceDay;
 
     DateTime currentDate =

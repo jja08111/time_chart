@@ -38,7 +38,7 @@ class CustomScrollPhysics extends ScrollPhysics {
 
   double get _maxPosition {
     var maxPosition =
-        scrollPhysicsState.dayCount.toDouble() - getViewModeLimitDay(viewMode);
+        scrollPhysicsState.dayCount.toDouble() - viewMode.dayCount;
     return max(0.0, maxPosition);
   }
 
@@ -56,7 +56,7 @@ class CustomScrollPhysics extends ScrollPhysics {
 
   double _getTargetPixels(
       ScrollPosition position, Tolerance tolerance, double velocity) {
-    final double dayLimit = getViewModeLimitDay(viewMode).toDouble();
+    final double dayLimit = viewMode.dayCount.toDouble();
     final double startBlock = scrollPhysicsState.pixels / blockWidth;
     double block = getCurrentBlockIndex(position, blockWidth);
 

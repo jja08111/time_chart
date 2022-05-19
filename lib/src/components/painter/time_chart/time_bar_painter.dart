@@ -173,7 +173,7 @@ class TimeBarPainter extends BarPainter<_TimeBarItem> {
     final int pivotHeight = pivotBottom > topHour ? pivotBottom - topHour : 24;
     final int length = dataList.length;
     final double height = size.height;
-    final int viewLimitDay = getViewModeLimitDay(viewMode);
+    final int viewLimitDay = viewMode.dayCount;
 
     final int dayFromScrollOffset = currentDayFromScrollOffset;
     final DateTime startDateTime = getBarRenderStartDateTime(dataList);
