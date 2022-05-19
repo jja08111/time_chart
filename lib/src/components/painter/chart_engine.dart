@@ -34,17 +34,10 @@ abstract class ChartEngine extends CustomPainter {
         super(repaint: repaint);
 
   final ScrollController? scrollController;
-
-  /// 요일의 갯수가 [kWeeklyDayCount]이상인 경우만 해당 값이며 나머지 경우는
-  /// [kWeeklyDayCount]이다.
   final int dayCount;
-
   final ViewMode viewMode;
-
   final DateTime? firstValueDateTime;
-
   final BuildContext context;
-
   final Translations translations;
 
   int get currentDayFromScrollOffset {
