@@ -3,7 +3,6 @@ import 'package:time_chart/src/components/painter/bar_painter.dart';
 import 'package:touchable/touchable.dart';
 import '../../utils/time_assistant.dart' as time_assistant;
 import '../chart_engine.dart';
-import '../../view_mode.dart';
 
 class TimeBarPainter extends BarPainter<_TimeBarItem> {
   TimeBarPainter({
