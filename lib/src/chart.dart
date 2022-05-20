@@ -68,13 +68,12 @@ class ChartState extends State<Chart>
 
   CustomScrollPhysics? _scrollPhysics;
   final _scrollControllerGroup = LinkedScrollControllerGroup();
-  late ScrollController _barController;
-  late ScrollController _xLabelController;
+  late final ScrollController _barController;
+  late final ScrollController _xLabelController;
+  late final AnimationController _sizeController;
+  late final Animation<double> _sizeAnimation;
 
-  Timer? _updatePivotHourTimer;
-
-  late AnimationController _sizeController;
-  late Animation<double> _sizeAnimation;
+  Timer? _pivotHourUpdatingTimer;
 
   /// 툴팁을 띄우기 위해 사용한다.
   OverlayEntry? _overlayEntry;
@@ -85,20 +84,20 @@ class ChartState extends State<Chart>
   Rect? _currentVisibleTooltipRect;
 
   /// 툴팁의 fadeIn out 애니메이션을 다룬다.
-  late AnimationController _tooltipController;
+  late final AnimationController _tooltipController;
 
   /// 바와 그 양 옆의 여백의 너비를 더한 값이다.
   double? _blockWidth;
 
   /// 에니메이션 시작시 전체 그래프의 높이
-  late double _beginHeight;
+  late double _animationBeginHeight = widget.height;
 
   /// 에니메이션 시작시 올바른 위치에서 시작하기 위한 높이 값
   double? _heightForAlignTop;
 
-  late ValueNotifier<double> _scrollOffsetNotifier;
+  final ValueNotifier<double> _scrollOffsetNotifier = ValueNotifier(0);
 
-  double _prevScrollPosition = 0;
+  double _previousScrollOffset = 0;
 
   @override
   void initState() {
@@ -122,7 +121,6 @@ class ChartState extends State<Chart>
       curve: Curves.easeInOut,
     );
 
-    _beginHeight = widget.height;
     // Listen to global pointer events so that we can hide a tooltip immediately
     // if some other control is clicked on.
     GestureBinding.instance.pointerRouter.addGlobalRoute(_handlePointerEvent);
@@ -149,18 +147,16 @@ class ChartState extends State<Chart>
   }
 
   void _addScrollNotifier() {
-    _scrollOffsetNotifier = ValueNotifier(0);
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final minDifference = _blockWidth!;
 
       _scrollControllerGroup.addOffsetChangedListener(() {
         final difference =
-            (_scrollControllerGroup.offset - _prevScrollPosition).abs();
+            (_scrollControllerGroup.offset - _previousScrollOffset).abs();
 
         if (difference >= minDifference) {
           _scrollOffsetNotifier.value = _scrollControllerGroup.offset;
-          _prevScrollPosition = _scrollControllerGroup.offset;
+          _previousScrollOffset = _scrollControllerGroup.offset;
         }
       });
     });
@@ -288,7 +284,7 @@ class ChartState extends State<Chart>
   }
 
   void _cancelTimer() {
-    _updatePivotHourTimer?.cancel();
+    _pivotHourUpdatingTimer?.cancel();
   }
 
   double _getRightMargin(BuildContext context) {
@@ -317,7 +313,7 @@ class ChartState extends State<Chart>
     if (notification is ScrollStartNotification) {
       _cancelTimer();
     } else if (notification is ScrollEndNotification) {
-      _updatePivotHourTimer =
+      _pivotHourUpdatingTimer =
           Timer(const Duration(milliseconds: 800), _timerCallback);
     }
     return true;
@@ -371,9 +367,9 @@ class ChartState extends State<Chart>
             : candidateDownWard;
 
     setState(() {
-      _beginHeight =
+      _animationBeginHeight =
           (currentDiff / beforeDiff) * heightWithoutLabel + kXLabelHeight;
-      _heightForAlignTop = (_beginHeight - widget.height) / 2 +
+      _heightForAlignTop = (_animationBeginHeight - widget.height) / 2 +
           (topDiff / beforeDiff) * heightWithoutLabel;
     });
     _sizeController.reverse(from: 1.0);
@@ -523,7 +519,7 @@ class ChartState extends State<Chart>
 
     final _heightAnimation = Tween<double>(
       begin: widget.height,
-      end: _beginHeight,
+      end: _animationBeginHeight,
     ).animate(_sizeAnimation);
     final _heightForAlignTopAnimation = Tween<double>(
       begin: 0,
