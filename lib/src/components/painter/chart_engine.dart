@@ -28,10 +28,9 @@ abstract class ChartEngine extends CustomPainter {
     required this.viewMode,
     this.firstValueDateTime,
     required this.context,
-    Listenable? repaint,
+    super.repaint,
   })  : dayCount = math.max(dayCount ?? -1, viewMode.dayCount),
-        translations = Translations(context),
-        super(repaint: repaint);
+        translations = Translations(context);
 
   final ScrollController? scrollController;
   final int dayCount;

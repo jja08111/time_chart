@@ -7,28 +7,17 @@ import '../../view_mode.dart';
 
 class TimeBarPainter extends BarPainter<_TimeBarItem> {
   TimeBarPainter({
-    required ScrollController scrollController,
-    required ValueNotifier<double> scrollOffsetNotifier,
-    required TooltipCallback tooltipCallback,
-    required BuildContext context,
-    required List<DateTimeRange> dataList,
-    required int topHour,
-    required int bottomHour,
-    required int? dayCount,
-    required ViewMode viewMode,
-    Color? barColor,
-  }) : super(
-          scrollController: scrollController,
-          scrollOffsetNotifier: scrollOffsetNotifier,
-          tooltipCallback: tooltipCallback,
-          context: context,
-          dataList: dataList,
-          topHour: topHour,
-          bottomHour: bottomHour,
-          dayCount: dayCount,
-          viewMode: viewMode,
-          barColor: barColor,
-        );
+    required super.scrollController,
+    required super.repaint,
+    required super.tooltipCallback,
+    required super.context,
+    required super.dataList,
+    required super.topHour,
+    required super.bottomHour,
+    required super.dayCount,
+    required super.viewMode,
+    super.barColor,
+  });
 
   void _drawRRect(
     TouchyCanvas canvas,

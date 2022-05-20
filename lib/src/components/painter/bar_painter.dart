@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'chart_engine.dart';
-import '../view_mode.dart';
 
 typedef TooltipCallback = void Function({
   DateTimeRange? range,
@@ -14,27 +13,21 @@ typedef TooltipCallback = void Function({
 
 abstract class BarPainter<T> extends ChartEngine {
   BarPainter({
-    required ScrollController scrollController,
-    required this.scrollOffsetNotifier,
+    required super.scrollController,
+    required super.context,
+    required super.dayCount,
+    required super.viewMode,
+    required super.repaint,
     required this.tooltipCallback,
-    required BuildContext context,
     required this.dataList,
     required this.topHour,
     required this.bottomHour,
-    required int? dayCount,
-    required ViewMode viewMode,
     this.barColor,
   }) : super(
-          scrollController: scrollController,
-          dayCount: dayCount,
-          viewMode: viewMode,
           firstValueDateTime:
               dataList.isEmpty ? DateTime.now() : dataList.first.end,
-          context: context,
-          repaint: scrollOffsetNotifier,
         );
 
-  final ValueNotifier<double> scrollOffsetNotifier;
   final TooltipCallback tooltipCallback;
   final Color? barColor;
   final List<DateTimeRange> dataList;

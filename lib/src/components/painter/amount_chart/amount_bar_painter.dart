@@ -4,33 +4,21 @@ import 'package:flutter/material.dart';
 import 'package:time_chart/src/components/painter/bar_painter.dart';
 import 'package:touchable/touchable.dart';
 import '../../utils/time_assistant.dart';
-import '../../view_mode.dart';
 import '../chart_engine.dart';
 
 class AmountBarPainter extends BarPainter<_AmountBarItem> {
   AmountBarPainter({
-    required ScrollController scrollController,
-    required ValueNotifier<double> scrollOffsetNotifier,
-    required TooltipCallback tooltipCallback,
-    required BuildContext context,
-    required List<DateTimeRange> dataList,
-    required int topHour,
-    required int bottomHour,
-    required int? dayCount,
-    required ViewMode viewMode,
-    Color? barColor,
-  }) : super(
-          scrollController: scrollController,
-          scrollOffsetNotifier: scrollOffsetNotifier,
-          tooltipCallback: tooltipCallback,
-          context: context,
-          dataList: dataList,
-          topHour: topHour,
-          bottomHour: bottomHour,
-          dayCount: dayCount,
-          viewMode: viewMode,
-          barColor: barColor,
-        );
+    required super.scrollController,
+    required super.repaint,
+    required super.tooltipCallback,
+    required super.context,
+    required super.dataList,
+    required super.topHour,
+    required super.bottomHour,
+    required super.dayCount,
+    required super.viewMode,
+    super.barColor,
+  });
 
   @override
   void drawBar(Canvas canvas, Size size, List<_AmountBarItem> coordinates) {

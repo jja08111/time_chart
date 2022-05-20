@@ -607,7 +607,7 @@ class ChartState extends State<Chart>
       case ChartType.time:
         return TimeBarPainter(
           scrollController: _barController,
-          scrollOffsetNotifier: _scrollOffsetNotifier,
+          repaint: _scrollOffsetNotifier,
           context: context,
           tooltipCallback: _tooltipCallback,
           dataList: processedData,
@@ -620,7 +620,7 @@ class ChartState extends State<Chart>
       case ChartType.amount:
         return AmountBarPainter(
           scrollController: _barController,
-          scrollOffsetNotifier: _scrollOffsetNotifier,
+          repaint: _scrollOffsetNotifier,
           context: context,
           dataList: processedData,
           barColor: widget.barColor,
