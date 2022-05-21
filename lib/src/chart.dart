@@ -226,13 +226,12 @@ class ChartState extends State<Chart>
   }) {
     final chartType = amount == null ? ChartType.time : ChartType.amount;
     // 현재 위젯의 위치를 얻는다.
-    // amount 가 null 이면 ChartType.time 이고, 아니면 ChartType.amount 이다.
-    final Size tooltipSize =
     final widgetOffset = context.getRenderBoxOffset()!;
+    final tooltipSize =
         chartType == ChartType.time ? kTimeTooltipSize : kAmountTooltipSize;
 
     final candidateTop = rect.top +
-        pivotOffset.dy -
+        widgetOffset.dy -
         tooltipSize.height / 2 +
         kTimeChartTopPadding +
         (chartType == ChartType.time
@@ -240,21 +239,21 @@ class ChartState extends State<Chart>
             : kTooltipArrowHeight / 2);
 
     final scrollPixels = position.maxScrollExtent - position.pixels;
-    final localLeft = rect.left + pivotOffset.dx - scrollPixels;
-    final top = max(candidateTop, 0.0);
+    final localLeft = rect.left + widgetOffset.dx - scrollPixels;
+    final tooltipTop = max(candidateTop, 0.0);
 
     Direction direction = Direction.left;
-    double left = localLeft - tooltipSize.width - _tooltipPadding;
+    double tooltipLeft = localLeft - tooltipSize.width - _tooltipPadding;
     // 툴팁을 바의 오른쪽에 배치해야 하는 경우
-    if (left < pivotOffset.dx) {
+    if (tooltipLeft < widgetOffset.dx) {
       direction = Direction.right;
-      left = localLeft + barWidth + _tooltipPadding;
+      tooltipLeft = localLeft + barWidth + _tooltipPadding;
     }
 
     return Positioned(
       // 바 옆에 [tooltip]을 띄운다.
-      top: top,
-      left: left,
+      top: tooltipTop,
+      left: tooltipLeft,
       child: FadeTransition(
         opacity: CurvedAnimation(
           parent: _tooltipController,
