@@ -1,14 +1,8 @@
 enum ViewMode {
-  weekly,
-  monthly;
+  weekly(7),
+  monthly(31);
 
-  /// Returns the count of blocks in the x-axis direction.
-  int get dayCount {
-    switch (this) {
-      case ViewMode.weekly:
-        return 7;
-      case ViewMode.monthly:
-        return 31;
-    }
-  }
+  const ViewMode(this.dayCount);
+
+  final int dayCount;
 }
