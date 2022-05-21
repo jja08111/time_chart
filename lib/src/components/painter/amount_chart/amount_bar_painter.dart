@@ -6,7 +6,7 @@ import 'package:touchable/touchable.dart';
 import '../../utils/time_assistant.dart';
 import '../chart_engine.dart';
 
-class AmountBarPainter extends BarPainter<_AmountBarItem> {
+class AmountBarPainter extends BarPainter<AmountBarItem> {
   AmountBarPainter({
     required super.scrollController,
     required super.repaint,
@@ -21,7 +21,7 @@ class AmountBarPainter extends BarPainter<_AmountBarItem> {
   });
 
   @override
-  void drawBar(Canvas canvas, Size size, List<_AmountBarItem> coordinates) {
+  void drawBar(Canvas canvas, Size size, List<AmountBarItem> coordinates) {
     final touchyCanvas = TouchyCanvas(context, canvas,
         scrollController: scrollController,
         scrollDirection: AxisDirection.left);
@@ -31,7 +31,7 @@ class AmountBarPainter extends BarPainter<_AmountBarItem> {
       ..strokeCap = StrokeCap.round;
 
     for (int index = 0; index < coordinates.length; index++) {
-      final _AmountBarItem offsetWithAmount = coordinates[index];
+      final AmountBarItem offsetWithAmount = coordinates[index];
 
       final double left = paddingForAlignedBar + offsetWithAmount.dx;
       final double right =
@@ -67,8 +67,8 @@ class AmountBarPainter extends BarPainter<_AmountBarItem> {
   }
 
   @override
-  List<_AmountBarItem> generateCoordinates(Size size) {
-    final List<_AmountBarItem> coordinates = [];
+  List<AmountBarItem> generateCoordinates(Size size) {
+    final List<AmountBarItem> coordinates = [];
 
     if (dataList.isEmpty) return [];
 
@@ -100,7 +100,7 @@ class AmountBarPainter extends BarPainter<_AmountBarItem> {
         final double dy = size.height - normalizedTop * size.height;
         final double dx = size.width - intervalOfBars * barPosition;
 
-        coordinates.add(_AmountBarItem(dx, dy, amountSum, dataList[index].end));
+        coordinates.add(AmountBarItem(dx, dy, amountSum, dataList[index].end));
 
         amountSum = 0;
       }
@@ -110,11 +110,11 @@ class AmountBarPainter extends BarPainter<_AmountBarItem> {
   }
 }
 
-class _AmountBarItem {
+class AmountBarItem {
   final double dx;
   final double dy;
   final double amount;
   final DateTime dateTime;
 
-  _AmountBarItem(this.dx, this.dy, this.amount, this.dateTime);
+  AmountBarItem(this.dx, this.dy, this.amount, this.dateTime);
 }

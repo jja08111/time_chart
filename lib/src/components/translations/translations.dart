@@ -65,18 +65,18 @@ class Translations {
     double interval = 4,
     MainAxisAlignment mainAxisAlignment = MainAxisAlignment.start,
   }) {
-    final _isAHMM = isAHMM;
+    final isAHMMFormat = isAHMM;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.baseline,
       textBaseline: TextBaseline.alphabetic,
       mainAxisAlignment: mainAxisAlignment,
       children: [
-        if (_isAHMM) ...<Widget>[
+        if (isAHMMFormat) ...<Widget>[
           a,
           SizedBox(width: interval),
         ],
         hMM,
-        if (!_isAHMM) ...<Widget>[
+        if (!isAHMMFormat) ...<Widget>[
           SizedBox(width: interval),
           a,
         ],

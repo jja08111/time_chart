@@ -4,7 +4,7 @@ import 'package:touchable/touchable.dart';
 import '../../utils/time_assistant.dart' as time_assistant;
 import '../chart_engine.dart';
 
-class TimeBarPainter extends BarPainter<_TimeBarItem> {
+class TimeBarPainter extends BarPainter<TimeBarItem> {
   TimeBarPainter({
     required super.scrollController,
     required super.repaint,
@@ -78,7 +78,7 @@ class TimeBarPainter extends BarPainter<_TimeBarItem> {
   }
 
   @override
-  void drawBar(Canvas canvas, Size size, List<_TimeBarItem> coordinates) {
+  void drawBar(Canvas canvas, Size size, List<TimeBarItem> coordinates) {
     final touchyCanvas = TouchyCanvas(context, canvas,
         scrollController: scrollController,
         scrollDirection: AxisDirection.left);
@@ -89,7 +89,7 @@ class TimeBarPainter extends BarPainter<_TimeBarItem> {
     final maxBottom = size.height;
 
     for (int index = 0; index < coordinates.length; index++) {
-      final _TimeBarItem offsetRange = coordinates[index];
+      final TimeBarItem offsetRange = coordinates[index];
 
       final double left = paddingForAlignedBar + offsetRange.dx;
       final double right = paddingForAlignedBar + offsetRange.dx + barWidth;
@@ -150,8 +150,8 @@ class TimeBarPainter extends BarPainter<_TimeBarItem> {
   }
 
   @override
-  List<_TimeBarItem> generateCoordinates(Size size) {
-    final List<_TimeBarItem> coordinates = [];
+  List<TimeBarItem> generateCoordinates(Size size) {
+    final List<TimeBarItem> coordinates = [];
 
     if (dataList.isEmpty) return [];
 
@@ -198,17 +198,17 @@ class TimeBarPainter extends BarPainter<_TimeBarItem> {
           _outRangedPivotHour(
               wakeUpTimeDouble - sleepAmountDouble, wakeUpTimeDouble)) continue;
 
-      coordinates.add(_TimeBarItem(right, top, bottom, dataList[index]));
+      coordinates.add(TimeBarItem(right, top, bottom, dataList[index]));
     }
     return coordinates;
   }
 }
 
-class _TimeBarItem {
+class TimeBarItem {
   final double dx;
   final double topY;
   final double bottomY;
   final DateTimeRange data;
 
-  _TimeBarItem(this.dx, this.topY, this.bottomY, this.data);
+  TimeBarItem(this.dx, this.topY, this.bottomY, this.data);
 }

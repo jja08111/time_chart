@@ -517,11 +517,11 @@ class ChartState extends State<Chart>
     assert(
         (child != null && builder == null) || child == null && builder != null);
 
-    final _heightAnimation = Tween<double>(
+    final heightAnimation = Tween<double>(
       begin: widget.height,
       end: _animationBeginHeight,
     ).animate(_sizeAnimation);
-    final _heightForAlignTopAnimation = Tween<double>(
+    final heightForAlignTopAnimation = Tween<double>(
       begin: 0,
       end: _heightForAlignTop,
     ).animate(_sizeAnimation);
@@ -529,14 +529,14 @@ class ChartState extends State<Chart>
     return AnimatedBuilder(
       animation: _sizeAnimation,
       builder: (context, child) {
-        final topPosition = (widget.height - _heightAnimation.value) / 2 +
-            _heightForAlignTopAnimation.value +
+        final topPosition = (widget.height - heightAnimation.value) / 2 +
+            heightForAlignTopAnimation.value +
             topPadding;
         return Positioned(
           right: 0,
           top: topPosition,
           child: Container(
-            height: _heightAnimation.value - bottomPadding,
+            height: heightAnimation.value - bottomPadding,
             width: width,
             alignment: Alignment.center,
             child: child ??
