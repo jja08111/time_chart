@@ -4,5 +4,6 @@ enum ViewMode {
 
   const ViewMode(this.dayCount);
 
+  /// The count of blocks in the x-axis direction.
   final int dayCount;
 }
