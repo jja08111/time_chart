@@ -226,9 +226,9 @@ class ChartState extends State<Chart>
   }) {
     final chartType = amount == null ? ChartType.time : ChartType.amount;
     // 현재 위젯의 위치를 얻는다.
-    final pivotOffset = ContextUtils.getOffsetFromContext(context)!;
     // amount 가 null 이면 ChartType.time 이고, 아니면 ChartType.amount 이다.
     final Size tooltipSize =
+    final widgetOffset = context.getRenderBoxOffset()!;
         chartType == ChartType.time ? kTimeTooltipSize : kAmountTooltipSize;
 
     final candidateTop = rect.top +
