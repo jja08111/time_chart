@@ -134,6 +134,18 @@ class ChartState extends State<Chart>
   }
 
   @override
+  void didUpdateWidget(covariant Chart oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.data != widget.data) {
+      final renderEndTime = widget.data.isNotEmpty
+          ? widget.data.first.end.dateWithoutTime()
+          : DateTime.now();
+      processData(widget, renderEndTime);
+    }
+  }
+
+  @override
   void dispose() {
     _removeEntry();
     _barController.dispose();
