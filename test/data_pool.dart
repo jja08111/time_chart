@@ -21,18 +21,3 @@ final List<DateTimeRange> data2 = [
     end: DateTime(2021, 2, 2, 5, 4),
   ),
 ];
-
-final List<DateTimeRange> data3 = [
-  DateTimeRange(
-    start: DateTime(2021, 2, 3, 20, 42),
-    end: DateTime(2021, 2, 4, 12, 10),
-  ),
-  DateTimeRange(
-    start: DateTime(2021, 2, 2, 18, 4),
-    end: DateTime(2021, 2, 3, 8, 0),
-  ),
-  DateTimeRange(
-    start: DateTime(2021, 2, 1, 15, 3),
-    end: DateTime(2021, 2, 2, 5, 4),
-  ),
-];

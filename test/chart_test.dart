@@ -48,45 +48,4 @@ void main() {
       skip: !Platform.isMacOS,
     );
   });
-
-  testWidgets('Chart updates when the data length is changed', (tester) async {
-    List<DateTimeRange> data = data1;
-
-    await tester.pumpWidget(
-      MaterialApp(
-        home: StatefulBuilder(
-          builder: (context, setState) {
-            return Column(
-              children: [
-                TimeChart(data: data),
-                TextButton(
-                  onPressed: () {
-                    setState(() {
-                      data = data3;
-                    });
-                  },
-                  child: const Text('Update'),
-                ),
-              ],
-            );
-          },
-        ),
-      ),
-    );
-
-    await expectLater(
-      find.byType(Chart),
-      matchesGoldenFile('golden/data1_chart.png'),
-      skip: !Platform.isMacOS,
-    );
-
-    await tester.tap(find.text('Update'));
-    await tester.pump(const Duration(milliseconds: 300));
-
-    await expectLater(
-      find.byType(Chart),
-      matchesGoldenFile('golden/data3_chart.png'),
-      skip: !Platform.isMacOS,
-    );
-  });
 }

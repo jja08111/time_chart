@@ -134,8 +134,7 @@ class ChartState extends State<Chart>
   void didUpdateWidget(covariant Chart oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (oldWidget.data != widget.data ||
-        oldWidget.data.length != widget.data.length) {
+    if (oldWidget.data != widget.data) {
       processData(widget, _getFirstItemDate());
     }
   }
