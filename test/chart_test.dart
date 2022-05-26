@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:time_chart/src/chart.dart';
@@ -34,6 +36,7 @@ void main() {
     await expectLater(
       find.byType(Chart),
       matchesGoldenFile('golden/data1_chart.png'),
+      skip: Platform.isMacOS,
     );
 
     await tester.tap(find.text('Update'));
@@ -42,6 +45,7 @@ void main() {
     await expectLater(
       find.byType(Chart),
       matchesGoldenFile('golden/data2_chart.png'),
+      skip: Platform.isMacOS,
     );
   });
 
@@ -73,6 +77,7 @@ void main() {
     await expectLater(
       find.byType(Chart),
       matchesGoldenFile('golden/data1_chart.png'),
+      skip: Platform.isMacOS,
     );
 
     await tester.tap(find.text('Update'));
@@ -81,6 +86,7 @@ void main() {
     await expectLater(
       find.byType(Chart),
       matchesGoldenFile('golden/data3_chart.png'),
+      skip: Platform.isMacOS,
     );
   });
 }
