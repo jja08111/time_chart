@@ -36,7 +36,7 @@ void main() {
     await expectLater(
       find.byType(Chart),
       matchesGoldenFile('golden/data1_chart.png'),
-      skip: Platform.isMacOS,
+      skip: !Platform.isMacOS,
     );
 
     await tester.tap(find.text('Update'));
@@ -45,7 +45,7 @@ void main() {
     await expectLater(
       find.byType(Chart),
       matchesGoldenFile('golden/data2_chart.png'),
-      skip: Platform.isMacOS,
+      skip: !Platform.isMacOS,
     );
   });
 
@@ -77,7 +77,7 @@ void main() {
     await expectLater(
       find.byType(Chart),
       matchesGoldenFile('golden/data1_chart.png'),
-      skip: Platform.isMacOS,
+      skip: !Platform.isMacOS,
     );
 
     await tester.tap(find.text('Update'));
@@ -86,7 +86,7 @@ void main() {
     await expectLater(
       find.byType(Chart),
       matchesGoldenFile('golden/data3_chart.png'),
-      skip: Platform.isMacOS,
+      skip: !Platform.isMacOS,
     );
   });
 }
