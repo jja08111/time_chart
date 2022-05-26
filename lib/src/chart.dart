@@ -127,21 +127,16 @@ class ChartState extends State<Chart>
 
     _addScrollNotifier();
 
-    final renderEndTime = widget.data.isNotEmpty
-        ? widget.data.first.end.dateWithoutTime()
-        : DateTime.now();
-    processData(widget, renderEndTime);
+    processData(widget, _getFirstItemDate());
   }
 
   @override
   void didUpdateWidget(covariant Chart oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (oldWidget.data != widget.data) {
-      final renderEndTime = widget.data.isNotEmpty
-          ? widget.data.first.end.dateWithoutTime()
-          : DateTime.now();
-      processData(widget, renderEndTime);
+    if (oldWidget.data != widget.data ||
+        oldWidget.data.length != widget.data.length) {
+      processData(widget, _getFirstItemDate());
     }
   }
 
@@ -156,6 +151,12 @@ class ChartState extends State<Chart>
     GestureBinding.instance.pointerRouter
         .removeGlobalRoute(_handlePointerEvent);
     super.dispose();
+  }
+
+  DateTime _getFirstItemDate({Duration addition = Duration.zero}) {
+    return widget.data.isEmpty
+        ? DateTime.now()
+        : widget.data.first.end.dateWithoutTime().add(addition);
   }
 
   void _addScrollNotifier() {
@@ -341,11 +342,8 @@ class ChartState extends State<Chart>
     final scrollPositionDuration = Duration(
       days: -blockIndex + (needsToAdaptScrollPosition ? 1 : 0),
     );
-    final renderEndTime = widget.data.isNotEmpty
-        ? widget.data.first.end.dateWithoutTime().add(scrollPositionDuration)
-        : DateTime.now();
 
-    processData(widget, renderEndTime);
+    processData(widget, _getFirstItemDate(addition: scrollPositionDuration));
 
     if (topHour == beforeTopHour && bottomHour == beforeBottomHour) return;
 
