@@ -34,7 +34,7 @@ mixin TimeDataProcessor {
   ///
   /// [bottomHour]와 24시 사이에 있는 데이터들을 다음날로 넘어가 있다.
   List<DateTimeRange> get processedData => _processedData;
-  final List<DateTimeRange> _processedData = [];
+  List<DateTimeRange> _processedData = [];
 
   final List<DateTimeRange> _inRangeDataList = [];
 
@@ -59,8 +59,7 @@ mixin TimeDataProcessor {
       return;
     }
 
-    _processedData.clear();
-    _processedData.addAll(List.from(chart.data));
+    _processedData = [...chart.data];
 
     _firstDataHasChanged = false;
     _countDays(chart.data);
