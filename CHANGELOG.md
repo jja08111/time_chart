@@ -1,3 +1,6 @@
+## 0.5.1
+* [But] Fixed bug that chart is not updating when data is replaced. ([#28](https://github.com/jja08111/time_chart/pull/28))
+
 ## 0.5.0 
 * [Breaking] Replaced the `getViewModeLimitDay` function to the `dayCount` enum getter.
 * [Update] Refactor the `ChartEngine` class. 
