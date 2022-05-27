@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:time_chart/src/components/painter/y_label_painter.dart';
 
