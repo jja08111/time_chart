@@ -323,11 +323,9 @@ mixin TimeDataProcessor {
   }
 
   void _calcAmountPivotHeights(List<DateTimeRange> dataList) {
-    const double infinity = 10000.0;
     final int len = dataList.length;
 
     double maxResult = 0.0;
-    double minResult = infinity;
     double sum = 0.0;
 
     for (int i = 0; i < len; ++i) {
@@ -338,15 +336,13 @@ mixin TimeDataProcessor {
           dataList[i].end.dateWithoutTime() !=
               dataList[i + 1].end.dateWithoutTime()) {
         maxResult = max(maxResult, sum);
-        if (sum > 0.0) {
-          minResult = min(minResult, sum);
-        }
         sum = 0.0;
       }
     }
 
-    _topHour = maxResult.ceil();
-    _bottomHour = minResult == infinity ? 0 : max(0, minResult.floor() - 1);
+    // `_topHour`는 4의 배수가 되도록 한다.
+    _topHour = ((maxResult.ceil()) / 4).ceil() * 4;
+    _bottomHour = 0;
   }
 
   /// [b]에서 [a]로 흐른 시간을 구한다. 예를 들어 5시에서 3시로 흐른 시간은 22시간이고,
