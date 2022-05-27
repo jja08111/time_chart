@@ -6,9 +6,9 @@ import 'package:time_chart/src/chart.dart';
 import 'package:time_chart/time_chart.dart';
 
 void main() {
-  testWidgets(
-    'AmountChart y labels have 4 hours intervals if max amount is over 8 hours',
-    (tester) async {
+  group('AmountChart y labels', () {
+    testWidgets('have 4 hours intervals if max amount is over 8 hours',
+        (tester) async {
       await tester.pumpWidget(MaterialApp(
         home: TimeChart(
           chartType: ChartType.amount,
@@ -26,12 +26,10 @@ void main() {
         matchesGoldenFile('golden/y_label_golden1.png'),
         skip: !Platform.isMacOS,
       );
-    },
-  );
+    });
 
-  testWidgets(
-    'AmountChart y labels have 2 hours intervals if max amount is in range (4, 8] hours',
-    (tester) async {
+    testWidgets('have 2 hours intervals if max amount is in range (4, 8] hours',
+        (tester) async {
       await tester.pumpWidget(MaterialApp(
         home: TimeChart(
           chartType: ChartType.amount,
@@ -49,12 +47,10 @@ void main() {
         matchesGoldenFile('golden/y_label_golden2.png'),
         skip: !Platform.isMacOS,
       );
-    },
-  );
+    });
 
-  testWidgets(
-    'AmountChart y labels have 1 hour interval if max amount is below 4 hours',
-    (tester) async {
+    testWidgets('have 1 hour interval if max amount is below 4 hours',
+        (tester) async {
       await tester.pumpWidget(MaterialApp(
         home: TimeChart(
           chartType: ChartType.amount,
@@ -72,6 +68,6 @@ void main() {
         matchesGoldenFile('golden/y_label_golden3.png'),
         skip: !Platform.isMacOS,
       );
-    },
-  );
+    });
+  });
 }
