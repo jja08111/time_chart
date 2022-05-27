@@ -1,3 +1,6 @@
+## 0.5.2
+* [Update] Updated y labels of the amount chart. ([#30](https://github.com/jja08111/time_chart/pull/30))
+
 ## 0.5.1
 * [But] Fixed bug that chart is not updating when data is replaced. ([#28](https://github.com/jja08111/time_chart/pull/28))
 
