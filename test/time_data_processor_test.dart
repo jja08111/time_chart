@@ -48,7 +48,7 @@ Chart _getChart(
 }
 
 void main() {
-  group('Time chart data processor test', () {
+  group('TimeChart data processor', () {
     testWidgets('merge if has overlapping time', (tester) async {
       final _MockTimeDataProcessor processor = _MockTimeDataProcessor();
       final data = [
@@ -235,9 +235,11 @@ void main() {
         reason: 'default pivot hour is used as `topHour` if there is no data',
       );
     });
+  });
 
+  group('AmountChart data processor', () {
     testWidgets(
-        'show empty graph if there is no data when chart type is amount',
+        'shows empty graph if there is no data when chart type is amount',
         (tester) async {
       final _MockTimeDataProcessor processor = _MockTimeDataProcessor();
       final List<DateTimeRange> data = [];
@@ -304,6 +306,44 @@ void main() {
       );
 
       expect(processor.dayCount!, equals(18));
+    });
+
+    testWidgets('always sets bottomHour to 0', (tester) async {
+      final _MockTimeDataProcessor processor = _MockTimeDataProcessor();
+      final data = [
+        DateTimeRange(
+          start: DateTime(2021, 12, 1, 0, 12),
+          end: DateTime(2021, 12, 1, 17, 12),
+        ),
+      ];
+
+      processor.process(
+        data,
+        chartType: ChartType.amount,
+      );
+
+      expect(processor.bottomHour!, equals(0));
+    });
+
+    testWidgets('sets topHour to 20 if max amount is 17 hours', (tester) async {
+      final _MockTimeDataProcessor processor = _MockTimeDataProcessor();
+      final data = [
+        DateTimeRange(
+          start: DateTime(2021, 12, 2, 22, 10),
+          end: DateTime(2021, 12, 2, 23, 20),
+        ),
+        DateTimeRange(
+          start: DateTime(2021, 12, 1, 0, 12),
+          end: DateTime(2021, 12, 1, 17, 12),
+        ),
+      ];
+
+      processor.process(
+        data,
+        chartType: ChartType.amount,
+      );
+
+      expect(processor.topHour!, equals(20));
     });
   });
 }

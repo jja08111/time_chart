@@ -13,19 +13,27 @@ class AmountYLabelPainter extends YLabelPainter {
 
   @override
   void drawYLabels(Canvas canvas, Size size) {
-    final hourSuffix = translations.shortHour;
-    final double interval =
+    final String hourSuffix = translations.shortHour;
+    final double labelInterval =
         (size.height - kXLabelHeight) / (topHour - bottomHour);
+    final int hourDuration = topHour - bottomHour;
+    final int timeStep;
+    if (hourDuration >= 12) {
+      timeStep = 4;
+    } else if (hourDuration >= 8) {
+      timeStep = 2;
+    } else {
+      timeStep = 1;
+    }
     double posY = 0;
 
-    for (int time = topHour; time >= bottomHour; --time) {
-      drawYText(canvas, size,
-          time == bottomHour ? '0 $hourSuffix' : '$time $hourSuffix', posY);
+    for (int time = topHour; time >= bottomHour; time = time - timeStep) {
+      drawYText(canvas, size, '$time $hourSuffix', posY);
       if (topHour > time && time > bottomHour) {
         drawHorizontalLine(canvas, size, posY);
       }
 
-      posY += interval;
+      posY += labelInterval * timeStep;
     }
   }
 }
