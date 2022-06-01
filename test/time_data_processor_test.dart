@@ -196,6 +196,7 @@ void main() {
       processor.process([data]);
 
       expect(processor.processedData.first.end, data.end);
+      expect(processor.isFirstDataMovedNextDay, isFalse);
     });
 
     testWidgets(
@@ -219,6 +220,7 @@ void main() {
         processor.processedData.first.end,
         data.first.end.add(const Duration(days: 1)),
       );
+      expect(processor.isFirstDataMovedNextDay, isTrue);
     });
 
     testWidgets('show empty graph if there is no data when chart type is time',
