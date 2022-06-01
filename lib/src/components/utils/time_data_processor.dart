@@ -47,9 +47,8 @@ mixin TimeDataProcessor {
   int? get dayCount => _dayCount;
   int? _dayCount;
 
-  /// 첫 데이터가 [bottomHour]에 의해 다음날로 넘겨진 경우 `true` 이다.
-  ///
-  /// 이때 [dayCount]가 7 이상이어야 한다.
+  /// 즉, 첫 데이터가 [bottomHour]와 24시(정확히는 0시) 사이에 존재하여 다음 칸에 그려져야 하는
+  /// 경우 `true`이다.
   bool get isFirstDataMovedNextDay => _isFirstDataMovedNextDay;
   bool _isFirstDataMovedNextDay = false;
 
