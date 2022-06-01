@@ -58,10 +58,9 @@ mixin TimeDataProcessor {
       _handleEmptyData(chart);
       return;
     }
-
     _processedData = [...chart.data];
-
     _firstDataHasChanged = false;
+
     _countDays(chart.data);
     _generateInRangeDataList(chart.data, chart.viewMode, renderEndTime);
     switch (chart.chartType) {
@@ -93,11 +92,11 @@ mixin TimeDataProcessor {
     final startTime = timePair.startTime;
     final endTime = timePair.endTime;
 
-    // 아래와 같이 범위가 형성된 경우를 고려한다.
+    // 아래와 같이 범위가 형성된 경우는 따로 고려한다.
     // |##|
-    // |##| -> endTime
+    // |##| -> endTime (ex: 8h 0m)
     //
-    // |##| -> startTime
+    // |##| -> startTime (ex: 8h 40m)
     // |##|
     if (startTime.floor() == endTime.floor() && endTime < startTime) {
       _topHour = startTime.floor();
@@ -117,12 +116,6 @@ mixin TimeDataProcessor {
       _topHour = defaultPivotHour;
       _bottomHour = defaultPivotHour;
     }
-  }
-
-  bool _isNextDayTime(double timeDouble) {
-    // 제일 아래의 시간이 0시인 경우 해당 블럭은 무조건 해당 시간으로 표시하여야 한다.
-    if (bottomHour == 0) return false;
-    return bottomHour! < timeDouble;
   }
 
   void _countDays(List<DateTimeRange> dataList) {
@@ -178,7 +171,23 @@ mixin TimeDataProcessor {
     }
   }
 
-  /// 종료 시간이 [bottomHour]와 24시 사이에 존재하는 경우 해당 데이터를 다음날로 가공한다.
+  /// [bottomHour]과 24시(정확히는 0시) 사이에 [timeDouble]이 위치한 경우 `true`를 반환한다.
+  ///
+  /// 구체적으로 [timeDouble] 시간이 차트에서 다음 칸에 위치해야 하는 경우를 말한다.
+  bool _isNextCellPosition(double timeDouble) {
+    // 제일 아래의 시간이 0시인 경우 해당 블럭은 무조건 해당 시간으로 표시하여야 한다.
+    if (bottomHour == 0) return false;
+    return bottomHour! < timeDouble;
+  }
+
+  /// 데이터의 시작 시간과 종료 시간 모두 [bottomHour]와 24시 사이에 존재하는 경우 해당 데이터를
+  /// 다음날로 가공한다.
+  ///
+  /// 만약 다음날로 가공하지 않는다면 다음 칸에 그려져야 할 데이터가 동일한 칸에 그려질 수 있다. 다음 칸에
+  /// 그려져야 할 데이터란 날짜는 같지만 차트에서 위치상으로만 다음 칸인 데이터의 경우를 말하는 것이다.
+  ///
+  /// 예를 들어 차트가 20시부터 8시까지를 그리도록 데이터가 주어졌다고 가정하자. 이때 데이터 중 하나가
+  /// 21시 ~ 23시라면 0시를 기준으로 다음날로 넘어가기 때문에 해당 데이터를 다음 칸에 그려야 한다.
   void _processDataUsingBottomHour() {
     final len = _processedData.length;
     for (int i = 0; i < len; ++i) {
@@ -187,14 +196,11 @@ mixin TimeDataProcessor {
       final double startTimeDouble = startTime.toDouble();
       final double endTimeDouble = endTime.toDouble();
 
-      if (_isNextDayTime(startTimeDouble) && _isNextDayTime(endTimeDouble)) {
-        _processedData.removeAt(i);
-        _processedData.insert(
-          i,
-          DateTimeRange(
-            start: startTime.add(_oneDayDuration),
-            end: endTime.add(_oneDayDuration),
-          ),
+      if (_isNextCellPosition(startTimeDouble) &&
+          _isNextCellPosition(endTimeDouble)) {
+        _processedData[i] = DateTimeRange(
+          start: startTime.add(_oneDayDuration),
+          end: endTime.add(_oneDayDuration),
         );
 
         if (i == 0) {
