@@ -331,13 +331,14 @@ class ChartState extends State<Chart>
   }
 
   void _timerCallback() {
-    final beforeFirstDataHasChanged = firstDataHasChanged;
+    final beforeIsFirstDataMovedNextDay = isFirstDataMovedNextDay;
     final beforeTopHour = topHour;
     final beforeBottomHour = bottomHour;
 
     final blockIndex =
         getCurrentBlockIndex(_barController.position, _blockWidth!).toInt();
-    final needsToAdaptScrollPosition = blockIndex > 0 && firstDataHasChanged;
+    final needsToAdaptScrollPosition =
+        blockIndex > 0 && isFirstDataMovedNextDay;
     final scrollPositionDuration = Duration(
       days: -blockIndex + (needsToAdaptScrollPosition ? 1 : 0),
     );
@@ -346,9 +347,9 @@ class ChartState extends State<Chart>
 
     if (topHour == beforeTopHour && bottomHour == beforeBottomHour) return;
 
-    if (beforeFirstDataHasChanged != firstDataHasChanged) {
+    if (beforeIsFirstDataMovedNextDay != isFirstDataMovedNextDay) {
       // 하루가 추가 혹은 삭제되는 경우 x축 방향으로 발생하는 차이를 해결할 값이다.
-      final add = firstDataHasChanged ? _blockWidth! : -_blockWidth!;
+      final add = isFirstDataMovedNextDay ? _blockWidth! : -_blockWidth!;
 
       _barController.jumpTo(_barController.position.pixels + add);
       _scrollPhysics!.addPanDownPixels(add);
@@ -592,7 +593,7 @@ class ChartState extends State<Chart>
           viewMode: widget.viewMode,
           firstValueDateTime: firstValueDateTime,
           dayCount: dayCount,
-          firstDataHasChanged: firstDataHasChanged,
+          isFirstDataMovedNextDay: isFirstDataMovedNextDay,
         );
       case ChartType.amount:
         return AmountXLabelPainter(

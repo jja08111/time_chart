@@ -50,8 +50,8 @@ mixin TimeDataProcessor {
   /// 첫 데이터가 [bottomHour]에 의해 다음날로 넘겨진 경우 `true` 이다.
   ///
   /// 이때 [dayCount]가 7 이상이어야 한다.
-  bool get firstDataHasChanged => _firstDataHasChanged;
-  bool _firstDataHasChanged = false;
+  bool get isFirstDataMovedNextDay => _isFirstDataMovedNextDay;
+  bool _isFirstDataMovedNextDay = false;
 
   void processData(Chart chart, DateTime renderEndTime) {
     if (chart.data.isEmpty) {
@@ -59,7 +59,7 @@ mixin TimeDataProcessor {
       return;
     }
     _processedData = [...chart.data];
-    _firstDataHasChanged = false;
+    _isFirstDataMovedNextDay = false;
 
     _countDays(chart.data);
     _generateInRangeDataList(chart.data, chart.viewMode, renderEndTime);
@@ -205,7 +205,7 @@ mixin TimeDataProcessor {
 
         if (i == 0) {
           _dayCount = _dayCount! + 1;
-          _firstDataHasChanged = true;
+          _isFirstDataMovedNextDay = true;
         }
       }
     }
