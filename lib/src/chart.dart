@@ -222,7 +222,7 @@ class ChartState extends State<Chart>
         amountDate: amountDate,
       ),
     );
-    Overlay.of(context)!.insert(_overlayEntry!);
+    Overlay.of(context).insert(_overlayEntry!);
     _tooltipHideTimer = Timer(widget.tooltipDuration, _removeEntry);
   }
 
@@ -305,7 +305,7 @@ class ChartState extends State<Chart>
         text: translations.formatHourOnly(12),
         style: Theme.of(context)
             .textTheme
-            .bodyText2!
+            .bodyMedium!
             .copyWith(color: Colors.white38),
       ),
       textDirection: TextDirection.ltr,

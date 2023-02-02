@@ -75,7 +75,7 @@ abstract class XLabelPainter extends ChartEngine {
     TextPainter textPainter = TextPainter(
       text: TextSpan(
         text: text,
-        style: textTheme.bodyText2!.copyWith(color: kTextColor),
+        style: textTheme.bodyMedium!.copyWith(color: kTextColor),
       ),
       textDirection: TextDirection.ltr,
       textAlign: TextAlign.center,

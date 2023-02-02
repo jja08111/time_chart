@@ -116,7 +116,7 @@ class _TimeTooltipOverlay extends StatelessWidget {
   Widget _timeTile(BuildContext context, DateTime dateTime) {
     final translations = Translations(context);
     final textTheme = Theme.of(context).textTheme;
-    final subtitle1 = textTheme.subtitle1!;
+    final subtitle1 = textTheme.titleMedium!;
     return translations.formatTimeOfDayWidget(
       a: Text(
         translations.dateFormat('a', dateTime),
@@ -125,7 +125,7 @@ class _TimeTooltipOverlay extends StatelessWidget {
       ),
       hMM: Text(
         translations.dateFormat('h:mm', dateTime),
-        style: textTheme.headline4!.copyWith(height: 1.1),
+        style: textTheme.headlineMedium!.copyWith(height: 1.1),
         textScaleFactor: 1.0,
       ),
     );
@@ -134,7 +134,7 @@ class _TimeTooltipOverlay extends StatelessWidget {
   Widget _buildContent(BuildContext context) {
     final translations = Translations(context);
     final textTheme = Theme.of(context).textTheme;
-    final bodyText2 = textTheme.bodyText2!;
+    final bodyText2 = textTheme.bodyMedium!;
     final bodyTextStyle = bodyText2.copyWith(
         height: 1.4, color: bodyText2.color!.withOpacity(0.7));
 
@@ -218,17 +218,17 @@ class _AmountTooltipOverlay extends StatelessWidget {
     final localizations = MaterialLocalizations.of(context);
     final translations = Translations(context);
     final textTheme = Theme.of(context).textTheme;
-    final body2 = textTheme.bodyText2!;
+    final body2 = textTheme.bodyMedium!;
     final bodyTextStyle = body2.copyWith(
       color: body2.color!.withOpacity(0.5),
       height: 1.2,
     );
-    final sub1 = textTheme.subtitle1!;
+    final sub1 = textTheme.titleMedium!;
     final subTitleStyle = sub1.copyWith(
       color: sub1.color!.withOpacity(0.5),
       height: 1.2,
     );
-    final headerStyle = textTheme.headline4!.copyWith(height: 1.2);
+    final headerStyle = textTheme.headlineMedium!.copyWith(height: 1.2);
 
     final hourString = _getHour();
     final minuteString = _getMinute();

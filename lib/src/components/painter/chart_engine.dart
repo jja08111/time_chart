@@ -67,7 +67,7 @@ abstract class ChartEngine extends CustomPainter {
     final TextPainter tp = TextPainter(
       text: TextSpan(
         text: translations.formatHourOnly(_kPivotYLabelHour),
-        style: textTheme.bodyText2!.copyWith(color: kTextColor),
+        style: textTheme.bodyMedium!.copyWith(color: kTextColor),
       ),
       textDirection: TextDirection.ltr,
     );

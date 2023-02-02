@@ -26,7 +26,7 @@ abstract class YLabelPainter extends ChartEngine {
   void drawYText(Canvas canvas, Size size, String text, double y) {
     TextSpan span = TextSpan(
       text: text,
-      style: textTheme.bodyText2!.copyWith(color: kTextColor),
+      style: textTheme.bodyMedium!.copyWith(color: kTextColor),
     );
 
     TextPainter tp = TextPainter(text: span, textDirection: TextDirection.ltr);
@@ -36,7 +36,7 @@ abstract class YLabelPainter extends ChartEngine {
       canvas,
       Offset(
         size.width - rightMargin + kYLabelMargin,
-        y - textTheme.bodyText2!.fontSize! / 2,
+        y - textTheme.bodyMedium!.fontSize! / 2,
       ),
     );
   }
