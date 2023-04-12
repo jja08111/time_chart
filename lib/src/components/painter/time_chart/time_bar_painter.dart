@@ -99,7 +99,6 @@ class TimeBarPainter extends BarPainter<TimeBarItem> {
       Radius bottomRadius = barRadius;
 
       Paint barPaint;
-      print("time bar date time rage type: ${offsetRange.data.runtimeType}");
       switch (offsetRange.data.runtimeType) {
         case DateTimeRange:
           barPaint = globalPaint;

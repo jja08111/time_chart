@@ -6,6 +6,9 @@ class DateTimeRangeWithColor extends DateTimeRange {
 
   final Color color;
 
+  @override
+  DateTime get end => DateTimeWithColor.fromDateTime(super.end, color);
+
   factory DateTimeRangeWithColor.fromDateTimeRange(
       DateTimeRange dtr, Color color) {
     return DateTimeRangeWithColor(start: dtr.start, end: dtr.end, color: color);
@@ -25,7 +28,7 @@ class DateTimeWithColor extends DateTime {
   final Color color;
 
   factory DateTimeWithColor.fromDateTime(DateTime dt, Color color) {
-    return DateTimeWithColor(color, dt.month, dt.hour, dt.minute, dt.second,
-        dt.millisecond, dt.microsecond);
+    return DateTimeWithColor(color, dt.year, dt.month, dt.day, dt.hour,
+        dt.minute, dt.second, dt.millisecond, dt.microsecond);
   }
 }

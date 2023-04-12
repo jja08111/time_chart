@@ -3,7 +3,8 @@ import 'dart:math' as math;
 import 'package:flutter/widgets.dart';
 
 import 'package:flutter/rendering.dart';
-import 'package:flutter/gestures.dart' show DragStartBehavior;
+import 'package:flutter/gestures.dart'
+    show DragStartBehavior, PointerScrollEvent;
 
 class MySingleChildScrollView extends StatelessWidget {
   /// Creates a box in which a single widget can be scrolled.
@@ -99,19 +100,30 @@ class MySingleChildScrollView extends StatelessWidget {
     if (padding != null) contents = Padding(padding: padding!, child: contents);
     final ScrollController? scrollController =
         primary ? PrimaryScrollController.of(context) : controller;
-    final Scrollable scrollable = Scrollable(
-      dragStartBehavior: dragStartBehavior,
-      axisDirection: axisDirection,
-      controller: scrollController,
-      physics: physics,
-      viewportBuilder: (BuildContext context, ViewportOffset offset) {
-        return _SingleChildViewport(
+    final scrollable = Listener(
+        onPointerSignal: (event) {
+          if (event is PointerScrollEvent) {
+            final offset = event.scrollDelta.dy;
+            scrollController?.jumpTo(scrollController.offset + offset);
+            // scrollControler.jumpTo(outerController.offset - offset);
+          } else if (event is PointerMoveEvent) {
+            final offset = event.delta.dx;
+            scrollController?.jumpTo(scrollController.offset + offset);
+          }
+        },
+        child: Scrollable(
+          dragStartBehavior: dragStartBehavior,
           axisDirection: axisDirection,
-          offset: offset,
-          child: contents,
-        );
-      },
-    );
+          controller: scrollController,
+          physics: physics,
+          viewportBuilder: (BuildContext context, ViewportOffset offset) {
+            return _SingleChildViewport(
+              axisDirection: axisDirection,
+              offset: offset,
+              child: contents,
+            );
+          },
+        ));
     return primary && scrollController != null
         ? PrimaryScrollController.none(child: scrollable)
         : scrollable;
