@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:time_chart/src/components/painter/bar_painter.dart';
+import 'package:time_chart/src/date_time_range_types.dart';
 import 'package:touchable/touchable.dart';
 import '../../utils/time_assistant.dart';
 import '../chart_engine.dart';
@@ -25,14 +26,12 @@ class AmountBarPainter extends BarPainter<AmountBarItem> {
     final touchyCanvas = TouchyCanvas(context, canvas,
         scrollController: scrollController,
         scrollDirection: AxisDirection.left);
-    final paint = Paint()
+    final gloabalPaint = Paint()
       ..color = barColor ?? Theme.of(context).colorScheme.secondary
       ..style = PaintingStyle.fill
       ..strokeCap = StrokeCap.round;
 
-    for (int index = 0; index < coordinates.length; index++) {
-      final AmountBarItem offsetWithAmount = coordinates[index];
-
+    for (final offsetWithAmount in coordinates) {
       final double left = paddingForAlignedBar + offsetWithAmount.dx;
       final double right =
           paddingForAlignedBar + offsetWithAmount.dx + barWidth;
@@ -53,9 +52,25 @@ class AmountBarPainter extends BarPainter<AmountBarItem> {
             barWidth: barWidth,
           );
 
+      Paint barPaint;
+
+      switch (offsetWithAmount.dateTime.runtimeType) {
+        case DateTime:
+          barPaint = gloabalPaint;
+          break;
+        case DateTimeWithColor:
+          barPaint = Paint()
+            ..color = (offsetWithAmount.dateTime as DateTimeWithColor).color
+            ..style = PaintingStyle.fill
+            ..strokeCap = StrokeCap.round;
+          break;
+        default:
+          throw UnimplementedError();
+      }
+
       touchyCanvas.drawRRect(
         rRect,
-        paint,
+        barPaint,
         onTapUp: callback,
         onLongPressStart: callback,
         onLongPressMoveUpdate: callback,
