@@ -13,6 +13,14 @@ class DateTimeRangeWithColor extends DateTimeRange {
       DateTimeRange dtr, Color color) {
     return DateTimeRangeWithColor(start: dtr.start, end: dtr.end, color: color);
   }
+
+  //overrides extension so a warning is given
+  @override
+  DateTimeRangeWithColor copy({DateTime? start, DateTime? end, Color? color}) =>
+      DateTimeRangeWithColor(
+          start: start ?? this.start,
+          end: end ?? this.end,
+          color: color ?? this.color);
 }
 
 class DateTimeWithColor extends DateTime {
@@ -31,4 +39,9 @@ class DateTimeWithColor extends DateTime {
     return DateTimeWithColor(color, dt.year, dt.month, dt.day, dt.hour,
         dt.minute, dt.second, dt.millisecond, dt.microsecond);
   }
+}
+
+extension Copy on DateTimeRange {
+  DateTimeRange copy({DateTime? start, DateTime? end, Color? color}) =>
+      DateTimeRange(start: start ?? this.start, end: end ?? this.end);
 }

@@ -200,12 +200,10 @@ mixin TimeDataProcessor {
 
       if (_isNextCellPosition(startTimeDouble) &&
           _isNextCellPosition(endTimeDouble)) {
-        _processedData[i].start.add(_oneDayDuration);
-        _processedData[i].end.add(_oneDayDuration);
-        // _processedData[i] = DateTimeRange(
-        //   start: startTime.add(_oneDayDuration),
-        //   end: endTime.add(_oneDayDuration),
-        // );
+        _processedData[i] = _processedData[i].copy(
+          start: startTime.add(_oneDayDuration),
+          end: endTime.add(_oneDayDuration),
+        );
 
         if (i == 0) {
           _dayCount = _dayCount! + 1;
