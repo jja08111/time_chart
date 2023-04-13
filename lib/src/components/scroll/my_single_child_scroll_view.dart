@@ -104,7 +104,7 @@ class MySingleChildScrollView extends StatelessWidget {
         onPointerSignal: (event) {
           if (event is PointerScrollEvent) {
             final offset = event.scrollDelta.dy;
-            scrollController?.jumpTo(scrollController.offset + offset);
+            scrollController?.jumpTo(scrollController.offset * 2 + offset);
             // scrollControler.jumpTo(outerController.offset - offset);
           } else if (event is PointerMoveEvent) {
             final offset = event.delta.dx;
