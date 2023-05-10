@@ -1,3 +1,6 @@
+## 0.5.4
+* [Update] Fixed the pub score by changing the intl version.
+
 ## 0.5.3
 * [Update] Updated library versions.
 

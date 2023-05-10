@@ -94,7 +94,7 @@ class CustomScrollPhysics extends ScrollPhysics {
       return super.createBallisticSimulation(position, velocity);
     }
 
-    final Tolerance tolerance = this.tolerance;
+    final Tolerance tolerance = toleranceFor(position);
     final double target =
         _getTargetPixels(position as ScrollPosition, tolerance, velocity);
     if (target != position.pixels) {
