@@ -1,3 +1,6 @@
+## 0.5.3
+* [Update] Updated library versions.
+
 ## 0.5.2
 * [Update] Updated y labels of the amount chart. ([#30](https://github.com/jja08111/time_chart/pull/30))
 
