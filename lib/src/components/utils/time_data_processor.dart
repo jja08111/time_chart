@@ -57,6 +57,7 @@ mixin TimeDataProcessor {
       _handleEmptyData(chart);
       return;
     }
+    // print("preprocessing i0: ${chart.data[0].runtimeType}");
     _processedData = [...chart.data];
     _isFirstDataMovedNextDay = false;
 
@@ -69,7 +70,9 @@ mixin TimeDataProcessor {
         break;
       case ChartType.amount:
         _calcAmountPivotHeights(chart.data);
+        break;
     }
+    // print("postprocessing i0: ${_processedData[0].runtimeType}");
   }
 
   void _handleEmptyData(Chart chart) {
@@ -197,7 +200,7 @@ mixin TimeDataProcessor {
 
       if (_isNextCellPosition(startTimeDouble) &&
           _isNextCellPosition(endTimeDouble)) {
-        _processedData[i] = DateTimeRange(
+        _processedData[i] = _processedData[i].copy(
           start: startTime.add(_oneDayDuration),
           end: endTime.add(_oneDayDuration),
         );

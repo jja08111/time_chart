@@ -9,12 +9,14 @@ class MyApp extends StatelessWidget {
   MyApp({Key? key}) : super(key: key);
 
   // Data must be sorted.
-  final smallDataList = [
-    DateTimeRange(
+  final List<DateTimeRange> smallDataList = [
+    DateTimeRangeWithColor(
       start: DateTime(2021, 2, 24, 23, 15),
       end: DateTime(2021, 2, 25, 7, 30),
+      color: Colors.green,
     ),
-    DateTimeRange(
+    DateTimeRangeWithColor(
+      color: Colors.red,
       start: DateTime(2021, 2, 22, 1, 55),
       end: DateTime(2021, 2, 22, 9, 12),
     ),
@@ -34,7 +36,8 @@ class MyApp extends StatelessWidget {
       start: DateTime(2021, 2, 1, 9, 32),
       end: DateTime(2021, 2, 1, 15, 22),
     ),
-    DateTimeRange(
+    DateTimeRangeWithColor(
+      color: Colors.yellow,
       start: DateTime(2021, 1, 22, 12, 10),
       end: DateTime(2021, 1, 22, 16, 20),
     ),
@@ -87,7 +90,6 @@ class MyApp extends StatelessWidget {
                 const Text('Weekly amount chart'),
                 TimeChart(
                   data: smallDataList,
-                  chartType: ChartType.amount,
                   viewMode: ViewMode.weekly,
                   barColor: Colors.deepPurple,
                 ),

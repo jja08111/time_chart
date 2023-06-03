@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:time_chart/src/components/painter/bar_painter.dart';
+import 'package:time_chart/src/date_time_range_types.dart';
 import 'package:touchable/touchable.dart';
 import '../../utils/time_assistant.dart' as time_assistant;
 import '../chart_engine.dart';
@@ -82,15 +83,13 @@ class TimeBarPainter extends BarPainter<TimeBarItem> {
     final touchyCanvas = TouchyCanvas(context, canvas,
         scrollController: scrollController,
         scrollDirection: AxisDirection.left);
-    final paint = Paint()
+    final globalPaint = Paint()
       ..color = barColor ?? Theme.of(context).colorScheme.secondary
       ..style = PaintingStyle.fill
       ..strokeCap = StrokeCap.round;
     final maxBottom = size.height;
 
-    for (int index = 0; index < coordinates.length; index++) {
-      final TimeBarItem offsetRange = coordinates[index];
-
+    for (final offsetRange in coordinates) {
       final double left = paddingForAlignedBar + offsetRange.dx;
       final double right = paddingForAlignedBar + offsetRange.dx + barWidth;
       double top = offsetRange.topY;
@@ -99,19 +98,34 @@ class TimeBarPainter extends BarPainter<TimeBarItem> {
       Radius topRadius = barRadius;
       Radius bottomRadius = barRadius;
 
+      Paint barPaint;
+      switch (offsetRange.data.runtimeType) {
+        case DateTimeRange:
+          barPaint = globalPaint;
+          break;
+        case DateTimeRangeWithColor:
+          barPaint = barPaint = Paint()
+            ..color = (offsetRange.data as DateTimeRangeWithColor).color
+            ..style = PaintingStyle.fill
+            ..strokeCap = StrokeCap.round;
+          break;
+        default:
+          throw UnimplementedError();
+      }
+
       if (top < 0.0) {
-        _drawOutRangedBar(touchyCanvas, paint, size,
+        _drawOutRangedBar(touchyCanvas, barPaint, size,
             Rect.fromLTRB(left, top, right, bottom), offsetRange.data);
         top = 0.0;
         topRadius = Radius.zero;
       } else if (bottom > maxBottom) {
-        _drawOutRangedBar(touchyCanvas, paint, size,
+        _drawOutRangedBar(touchyCanvas, barPaint, size,
             Rect.fromLTRB(left, top, right, bottom), offsetRange.data);
         bottom = maxBottom;
         bottomRadius = Radius.zero;
       }
 
-      _drawRRect(touchyCanvas, paint, offsetRange.data,
+      _drawRRect(touchyCanvas, barPaint, offsetRange.data,
           Rect.fromLTRB(left, top, right, bottom), topRadius, bottomRadius);
     }
   }
