@@ -1,3 +1,6 @@
+## 0.5.5
+* [Bug] Fixed dart analysis error and warnings.
+
 ## 0.5.4
 * [Update] Fixed the pub score by changing the intl version.
 
