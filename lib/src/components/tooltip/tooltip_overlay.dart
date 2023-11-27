@@ -121,12 +121,12 @@ class _TimeTooltipOverlay extends StatelessWidget {
       a: Text(
         translations.dateFormat('a', dateTime),
         style: subtitle1.copyWith(color: subtitle1.color!.withOpacity(0.5)),
-        textScaleFactor: 1.0,
+        textScaler: const TextScaler.linear(1.0),
       ),
       hMM: Text(
         translations.dateFormat('h:mm', dateTime),
         style: textTheme.headlineMedium!.copyWith(height: 1.1),
-        textScaleFactor: 1.0,
+        textScaler: const TextScaler.linear(1.0),
       ),
     );
   }
@@ -143,7 +143,11 @@ class _TimeTooltipOverlay extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(start, style: bodyTextStyle, textScaleFactor: 1.0),
+        Text(
+          start,
+          style: bodyTextStyle,
+          textScaler: const TextScaler.linear(1.0),
+        ),
         Row(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.baseline,
@@ -153,7 +157,11 @@ class _TimeTooltipOverlay extends StatelessWidget {
           ],
         ),
         const Expanded(child: Divider()),
-        Text(end, style: bodyTextStyle, textScaleFactor: 1.0),
+        Text(
+          end,
+          style: bodyTextStyle,
+          textScaler: const TextScaler.linear(1.0),
+        ),
         Row(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.baseline,
@@ -166,7 +174,7 @@ class _TimeTooltipOverlay extends StatelessWidget {
           translations.compactDateTimeRange(
               DateTimeRange(start: _sleepTime, end: _wakeUp)),
           style: bodyTextStyle,
-          textScaleFactor: 1.0,
+          textScaler: const TextScaler.linear(1.0),
         ),
       ],
     );
@@ -247,32 +255,32 @@ class _AmountTooltipOverlay extends StatelessWidget {
                 Text(
                   _getHour(),
                   style: headerStyle,
-                  textScaleFactor: 1.0,
+                  textScaler: const TextScaler.linear(1.0),
                 ),
               if (hourString.isNotEmpty)
                 Text(
                   '${translations.shortHour} ',
                   style: subTitleStyle,
-                  textScaleFactor: 1.0,
+                  textScaler: const TextScaler.linear(1.0),
                 ),
               if (minuteString.isNotEmpty)
                 Text(
                   _getMinute(),
                   style: headerStyle,
-                  textScaleFactor: 1.0,
+                  textScaler: const TextScaler.linear(1.0),
                 ),
               if (minuteString.isNotEmpty)
                 Text(
                   translations.shortMinute,
                   style: subTitleStyle,
-                  textScaleFactor: 1.0,
+                  textScaler: const TextScaler.linear(1.0),
                 ),
             ],
           ),
           Text(
             localizations.formatShortMonthDay(durationDate),
             style: bodyTextStyle,
-            textScaleFactor: 1.0,
+            textScaler: const TextScaler.linear(1.0),
           ),
         ],
       ),
