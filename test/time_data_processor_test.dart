@@ -37,13 +37,15 @@ Chart _getChart(
     data: data,
     timeChartSizeAnimationDuration: const Duration(milliseconds: 300),
     tooltipDuration: const Duration(milliseconds: 500),
-    tooltipBackgroundColor: Colors.black,
     tooltipStart: "START",
     tooltipEnd: "END",
     activeTooltip: true,
     viewMode: ViewMode.weekly,
     defaultPivotHour: defaultPivotHour,
-    barColor: Colors.red,
+    chartStyle: ChartStyle(
+      barColor: Colors.red,
+      tooltipBackgroundColor: Colors.black,
+    )
   );
 }
 
