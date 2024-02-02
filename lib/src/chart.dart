@@ -42,8 +42,8 @@ class Chart extends StatefulWidget {
     required this.defaultPivotHour,
     this.chartStyle,
   }) : super(key: key) {
+    kLineColor3 = chartStyle?.verticalGridColor ?? kLineColor3;
     kLineColor1 = chartStyle?.horizontalGridColor ?? kLineColor1;
-    kLineColor2 = chartStyle?.verticalGridColor ?? kLineColor2;
     kTextColor = chartStyle?.labelColor ?? kLineColor3;
   }
 
