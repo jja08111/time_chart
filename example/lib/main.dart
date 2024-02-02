@@ -89,7 +89,9 @@ class MyApp extends StatelessWidget {
                   data: smallDataList,
                   chartType: ChartType.amount,
                   viewMode: ViewMode.weekly,
-                  barColor: Colors.deepPurple,
+                  chartStyle: ChartStyle(
+                    barColor: Colors.deepPurple
+                  ),
                 ),
                 sizedBox,
                 const Text('Monthly amount chart'),
@@ -97,7 +99,9 @@ class MyApp extends StatelessWidget {
                   data: smallDataList,
                   chartType: ChartType.amount,
                   viewMode: ViewMode.monthly,
-                  barColor: Colors.deepPurple,
+                  chartStyle: ChartStyle(
+                    barColor: Colors.deepPurple
+                  )
                 ),
               ],
             ),
