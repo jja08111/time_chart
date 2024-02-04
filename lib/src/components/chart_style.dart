@@ -7,7 +7,7 @@ class ChartStyle {
   final Color? verticalGridColor;
   final Color? horizontalGridColor;
 
-  ChartStyle({
+  const ChartStyle({
     this.barColor,
     this.tooltipBackgroundColor,
     this.labelColor,

@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import '../view_mode.dart';
+import 'package:time_chart/time_chart.dart';
 import '../translations/translations.dart';
 
 const double kYLabelMargin = 12.0;
@@ -14,10 +14,10 @@ const double kLineStrokeWidth = 0.8;
 const double kBarWidthRatio = 0.7;
 const double kBarPaddingWidthRatio = (1 - kBarWidthRatio) / 2;
 
- Color kLineColor1 = Color(0x44757575);
- Color kLineColor2 = Color(0x77757575);
- Color kLineColor3 = Color(0xAA757575);
- Color kTextColor = Color(0xFF757575);
+Color kLineColor1 = Color(0x44757575);
+Color kLineColor2 = Color(0x77757575);
+Color kLineColor3 = Color(0xAA757575);
+Color kTextColor = Color(0xFF757575);
 
 abstract class ChartEngine extends CustomPainter {
   static const int toleranceDay = 1;
@@ -28,6 +28,7 @@ abstract class ChartEngine extends CustomPainter {
     required this.viewMode,
     this.firstValueDateTime,
     required this.context,
+    this.chartStyle,
     super.repaint,
   })  : dayCount = math.max(dayCount ?? -1, viewMode.dayCount),
         translations = Translations(context);
@@ -38,6 +39,7 @@ abstract class ChartEngine extends CustomPainter {
   final DateTime? firstValueDateTime;
   final BuildContext context;
   final Translations translations;
+  final ChartStyle? chartStyle;
 
   int get currentDayFromScrollOffset {
     if (!scrollController!.hasClients) return 0;
