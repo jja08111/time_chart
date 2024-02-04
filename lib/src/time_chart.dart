@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'chart.dart';
+import 'components/chart_style.dart';
 import 'components/chart_type.dart';
 import 'components/view_mode.dart';
 
@@ -12,16 +13,15 @@ class TimeChart extends StatelessWidget {
     this.chartType = ChartType.time,
     this.width,
     this.height = 280.0,
-    this.barColor,
     required this.data,
     this.timeChartSizeAnimationDuration = const Duration(milliseconds: 300),
     this.tooltipDuration = const Duration(seconds: 7),
-    this.tooltipBackgroundColor,
     this.tooltipStart = "START",
     this.tooltipEnd = "END",
     this.activeTooltip = true,
     this.viewMode = ViewMode.weekly,
     this.defaultPivotHour = 0,
+    this.chartStyle,
   })  : assert(0 <= defaultPivotHour && defaultPivotHour < 24),
         super(key: key);
 
@@ -39,11 +39,6 @@ class TimeChart extends StatelessWidget {
   ///
   /// Default is `280.0`. Actual height is [height] + 4.0([kTimeChartTopPadding]).
   final double height;
-
-  /// The color of the bar in the chart.
-  ///
-  /// Default is the `Theme.of(context).colorScheme.secondary`.
-  final Color? barColor;
 
   /// The list of [DateTimeRange].
   ///
@@ -64,11 +59,6 @@ class TimeChart extends StatelessWidget {
   ///
   /// Default is `Duration(seconds: 7)`.
   final Duration tooltipDuration;
-
-  /// The color of the tooltip background.
-  ///
-  /// [Theme.of(context).dialogBackgroundColor] is default color.
-  final Color? tooltipBackgroundColor;
 
   /// The label of [ChartType.time] tooltip.
   ///
@@ -107,6 +97,26 @@ class TimeChart extends StatelessWidget {
   /// It must be in the range of 0 to 23.
   final int defaultPivotHour;
 
+  /// The style of the chart.
+  ///
+  /// tooltipBackgroundColor
+  /// [Theme.of(context).dialogBackgroundColor] is default color.
+  ///
+  /// barColor
+  /// Default is the `Theme.of(context).colorScheme.secondary`.
+  ///
+  /// labelColor
+  /// Default is the `Theme.of(context).colorScheme.onSurface`.
+  ///
+  /// verticalGridColor
+  /// Default is the `Theme.of(context).colorScheme.onSurface`.
+  ///
+  /// horizontalGridColor
+  /// Default is the `Theme.of(context).colorScheme.onSurface`.
+  ///
+
+  final ChartStyle? chartStyle;
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (_, box) {
@@ -116,21 +126,19 @@ class TimeChart extends StatelessWidget {
         height: height + kTimeChartTopPadding,
         width: actualWidth,
         child: Chart(
-          key: ValueKey(viewMode),
-          chartType: chartType,
-          width: actualWidth,
-          height: height,
-          barColor: barColor,
-          data: data,
-          timeChartSizeAnimationDuration: timeChartSizeAnimationDuration,
-          tooltipDuration: tooltipDuration,
-          tooltipBackgroundColor: tooltipBackgroundColor,
-          tooltipStart: tooltipStart,
-          tooltipEnd: tooltipEnd,
-          activeTooltip: activeTooltip,
-          viewMode: viewMode,
-          defaultPivotHour: defaultPivotHour,
-        ),
+            key: ValueKey(viewMode),
+            chartType: chartType,
+            width: actualWidth,
+            height: height,
+            data: data,
+            timeChartSizeAnimationDuration: timeChartSizeAnimationDuration,
+            tooltipDuration: tooltipDuration,
+            tooltipStart: tooltipStart,
+            tooltipEnd: tooltipEnd,
+            activeTooltip: activeTooltip,
+            viewMode: viewMode,
+            defaultPivotHour: defaultPivotHour,
+            chartStyle: chartStyle),
       );
     });
   }
